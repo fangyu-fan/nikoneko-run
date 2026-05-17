@@ -19,22 +19,28 @@ final class ReportViewModel {
     var dateRange: (start: Date, end: Date) {
         let cal = Calendar.current
         let now = Date()
+        let today = cal.startOfDay(for: now)
         switch period {
         case .day:
-            let start = cal.startOfDay(for: cal.date(byAdding: .day, value: currentOffset, to: now)!)
-            return (start, cal.date(byAdding: .day, value: 1, to: start)!)
+            let base = cal.startOfDay(for: now)
+            let start = cal.date(byAdding: .day, value: currentOffset, to: base) ?? today
+            let end = cal.date(byAdding: .day, value: 1, to: start) ?? start
+            return (start, end)
         case .week:
-            let weekStart = cal.dateInterval(of: .weekOfYear, for: now)!.start
-            let start = cal.date(byAdding: .weekOfYear, value: currentOffset, to: weekStart)!
-            return (start, cal.date(byAdding: .weekOfYear, value: 1, to: start)!)
+            let weekStart = cal.dateInterval(of: .weekOfYear, for: now)?.start ?? today
+            let start = cal.date(byAdding: .weekOfYear, value: currentOffset, to: weekStart) ?? today
+            let end = cal.date(byAdding: .weekOfYear, value: 1, to: start) ?? start
+            return (start, end)
         case .month:
-            let monthStart = cal.dateInterval(of: .month, for: now)!.start
-            let start = cal.date(byAdding: .month, value: currentOffset, to: monthStart)!
-            return (start, cal.date(byAdding: .month, value: 1, to: start)!)
+            let monthStart = cal.dateInterval(of: .month, for: now)?.start ?? today
+            let start = cal.date(byAdding: .month, value: currentOffset, to: monthStart) ?? today
+            let end = cal.date(byAdding: .month, value: 1, to: start) ?? start
+            return (start, end)
         case .year:
-            let yearStart = cal.dateInterval(of: .year, for: now)!.start
-            let start = cal.date(byAdding: .year, value: currentOffset, to: yearStart)!
-            return (start, cal.date(byAdding: .year, value: 1, to: start)!)
+            let yearStart = cal.dateInterval(of: .year, for: now)?.start ?? today
+            let start = cal.date(byAdding: .year, value: currentOffset, to: yearStart) ?? today
+            let end = cal.date(byAdding: .year, value: 1, to: start) ?? start
+            return (start, end)
         }
     }
 
@@ -112,13 +118,15 @@ final class ReportViewModel {
             return s >= 1000 ? String(format: "%.1fk", Double(s) / 1000) : "\(s)"
         case .hrAvg:
             guard !inRange.isEmpty else { return "—" }
-            return "\(inRange.reduce(0) { $0 + $1.avgHR } / inRange.count)"
+            let avg = Double(inRange.reduce(0) { $0 + $1.avgHR }) / Double(inRange.count)
+            return "\(Int(avg.rounded()))"
         case .hrMax:
             let mx = inRange.map(\.maxHR).max() ?? 0
             return mx > 0 ? "\(mx)" : "—"
         case .cadence:
             guard !inRange.isEmpty else { return "—" }
-            return "\(inRange.reduce(0) { $0 + $1.avgCadence } / inRange.count)"
+            let avg = Double(inRange.reduce(0) { $0 + $1.avgCadence }) / Double(inRange.count)
+            return "\(Int(avg.rounded()))"
         }
     }
 
@@ -157,11 +165,14 @@ final class ReportViewModel {
             }
         case .week:
             return (0..<7).map { dayOffset in
-                let day = cal.date(byAdding: .day, value: dayOffset, to: range.start)!
+                let day = cal.date(byAdding: .day, value: dayOffset, to: range.start) ?? range.start
                 let daySessions = sessions.filter { cal.isDate($0.startDate, inSameDayAs: day) }
-                let labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+                let fmt = DateFormatter()
+                fmt.dateFormat = "EEE"
+                fmt.locale = Locale.current
+                let label = String(fmt.string(from: day).prefix(1))
                 return ChartBar(
-                    label: labels[dayOffset % 7],
+                    label: label,
                     value: metricValue(for: daySessions),
                     isToday: cal.isDateInToday(day)
                 )

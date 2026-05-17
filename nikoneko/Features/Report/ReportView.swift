@@ -219,8 +219,9 @@ struct LogRow: View {
             }
             .padding(.vertical, 7)
 
-            Divider()
-                .background(theme.accentDim)
+            Rectangle()
+                .fill(theme.accentDim)
+                .frame(height: 0.5)
         }
     }
 
