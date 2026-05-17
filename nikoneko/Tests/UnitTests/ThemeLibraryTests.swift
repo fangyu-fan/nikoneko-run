@@ -4,6 +4,12 @@ import SwiftUI
 
 final class ThemeLibraryTests: XCTestCase {
 
+    override func setUp() {
+        super.setUp()
+        UserDefaults.standard.removeObject(forKey: "activeThemeId")
+        UserDefaults(suiteName: AppGroupDefaults.suiteName)?.removeObject(forKey: "activeThemeId")
+    }
+
     func test_allThemesExist() {
         XCTAssertEqual(ThemeLibrary.all.count, 14)
     }
