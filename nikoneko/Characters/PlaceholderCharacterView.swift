@@ -3,11 +3,18 @@ import SwiftUI
 struct PlaceholderCharacterView: View {
     let characterId: String
     let color: Color
-    let speedMultiplier: Double
+    let bpm: Int
     let isAnimating: Bool
 
     @State private var frame: Int = 0
     @State private var animTimer: Timer?
+
+    // 1 loop = 2 steps = 2 beats
+    // loopsPerSecond = bpm / 60 / 2
+    private var loopsPerSecond: Double { Double(bpm) / 120.0 }
+
+    // 4-frame loop → each frame lasts 1 / (loopsPerSecond * 4)
+    private var frameInterval: TimeInterval { max(0.05, 1.0 / (loopsPerSecond * 4)) }
 
     var body: some View {
         Canvas { context, size in
@@ -20,15 +27,14 @@ struct PlaceholderCharacterView: View {
         .onChange(of: isAnimating) { _, animating in
             animating ? startAnimation() : stopAnimation()
         }
-        .onChange(of: speedMultiplier) { _, _ in
+        .onChange(of: bpm) { _, _ in
             if isAnimating { startAnimation() }
         }
     }
 
     private func startAnimation() {
         animTimer?.invalidate()
-        let interval = max(0.08, 0.333 / max(0.1, speedMultiplier))
-        animTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { _ in
+        animTimer = Timer.scheduledTimer(withTimeInterval: frameInterval, repeats: true) { _ in
             frame = (frame + 1) % 4
         }
     }

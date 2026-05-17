@@ -23,7 +23,7 @@ struct NikoNekoLiveActivityView: Widget {
                         PlaceholderCharacterView(
                             characterId: context.state.characterId,
                             color: theme.accentMid,
-                            speedMultiplier: Double(context.state.bpm) / 180.0,
+                            bpm: context.state.bpm,
                             isAnimating: true
                         )
                         .frame(width: 44, height: 32)
@@ -35,7 +35,7 @@ struct NikoNekoLiveActivityView: Widget {
                 PlaceholderCharacterView(
                     characterId: context.state.characterId,
                     color: theme.accentMid,
-                    speedMultiplier: Double(context.state.bpm) / 180.0,
+                    bpm: context.state.bpm,
                     isAnimating: true
                 )
                 .frame(width: 22, height: 22)
@@ -47,7 +47,7 @@ struct NikoNekoLiveActivityView: Widget {
                 PlaceholderCharacterView(
                     characterId: context.state.characterId,
                     color: theme.accentMid,
-                    speedMultiplier: 1.0,
+                    bpm: context.state.bpm,
                     isAnimating: true
                 )
                 .frame(width: 18, height: 18)
@@ -80,7 +80,7 @@ struct LockScreenCardView: View {
             PlaceholderCharacterView(
                 characterId: state.characterId,
                 color: theme.accentMid,
-                speedMultiplier: Double(state.bpm) / 180.0,
+                bpm: state.bpm,
                 isAnimating: true
             )
             .frame(width: 52, height: 40)

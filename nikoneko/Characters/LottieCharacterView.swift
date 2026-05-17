@@ -1,17 +1,21 @@
 import SwiftUI
 
-// Stub — replace when Lottie JSON assets are available.
+// Stub — replace with real Lottie implementation when JSON assets are available.
 // Drop JSON files into Characters/Lottie/<characterId>.json
+//
+// When integrating Lottie:
+//   let loopsPerSecond = Double(bpm) / 120.0   // 1 loop = 2 beats
+//   animationView.animationSpeed = loopsPerSecond
 struct LottieCharacterView: View {
     let characterId: String
     let color: Color
-    let speedMultiplier: Double
+    let bpm: Int
 
     var body: some View {
         PlaceholderCharacterView(
             characterId: characterId,
             color: color,
-            speedMultiplier: speedMultiplier,
+            bpm: bpm,
             isAnimating: true
         )
     }

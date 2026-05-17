@@ -32,7 +32,7 @@ struct SummaryView: View {
             PlaceholderCharacterView(
                 characterId: session.characterId,
                 color: theme.accentMid,
-                speedMultiplier: 1.5,
+                bpm: 180,
                 isAnimating: true
             )
             .frame(height: 60)

@@ -26,7 +26,7 @@ struct CharacterPickerView: View {
                     PlaceholderCharacterView(
                         characterId: char.id,
                         color: theme.accentMid,
-                        speedMultiplier: 1.0,
+                        bpm: 120,
                         isAnimating: selectedId == char.id
                     )
                     .frame(width: 40, height: 30)

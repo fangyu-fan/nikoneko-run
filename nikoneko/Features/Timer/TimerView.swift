@@ -19,7 +19,7 @@ struct TimerView: View {
                 PlaceholderCharacterView(
                     characterId: characterId,
                     color: theme.accentMid,
-                    speedMultiplier: Double(bpm) / 180.0,
+                    bpm: bpm,
                     isAnimating: vm.state == .running
                 )
                 .frame(height: 36)
