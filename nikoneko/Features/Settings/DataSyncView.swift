@@ -19,7 +19,11 @@ struct DataSyncView: View {
 
             Toggle("iCloud Sync", isOn: Binding(
                 get: { profile?.iCloudEnabled ?? false },
-                set: { v in profile?.iCloudEnabled = v; try? ctx.save() }
+                set: { v in
+                    profile?.iCloudEnabled = v
+                    UserDefaults.standard.set(v, forKey: "iCloudEnabled")
+                    try? ctx.save()
+                }
             )).tint(theme.accent)
 
             Button("Export CSV") { /* wired in K-01 */ }
