@@ -1,14 +1,20 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(ThemeManager.self) private var themeManager
+    private var theme: ThemeTokens { themeManager.current }
+
     var body: some View {
         TabView {
-            Text("Timer")
-                .tabItem { Label("Timer", systemImage: "figure.run") }
-            Text("Report")
+            TimerView()
+                .tabItem { Label("Run", systemImage: "figure.run") }
+
+            ReportView()
                 .tabItem { Label("Report", systemImage: "chart.bar") }
-            Text("Settings")
+
+            SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape") }
         }
+        .tint(theme.accent)
     }
 }
