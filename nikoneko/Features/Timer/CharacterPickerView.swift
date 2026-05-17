@@ -31,8 +31,9 @@ struct CharacterPickerView: View {
                     ForEach(freeCharacters, id: \.id) { char in
                         freeRow(char: char)
                         if char.id != freeCharacters.last?.id {
-                            Divider()
-                                .background(theme.accentDim)
+                            Rectangle()
+                                .fill(theme.accentDim)
+                                .frame(height: 0.5)
                                 .padding(.leading, 66)
                         }
                     }
@@ -41,13 +42,13 @@ struct CharacterPickerView: View {
                     ForEach(lockedCharacters, id: \.id) { char in
                         lockedRow(char: char)
                         if char.id != lockedCharacters.last?.id {
-                            Divider()
-                                .background(theme.accentDim)
+                            Rectangle()
+                                .fill(theme.accentDim)
+                                .frame(height: 0.5)
                                 .padding(.leading, 66)
                         }
                     }
                 }
-                .padding(.horizontal, 16)
             }
             .background(theme.bg.ignoresSafeArea())
             .navigationTitle("Characters")
