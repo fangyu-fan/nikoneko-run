@@ -70,6 +70,7 @@ final class TimerViewModel {
             mode: isCountdown ? .countdown : .stopwatch
         )
         onSessionSaved?(session)
+        Task { await HealthKitService.shared.writeSession(session) }
         state = .idle
         showSummary = true
     }
