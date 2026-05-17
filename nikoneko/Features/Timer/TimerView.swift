@@ -55,6 +55,11 @@ struct TimerView: View {
                     .padding(.bottom, 24)
             }
         }
+        .onChange(of: vm.state) { _, newState in
+            if newState == .idle {
+                withAnimation(.easeOut(duration: 0.2)) { longPressProgress = 0 }
+            }
+        }
         .sheet(isPresented: $showCharacterPicker) {
             CharacterPickerView(selectedId: $characterId)
         }
@@ -67,7 +72,7 @@ struct TimerView: View {
 
     private var timerNumeralView: some View {
         VStack(spacing: 2) {
-            Text(vm.state == .idle ? "\(vm.selectedMinutes)" : "\(vm.displayMinutes)")
+            Text("\(vm.displayMinutes)")
                 .font(.system(size: 70, weight: .ultraLight))
                 .foregroundColor(theme.text)
                 .monospacedDigit()
@@ -199,11 +204,11 @@ struct TimerView: View {
                     .font(.system(size: vm.state == .idle ? 22 : 16))
                     .foregroundColor(vm.state == .idle ? theme.text : theme.textMid)
             }
-            .onTapGesture {
+            .simultaneousGesture(TapGesture().onEnded {
                 guard vm.state == .idle else { return }
                 vm.targetDuration = Double(vm.selectedMinutes) * 60
                 vm.start(bpm: bpm, characterId: characterId, themeId: themeManager.current.id)
-            }
+            })
             .onLongPressGesture(minimumDuration: 2.0, pressing: { pressing in
                 if pressing && vm.state != .idle {
                     withAnimation(.linear(duration: 2.0)) { longPressProgress = 1.0 }
