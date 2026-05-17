@@ -36,27 +36,26 @@ struct SummaryView: View {
                 bpm: 240,
                 isAnimating: true
             )
-            .frame(height: 60)
+            .frame(height: 52)
 
             // Duration hero
             VStack(spacing: 2) {
                 Text("\(Int(session.duration / 60))")
-                    .font(.system(size: 48, weight: .ultraLight))
+                    .font(.system(size: 78, weight: .ultraLight))
                     .foregroundColor(theme.text)
                     .monospacedDigit()
-                Text("min")
-                    .font(.system(size: 9))
+                    .kerning(-3.5)
+                Text("MIN · COMPLETED")
+                    .font(.system(size: 11))
                     .foregroundColor(theme.textDim)
-                Text("DURATION")
-                    .font(.system(size: 7))
-                    .tracking(1)
-                    .foregroundColor(theme.textDim)
+                    .tracking(0.1 * 11)
+                    .textCase(.uppercase)
             }
 
             // 2×2 stat grid
             LazyVGrid(
                 columns: [GridItem(.flexible()), GridItem(.flexible())],
-                spacing: 8
+                spacing: 5
             ) {
                 statCell(icon: "♥", label: "Avg HR",
                          value: session.avgHR > 0 ? "\(session.avgHR)" : "—")
@@ -67,7 +66,6 @@ struct SummaryView: View {
                 statCell(icon: "◷", label: "Total",
                          value: String(format: "%.1fh", vm.totalHours))
             }
-            .padding(.horizontal, 32)
 
             // Streak chip
             streakChip(vm)
@@ -78,22 +76,23 @@ struct SummaryView: View {
                 // Done button — filled, inverted colors
                 Button(action: { dismiss() }) {
                     Text("Done")
-                        .font(.system(size: 11, weight: .medium))
+                        .font(.system(size: 15, weight: .medium))
+                        .tracking(0.04 * 15)
                         .foregroundColor(theme.bg)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
+                        .padding(.vertical, 15)
                         .background(theme.text)
-                        .cornerRadius(12)
+                        .cornerRadius(18)
                 }
 
                 // Share label
                 Button(action: {}) {
                     Text("Share")
-                        .font(.system(size: 9))
+                        .font(.system(size: 12))
+                        .tracking(0.04 * 12)
                         .foregroundColor(theme.textDim)
                 }
             }
-            .padding(.horizontal, 32)
             .padding(.bottom, 24)
         }
     }
@@ -106,47 +105,48 @@ struct SummaryView: View {
     private func statCell(icon: String, label: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: 3) {
             Text(icon)
-                .font(.system(size: 9))
+                .font(.system(size: 12))
                 .foregroundColor(theme.textDim)
             Text(value)
-                .font(.system(size: 13, weight: .ultraLight))
+                .font(.system(size: 20, weight: .ultraLight))
                 .foregroundColor(theme.textMid)
                 .monospacedDigit()
             Text(label)
-                .font(.system(size: 6))
+                .font(.system(size: 9))
                 .foregroundColor(theme.textDim)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(10)
-        .background(theme.surface)
-        .cornerRadius(10)
+        .padding(.vertical, 12)
+        .padding(.horizontal, 14)
+        .background(theme.card)
+        .cornerRadius(12)
     }
 
     private func streakChip(_ vm: SummaryViewModel) -> some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
                 Text("\(vm.streakDays)")
-                    .font(.system(size: 28, weight: .ultraLight))
+                    .font(.system(size: 32, weight: .ultraLight))
                     .foregroundColor(theme.accent)
                     .monospacedDigit()
+                    .kerning(-1.5)
                 Text("day streak")
-                    .font(.system(size: 9))
-                    .foregroundColor(theme.textDim)
+                    .font(.system(size: 11))
+                    .foregroundColor(theme.bar[1])
             }
             Spacer()
-            HStack(spacing: 4) {
+            HStack(spacing: 5) {
                 ForEach(vm.thisWeekDots.indices, id: \.self) { i in
-                    RoundedRectangle(cornerRadius: 2)
+                    RoundedRectangle(cornerRadius: 3)
                         .fill(dotColor(vm.thisWeekDots[i]))
-                        .frame(width: 8, height: 8)
+                        .frame(width: 10, height: 10)
                 }
             }
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .background(theme.surface)
-        .cornerRadius(12)
-        .padding(.horizontal, 32)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+        .background(theme.accentDim)
+        .cornerRadius(14)
     }
 
     private func dotColor(_ state: DotState) -> Color {
