@@ -39,5 +39,20 @@ struct NotificationsView: View {
         .scrollContentBackground(.hidden)
         .background(theme.bg)
         .navigationTitle("Notifications")
+        .onChange(of: profile?.notificationsEnabled) { _, enabled in
+            if enabled == true {
+                Task {
+                    let granted = await NotificationService.requestPermission()
+                    if granted {
+                        NotificationService.scheduleDaily(
+                            hour: profile?.notificationHour ?? 7,
+                            minute: profile?.notificationMinute ?? 0
+                        )
+                    }
+                }
+            } else {
+                NotificationService.cancel()
+            }
+        }
     }
 }
