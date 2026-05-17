@@ -34,7 +34,6 @@ struct CharacterPickerView: View {
                             Rectangle()
                                 .fill(theme.accentDim)
                                 .frame(height: 0.5)
-                                .padding(.leading, 66)
                         }
                     }
 
@@ -45,7 +44,6 @@ struct CharacterPickerView: View {
                             Rectangle()
                                 .fill(theme.accentDim)
                                 .frame(height: 0.5)
-                                .padding(.leading, 66)
                         }
                     }
                 }
@@ -58,12 +56,12 @@ struct CharacterPickerView: View {
 
     private func sectionHeader(_ text: String) -> some View {
         Text(text.uppercased())
-            .font(.system(size: 8))
+            .font(.system(size: 10))
             .tracking(1)
             .foregroundColor(theme.textDim)
-            .padding(.top, 14)
+            .padding(.top, 8)
             .padding(.bottom, 4)
-            .padding(.horizontal, 2)
+            .padding(.horizontal, 18)
     }
 
     private func freeRow(char: (id: String, label: String)) -> some View {
@@ -72,53 +70,54 @@ struct CharacterPickerView: View {
             selectedId = char.id
             dismiss()
         }) {
-            HStack(spacing: 12) {
+            HStack(spacing: 14) {
                 LottieCharacterView(
                     characterId: char.id,
                     color: theme.accentMid,
                     bpm: 120,
                     isAnimating: isSelected
                 )
-                .frame(width: 38, height: 26)
+                .frame(width: 56, height: 32)
 
                 Text(char.label)
-                    .font(.system(size: 12))
-                    .foregroundColor(theme.text)
+                    .font(.system(size: 14))
+                    .foregroundColor(theme.textMid)
 
                 Spacer()
 
                 if isSelected {
                     Circle()
                         .fill(theme.accent)
-                        .frame(width: 6, height: 6)
+                        .frame(width: 8, height: 8)
                 }
             }
-            .padding(.horizontal, 14)
-            .frame(minHeight: 44)
-            .background(isSelected ? theme.surface : Color.clear)
+            .padding(.vertical, 12)
+            .padding(.horizontal, 18)
+            .background(isSelected ? theme.card : Color.clear)
         }
         .buttonStyle(.plain)
     }
 
     private func lockedRow(char: (id: String, label: String, requiredStreak: Int)) -> some View {
         let isUnlocked = currentStreak >= char.requiredStreak
-        return HStack(spacing: 12) {
+        let isSelected = selectedId == char.id
+        return HStack(spacing: 14) {
             LottieCharacterView(
                 characterId: char.id,
                 color: theme.accentMid,
                 bpm: 120,
                 isAnimating: false
             )
-            .frame(width: 38, height: 26)
+            .frame(width: 56, height: 32)
             .opacity(isUnlocked ? 1.0 : 0.2)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(char.label)
-                    .font(.system(size: 12))
-                    .foregroundColor(isUnlocked ? theme.text : theme.textDim)
+                    .font(.system(size: 14))
+                    .foregroundColor(isUnlocked ? theme.textMid : theme.textDim)
                 if !isUnlocked {
                     Text("\(char.requiredStreak)-day streak")
-                        .font(.system(size: 8))
+                        .font(.system(size: 10))
                         .foregroundColor(theme.bar[1])
                 }
             }
@@ -127,16 +126,17 @@ struct CharacterPickerView: View {
 
             if !isUnlocked {
                 Text("⚿")
-                    .font(.system(size: 10))
+                    .font(.system(size: 14))
                     .foregroundColor(theme.textDim)
-            } else if selectedId == char.id {
+            } else if isSelected {
                 Circle()
                     .fill(theme.accent)
-                    .frame(width: 6, height: 6)
+                    .frame(width: 8, height: 8)
             }
         }
-        .padding(.horizontal, 14)
-        .frame(minHeight: 44)
+        .padding(.vertical, 12)
+        .padding(.horizontal, 18)
+        .background(isSelected ? theme.card : Color.clear)
         .contentShape(Rectangle())
         .onTapGesture {
             guard isUnlocked else { return }
