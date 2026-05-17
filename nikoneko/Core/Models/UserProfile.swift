@@ -7,7 +7,7 @@ final class UserProfile {
     var defaultDuration: Int = 20
     var dailyGoalMinutes: Int = 20
     var defaultBPM: Int = 180
-    var soundTypeRaw: String = SoundType.tap.rawValue
+    var soundTypeRaw: String = SoundType.wood.rawValue
     var volumeLockEnabled: Bool = false
     var timerModeRaw: String = TimerMode.countdown.rawValue
     var timeDisplayFormatRaw: String = TimeFormat.plainMinutes.rawValue

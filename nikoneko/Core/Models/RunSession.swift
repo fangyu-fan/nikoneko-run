@@ -6,7 +6,8 @@ enum TimerMode: String, Codable {
 }
 
 enum SoundType: String, Codable, CaseIterable {
-    case tap, bell, drum, wood
+    case wood   // soft wood block — default
+    case tap    // light finger tap
 }
 
 enum TimeFormat: String, Codable {

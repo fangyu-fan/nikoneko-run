@@ -48,14 +48,25 @@ final class MetronomeService {
 
     private func synthesizeClick(sampleRate: Double) -> AVAudioPCMBuffer? {
         let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1)!
-        let frameCount: AVAudioFrameCount = 2205
+        // 40ms click — enough for a wood block transient
+        let frameCount: AVAudioFrameCount = AVAudioFrameCount(sampleRate * 0.04)
         guard let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount) else { return nil }
         buf.frameLength = frameCount
-        let channelData = buf.floatChannelData![0]
+        let ch = buf.floatChannelData![0]
+
+        // Wood block: two detuned sine waves (800 Hz + 1200 Hz) + very fast exponential decay
+        // Sounds warmer and less piercing than a single sine
+        let isTap = soundType == .tap
+        let freq1: Double = isTap ? 1800 : 800
+        let freq2: Double = isTap ? 2400 : 1200
+        let decay: Double = isTap ? 150  : 80    // tap decays slower → softer
+
         for i in 0..<Int(frameCount) {
             let t = Double(i) / sampleRate
-            let envelope = exp(-t * 60)
-            channelData[i] = Float(sin(2 * .pi * 1000 * t) * envelope * Double(volume))
+            let envelope = exp(-t * decay)
+            let signal = sin(2 * .pi * freq1 * t) * 0.6
+                       + sin(2 * .pi * freq2 * t) * 0.4
+            ch[i] = Float(signal * envelope * Double(volume))
         }
         return buf
     }
