@@ -8,7 +8,7 @@ struct BarChartView: View {
     private var maxValue: Double { bars.map(\.value).max() ?? 1 }
 
     var body: some View {
-        HStack(alignment: .bottom, spacing: 2) {
+        HStack(alignment: .bottom, spacing: 3) {
             ForEach(bars.indices, id: \.self) { i in
                 let bar = bars[i]
                 let ratio = maxValue > 0 ? bar.value / maxValue : 0
