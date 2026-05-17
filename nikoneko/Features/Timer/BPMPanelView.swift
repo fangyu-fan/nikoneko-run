@@ -3,43 +3,93 @@ import SwiftUI
 struct BPMPanelView: View {
     @Binding var bpm: Int
     @Environment(ThemeManager.self) private var themeManager
+    @FocusState private var isEditing: Bool
+    @State private var inputText: String = ""
 
     private let minBPM = 140
     private let maxBPM = 220
     private var theme: ThemeTokens { themeManager.current }
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 8) {
             Text("BPM")
-                .font(.system(size: 10, weight: .medium))
+                .font(.system(size: 14, weight: .medium))
                 .tracking(1)
                 .foregroundColor(theme.textDim)
-
-            Text("\(bpm)")
-                .font(.system(size: 28, weight: .ultraLight))
-                .foregroundColor(theme.text)
-                .monospacedDigit()
+                .padding(.top, 4)
 
             HStack(spacing: 8) {
-                bpmButton(label: "−5", delta: -5)
-                bpmButton(label: "−",  delta: -1)
-                bpmButton(label: "+",  delta: +1)
-                bpmButton(label: "+5", delta: +5)
+                // Left: -5, -
+                HStack(spacing: 6) {
+                    bpmButton(label: "−5", delta: -5)
+                    bpmButton(label: "−",  delta: -1)
+                }
+
+                // Center: number
+                ZStack {
+                    if isEditing {
+                        TextField("", text: $inputText)
+                            .font(.system(size: 48, weight: .ultraLight))
+                            .foregroundColor(theme.text)
+                            .multilineTextAlignment(.center)
+                            .monospacedDigit()
+                            .keyboardType(.numberPad)
+                            .focused($isEditing)
+                            .frame(width: 100, height: 56)
+                            .onSubmit { commitInput() }
+                            .onChange(of: inputText) { _, v in
+                                inputText = v.filter(\.isNumber)
+                            }
+                    } else {
+                        Text("\(bpm)")
+                            .font(.system(size: 48, weight: .ultraLight))
+                            .foregroundColor(theme.text)
+                            .monospacedDigit()
+                            .frame(width: 100, height: 56)
+                            .onTapGesture {
+                                inputText = "\(bpm)"
+                                isEditing = true
+                            }
+                    }
+                }
+
+                // Right: +, +5
+                HStack(spacing: 6) {
+                    bpmButton(label: "+",  delta: +1)
+                    bpmButton(label: "+5", delta: +5)
+                }
+            }
+
+            if isEditing {
+                Button("Done") { commitInput() }
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(theme.accent)
+                    .padding(.top, 4)
             }
         }
-        .padding(16)
-        .background(theme.surface)
-        .presentationDetents([.height(130)])
+        .padding(.horizontal, 20)
+        .padding(.vertical, 16)
+        .background(theme.bg)
+        .presentationDetents([.height(isEditing ? 220 : 160)])
+        .onDisappear { commitInput() }
+    }
+
+    private func commitInput() {
+        if let v = Int(inputText) {
+            bpm = min(maxBPM, max(minBPM, v))
+        }
+        isEditing = false
     }
 
     private func bpmButton(label: String, delta: Int) -> some View {
         Button(label) {
             bpm = min(maxBPM, max(minBPM, bpm + delta))
         }
-        .font(.system(size: 14))
+        .font(.system(size: 15))
         .foregroundColor(theme.text)
-        .frame(width: 44, height: 36)
+        .frame(width: 52, height: 52)
         .background(theme.card)
-        .cornerRadius(8)
+        .cornerRadius(10)
+        .fixedSize()
     }
 }

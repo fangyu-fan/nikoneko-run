@@ -10,46 +10,44 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     sectionLabel("Appearance")
                     settingsCard {
-                        settingsRow(icon: "◑", name: "Theme",
+                        settingsRow(icon: "paintpalette", name: "Theme",
                                     value: themeManager.current.id.capitalized,
                                     destination: AppearanceView())
                         Rectangle()
                             .fill(theme.accentDim)
                             .frame(height: 0.5)
                             .padding(.leading, 44)
-                        // Language picker lives inside AppearanceView alongside Theme —
-                        // both settings share the same destination screen by design.
-                        settingsRow(icon: "1", name: "Language", value: "English",
+                        settingsRow(icon: "globe", name: "Language", value: "English",
                                     destination: AppearanceView())
                     }
 
                     sectionLabel("Display")
                     settingsCard {
-                        settingsRow(icon: "◷", name: "Display", value: "plain min",
+                        settingsRow(icon: "eye", name: "Display", value: "plain min",
                                     destination: DisplayView())
                     }
 
                     sectionLabel("Defaults")
                     settingsCard {
-                        settingsRow(icon: "◎", name: "Training", value: "15 min · 180 bpm",
+                        settingsRow(icon: "slider.horizontal.3", name: "Training", value: "15 min · 180 bpm",
                                     destination: DefaultsView())
                     }
 
                     sectionLabel("Widget")
                     settingsCard {
-                        settingsRow(icon: "▦", name: "Widget", value: "10 · 50 · 90",
+                        settingsRow(icon: "rectangle.3.group", name: "Widget", value: "10 · 50 · 90",
                                     destination: WidgetSettingsView())
                     }
 
                     sectionLabel("System")
                     settingsCard {
-                        settingsRow(icon: "◷", name: "Notifications", value: "Off",
+                        settingsRow(icon: "bell", name: "Notifications", value: "Off",
                                     destination: NotificationsView())
                         Rectangle()
                             .fill(theme.accentDim)
                             .frame(height: 0.5)
                             .padding(.leading, 44)
-                        settingsRow(icon: "☁", name: "Data & Sync", value: "",
+                        settingsRow(icon: "icloud", name: "Data & Sync", value: "",
                                     destination: DataSyncView())
                     }
                 }
@@ -59,6 +57,21 @@ struct SettingsView: View {
             .background(theme.bg.ignoresSafeArea())
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    backButton
+                }
+            }
+        }
+    }
+
+    @Environment(\.dismiss) private var dismiss
+    private var backButton: some View {
+        Button { dismiss() } label: {
+            Image(systemName: "chevron.left")
+                .font(.system(size: 16, weight: .regular))
+                .foregroundColor(theme.textMid)
         }
     }
 
@@ -85,23 +98,23 @@ struct SettingsView: View {
                                        destination: D) -> some View {
         NavigationLink(destination: destination) {
             HStack(spacing: 0) {
-                Text(icon)
+                Image(systemName: icon)
                     .font(.system(size: 16))
-                    .foregroundColor(theme.textDim)
+                    .foregroundColor(theme.text)
                     .frame(width: 20, alignment: .center)
                     .padding(.trailing, 10)
                 Text(name)
-                    .font(.system(size: 14))
-                    .foregroundColor(theme.textMid)
+                    .font(.system(size: 16))
+                    .foregroundColor(theme.text)
                 Spacer()
                 if !value.isEmpty {
                     Text(value)
                         .font(.system(size: 13))
-                        .foregroundColor(theme.textDim)
+                        .foregroundColor(theme.textMid)
                 }
                 Image(systemName: "chevron.right")
                     .font(.system(size: 13))
-                    .foregroundColor(theme.textDim)
+                    .foregroundColor(theme.textMid)
                     .padding(.leading, 4)
             }
             .padding(.vertical, 13)

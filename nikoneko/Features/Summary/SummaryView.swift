@@ -31,7 +31,7 @@ struct SummaryView: View {
 
             // Celebrating character — faster speed signals completion
             LottieCharacterView(
-                characterId: session.characterId,
+                
                 color: theme.accentMid,
                 bpm: 240,
                 isAnimating: true

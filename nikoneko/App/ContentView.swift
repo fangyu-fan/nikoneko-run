@@ -5,16 +5,39 @@ struct ContentView: View {
     private var theme: ThemeTokens { themeManager.current }
 
     var body: some View {
-        TabView {
-            TimerView()
-                .tabItem { Label("Run", systemImage: "figure.run") }
+        NavigationStack {
+            ZStack {
+                theme.bg.ignoresSafeArea()
 
-            ReportView()
-                .tabItem { Label("Report", systemImage: "chart.bar") }
+                TimerView()
 
-            SettingsView()
-                .tabItem { Label("Settings", systemImage: "gearshape") }
+                // Top-left: Report, Top-right: Settings
+                VStack {
+                    HStack {
+                        NavigationLink {
+                            ReportView()
+                        } label: {
+                            Image(systemName: "chart.bar")
+                                .font(.system(size: 18, weight: .light))
+                                .foregroundColor(theme.text)
+                                .frame(width: 44, height: 44)
+                        }
+                        Spacer()
+                        NavigationLink {
+                            SettingsView()
+                        } label: {
+                            Image(systemName: "gearshape")
+                                .font(.system(size: 18, weight: .light))
+                                .foregroundColor(theme.text)
+                                .frame(width: 44, height: 44)
+                        }
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.top, 8)
+                    Spacer()
+                }
+            }
+            .navigationBarHidden(true)
         }
-        .tint(theme.accent)
     }
 }

@@ -72,7 +72,7 @@ struct CharacterPickerView: View {
         }) {
             HStack(spacing: 14) {
                 LottieCharacterView(
-                    characterId: char.id,
+                    
                     color: theme.accentMid,
                     bpm: 120,
                     isAnimating: isSelected
@@ -103,7 +103,7 @@ struct CharacterPickerView: View {
         let isSelected = selectedId == char.id
         return HStack(spacing: 14) {
             LottieCharacterView(
-                characterId: char.id,
+                
                 color: theme.accentMid,
                 bpm: 120,
                 isAnimating: false

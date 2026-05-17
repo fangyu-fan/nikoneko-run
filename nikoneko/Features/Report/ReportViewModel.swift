@@ -4,11 +4,18 @@ import SwiftData
 @Observable
 final class ReportViewModel {
     enum Period: String, CaseIterable { case day, week, month, year }
-    enum Metric: String, CaseIterable { case distance, calories, steps, hrAvg, hrMax, cadence }
+    enum Metric: String, CaseIterable { case duration, distance, calories, steps, hrAvg, hrMax, count }
 
     var period: Period = .week
-    var selectedMetric: Metric = .distance
+    var selectedMetric: Metric = .duration
     var currentOffset: Int = 0
+
+    var yearStartWeekday: Int {
+        let cal = Calendar(identifier: .gregorian)
+        let range = dateRange
+        let wd = cal.component(.weekday, from: range.start)
+        return (wd + 5) % 7  // Mon=0 … Sun=6
+    }
 
     var sessions: [RunSession] = []
 
@@ -51,6 +58,28 @@ final class ReportViewModel {
             .reduce(0) { $0 + $1.duration }
     }
 
+    var periodSessionCount: Int {
+        let range = dateRange
+        return sessions.filter { $0.startDate >= range.start && $0.startDate < range.end }.count
+    }
+
+    var currentStreak: Int {
+        let cal = Calendar.current
+        var streak = 0
+        var checkDate = cal.startOfDay(for: Date())
+        for _ in 0..<365 {
+            let hasSessions = sessions.contains { cal.isDate($0.startDate, inSameDayAs: checkDate) }
+            if hasSessions {
+                streak += 1
+            } else if checkDate < cal.startOfDay(for: Date()) {
+                break
+            }
+            guard let prev = cal.date(byAdding: .day, value: -1, to: checkDate) else { break }
+            checkDate = prev
+        }
+        return streak
+    }
+
     var logItems: [RunSession] {
         let range = dateRange
         return sessions
@@ -84,23 +113,37 @@ final class ReportViewModel {
 
     func metricIcon(_ metric: Metric) -> String {
         switch metric {
-        case .distance: return "⊙"
-        case .calories:  return "△"
-        case .steps:     return "⊞"
-        case .hrAvg:     return "♥"
-        case .hrMax:     return "♥"
-        case .cadence:   return "♩"
+        case .duration:  return "timer"
+        case .distance:  return "location.circle"
+        case .calories:  return "flame"
+        case .steps:     return "figure.walk"
+        case .hrAvg:     return "heart"
+        case .hrMax:     return "heart"
+        case .count:     return "number.circle"
+        }
+    }
+
+    func metricUnit(_ metric: Metric) -> String {
+        switch metric {
+        case .duration:  return "min"
+        case .distance:  return "km"
+        case .calories:  return "kcal"
+        case .steps:     return "steps"
+        case .hrAvg:     return "bpm"
+        case .hrMax:     return "bpm"
+        case .count:     return "times"
         }
     }
 
     func metricLabel(_ metric: Metric) -> String {
         switch metric {
-        case .distance: return "Distance"
+        case .duration:  return "Duration"
+        case .distance:  return "Distance"
         case .calories:  return "Calories"
         case .steps:     return "Steps"
         case .hrAvg:     return "Avg HR"
         case .hrMax:     return "Max HR"
-        case .cadence:   return "Cadence"
+        case .count:     return "Sessions"
         }
     }
 
@@ -108,6 +151,9 @@ final class ReportViewModel {
         let range = dateRange
         let inRange = sessions.filter { $0.startDate >= range.start && $0.startDate < range.end }
         switch metric {
+        case .duration:
+            let mins = Int(inRange.reduce(0) { $0 + $1.duration } / 60)
+            return mins >= 60 ? String(format: "%.1f", Double(mins) / 60) : "\(mins)"
         case .distance:
             let km = inRange.reduce(0.0) { $0 + $1.distance } / 1000
             return km >= 100 ? String(format: "%.0f", km) : String(format: "%.1f", km)
@@ -124,27 +170,27 @@ final class ReportViewModel {
         case .hrMax:
             let mx = inRange.map(\.maxHR).max() ?? 0
             return mx > 0 ? "\(mx)" : "—"
-        case .cadence:
-            guard !inRange.isEmpty else { return "—" }
-            let avg = Double(inRange.reduce(0) { $0 + $1.avgCadence }) / Double(inRange.count)
-            return "\(Int(avg.rounded()))"
+        case .count:
+            return "\(inRange.count)"
         }
     }
 
     func logSecondaryValue(session: RunSession) -> String {
         switch selectedMetric {
+        case .duration:
+            return ""
         case .distance:
             return String(format: "%.1f km", session.distance / 1000)
         case .calories:
-            return "\(Int(session.calories)) cal"
+            return "\(Int(session.calories)) kcal"
         case .steps:
             return "\(session.steps) steps"
         case .hrAvg:
             return session.avgHR > 0 ? "HR \(session.avgHR)" : ""
         case .hrMax:
             return session.maxHR > 0 ? "HR max \(session.maxHR)" : ""
-        case .cadence:
-            return session.avgCadence > 0 ? "\(session.avgCadence) spm" : ""
+        case .count:
+            return ""
         }
     }
 
@@ -158,11 +204,10 @@ final class ReportViewModel {
                     cal.component(.hour, from: $0.startDate) == hour &&
                     cal.isDate($0.startDate, inSameDayAs: range.start)
                 }
-                return ChartBar(
-                    label: "\(hour)",
-                    value: metricValue(for: hourSessions),
-                    isToday: hour == cal.component(.hour, from: Date())
-                )
+                let v = metricValue(for: hourSessions)
+                return ChartBar(label: "\(hour)", value: v,
+                    isToday: hour == cal.component(.hour, from: Date()),
+                    displayValue: formatBarValue(v))
             }
         case .week:
             let fmt = DateFormatter()
@@ -172,48 +217,64 @@ final class ReportViewModel {
                 let day = cal.date(byAdding: .day, value: dayOffset, to: range.start) ?? range.start
                 let daySessions = sessions.filter { cal.isDate($0.startDate, inSameDayAs: day) }
                 let label = String(fmt.string(from: day).prefix(1))
-                return ChartBar(
-                    label: label,
-                    value: metricValue(for: daySessions),
-                    isToday: cal.isDateInToday(day)
-                )
+                let v2 = metricValue(for: daySessions)
+                return ChartBar(label: label, value: v2,
+                    isToday: cal.isDateInToday(day),
+                    displayValue: formatBarValue(v2))
             }
         case .month:
             let daysInMonth = cal.range(of: .day, in: .month, for: range.start)?.count ?? 30
             return (0..<daysInMonth).map { dayOffset in
                 let day = cal.date(byAdding: .day, value: dayOffset, to: range.start) ?? range.start
                 let daySessions = sessions.filter { cal.isDate($0.startDate, inSameDayAs: day) }
-                return ChartBar(
-                    label: "\(dayOffset + 1)",
-                    value: metricValue(for: daySessions),
-                    isToday: cal.isDateInToday(day)
-                )
+                let v3 = metricValue(for: daySessions)
+                return ChartBar(label: "\(dayOffset + 1)", value: v3,
+                    isToday: cal.isDateInToday(day),
+                    displayValue: formatBarValue(v3))
             }
         case .year:
-            return (0..<12).map { monthOffset in
-                let month = cal.date(byAdding: .month, value: monthOffset, to: range.start) ?? range.start
-                let monthInterval = cal.dateInterval(of: .month, for: month) ?? DateInterval(start: month, duration: 0)
-                let monthSessions = sessions.filter {
-                    $0.startDate >= monthInterval.start && $0.startDate < monthInterval.end
-                }
-                let labels = ["J","F","M","A","M","J","J","A","S","O","N","D"]
-                return ChartBar(
-                    label: labels[monthOffset],
-                    value: metricValue(for: monthSessions),
-                    isToday: cal.isDate(month, equalTo: Date(), toGranularity: .month)
-                )
+            let daysInYear = cal.range(of: .day, in: .year, for: range.start)?.count ?? 365
+            return (0..<daysInYear).map { dayOffset in
+                let day = cal.date(byAdding: .day, value: dayOffset, to: range.start) ?? range.start
+                let daySessions = sessions.filter { cal.isDate($0.startDate, inSameDayAs: day) }
+                let dayNum = cal.component(.day, from: day)
+                let v4 = metricValue(for: daySessions)
+                return ChartBar(label: "\(dayNum)", value: v4,
+                    isToday: cal.isDateInToday(day),
+                    displayValue: formatBarValue(v4))
             }
+        }
+    }
+
+    private func formatBarValue(_ v: Double) -> String {
+        guard v > 0 else { return "—" }
+        let unit = metricUnit(selectedMetric)
+        switch selectedMetric {
+        case .duration:
+            return "\(Int(v)) \(unit)"
+        case .distance:
+            let km = v / 1000
+            return "\(km >= 100 ? String(format: "%.0f", km) : String(format: "%.1f", km)) \(unit)"
+        case .calories:
+            return "\(v >= 1000 ? String(format: "%.1fk", v/1000) : "\(Int(v))") \(unit)"
+        case .steps:
+            return "\(v >= 1000 ? String(format: "%.1fk", v/1000) : "\(Int(v))") \(unit)"
+        case .hrAvg, .hrMax:
+            return "\(Int(v.rounded())) \(unit)"
+        case .count:
+            return "\(Int(v)) sessions"
         }
     }
 
     private func metricValue(for sessions: [RunSession]) -> Double {
         switch selectedMetric {
-        case .distance: return sessions.reduce(0) { $0 + $1.distance }
+        case .duration:  return sessions.reduce(0) { $0 + $1.duration } / 60
+        case .distance:  return sessions.reduce(0) { $0 + $1.distance }
         case .calories:  return sessions.reduce(0) { $0 + $1.calories }
         case .steps:     return Double(sessions.reduce(0) { $0 + $1.steps })
         case .hrAvg:     return sessions.isEmpty ? 0 : Double(sessions.reduce(0) { $0 + $1.avgHR }) / Double(sessions.count)
         case .hrMax:     return Double(sessions.map(\.maxHR).max() ?? 0)
-        case .cadence:   return sessions.isEmpty ? 0 : Double(sessions.reduce(0) { $0 + $1.avgCadence }) / Double(sessions.count)
+        case .count:     return Double(sessions.count)
         }
     }
 }
@@ -222,4 +283,5 @@ struct ChartBar {
     let label: String
     let value: Double
     let isToday: Bool
+    var displayValue: String = ""  // formatted value + unit for tooltip
 }

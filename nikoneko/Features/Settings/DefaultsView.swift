@@ -14,7 +14,7 @@ struct DefaultsView: View {
             VStack(alignment: .leading, spacing: 0) {
                 sectionLabel("Time")
                 VStack(spacing: 0) {
-                    stepperRow(icon: "◷", name: "Duration",
+                    stepperRow(icon: "timer", name: "Duration",
                                value: profile?.defaultDuration ?? 15,
                                step: 5, range: 5...999) { v in
                         profile?.defaultDuration = v; try? ctx.save()
@@ -22,7 +22,7 @@ struct DefaultsView: View {
                     Rectangle()
                         .fill(theme.accentDim)
                         .frame(height: 0.5)
-                    stepperRow(icon: "◎", name: "Daily Goal",
+                    stepperRow(icon: "flag", name: "Daily Goal",
                                value: profile?.dailyGoalMinutes ?? 15,
                                step: 5, range: 5...999) { v in
                         profile?.dailyGoalMinutes = v; try? ctx.save()
@@ -34,7 +34,7 @@ struct DefaultsView: View {
 
                 sectionLabel("Beat")
                 VStack(spacing: 0) {
-                    stepperRow(icon: "♩", name: "BPM",
+                    stepperRow(icon: "metronome", name: "BPM",
                                value: profile?.defaultBPM ?? 180,
                                step: 1, range: 140...220,
                                isBPM: true) { v in
@@ -47,7 +47,14 @@ struct DefaultsView: View {
                     Rectangle()
                         .fill(theme.accentDim)
                         .frame(height: 0.5)
+                    Rectangle()
+                        .fill(theme.accentDim)
+                        .frame(height: 0.5)
                     lockVolumeRow
+                    Rectangle()
+                        .fill(theme.accentDim)
+                        .frame(height: 0.5)
+                    hapticRow
                 }
                 .background(theme.surface)
                 .cornerRadius(14)
@@ -76,13 +83,13 @@ struct DefaultsView: View {
                              isBPM: Bool = false,
                              onChange: @escaping (Int) -> Void) -> some View {
         HStack(spacing: 10) {
-            Text(icon)
+            Image(systemName: icon)
                 .font(.system(size: 16))
-                .foregroundColor(theme.textDim)
+                .foregroundColor(theme.text)
                 .frame(width: 20)
             Text(name)
-                .font(.system(size: 14))
-                .foregroundColor(theme.textMid)
+                .font(.system(size: 16))
+                .foregroundColor(theme.text)
             Spacer()
             HStack(spacing: 8) {
                 stepButton("−") {
@@ -90,7 +97,7 @@ struct DefaultsView: View {
                 }
                 Text("\(value)")
                     .font(.system(size: 16, weight: .ultraLight))
-                    .foregroundColor(theme.textMid)
+                    .foregroundColor(theme.text)
                     .monospacedDigit()
                     .frame(minWidth: isBPM ? 40 : 52, alignment: .center)
                 stepButton("+") {
@@ -107,7 +114,7 @@ struct DefaultsView: View {
         Button(action: action) {
             Text(label)
                 .font(.system(size: 16))
-                .foregroundColor(theme.textMid)
+                .foregroundColor(theme.text)
                 .frame(width: 26, height: 26)
                 .overlay(Circle().stroke(theme.accentDim, lineWidth: 0.5))
         }
@@ -116,13 +123,13 @@ struct DefaultsView: View {
 
     private var soundRow: some View {
         HStack(spacing: 10) {
-            Text("♪")
+            Image(systemName: "music.note")
                 .font(.system(size: 16))
-                .foregroundColor(theme.textDim)
+                .foregroundColor(theme.text)
                 .frame(width: 20)
             Text("Sound")
-                .font(.system(size: 14))
-                .foregroundColor(theme.textMid)
+                .font(.system(size: 16))
+                .foregroundColor(theme.text)
             Spacer()
             soundPicker
         }
@@ -133,13 +140,13 @@ struct DefaultsView: View {
 
     private var lockVolumeRow: some View {
         HStack(spacing: 10) {
-            Text("♫")
+            Image(systemName: "lock.open")
                 .font(.system(size: 16))
-                .foregroundColor(theme.textDim)
+                .foregroundColor(theme.text)
                 .frame(width: 20)
             Text("Lock Volume")
-                .font(.system(size: 14))
-                .foregroundColor(theme.textMid)
+                .font(.system(size: 16))
+                .foregroundColor(theme.text)
             Spacer()
             Toggle("", isOn: bindBool(\.volumeLockEnabled))
                 .tint(theme.accent)
@@ -158,7 +165,7 @@ struct DefaultsView: View {
                 Button(action: { profile?.soundType = type; try? ctx.save() }) {
                     Text(label)
                         .font(.system(size: 13))
-                        .foregroundColor(current == type ? theme.textMid : theme.textDim)
+                        .foregroundColor(current == type ? theme.text : theme.textMid)
                         .padding(.vertical, 5)
                         .padding(.horizontal, 10)
                         .background(current == type ? theme.card : Color.clear)
@@ -170,6 +177,25 @@ struct DefaultsView: View {
         .padding(3)
         .background(theme.surface)
         .cornerRadius(10)
+    }
+
+    private var hapticRow: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "waveform")
+                .font(.system(size: 16))
+                .foregroundColor(theme.text)
+                .frame(width: 20)
+            Text("Haptic")
+                .font(.system(size: 16))
+                .foregroundColor(theme.text)
+            Spacer()
+            Toggle("", isOn: bindBool(\.hapticEnabled))
+                .tint(theme.accent)
+                .labelsHidden()
+        }
+        .padding(.vertical, 13)
+        .padding(.horizontal, 16)
+        .frame(minHeight: 50)
     }
 
     private func bindBool(_ kp: ReferenceWritableKeyPath<UserProfile, Bool>) -> Binding<Bool> {

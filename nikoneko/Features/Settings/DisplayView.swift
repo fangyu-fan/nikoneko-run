@@ -14,31 +14,30 @@ struct DisplayView: View {
             VStack(alignment: .leading, spacing: 0) {
                 sectionLabel("Timer Mode")
                 radioCard([
-                    ("◷", "Countdown",
+                    ("timer",       "Countdown",
                      (profile?.timerMode ?? .countdown) == .countdown,
                      { profile?.timerMode = .countdown; try? ctx.save() }),
-                    ("◷", "Stopwatch",
+                    ("stopwatch",   "Stopwatch",
                      (profile?.timerMode ?? .countdown) == .stopwatch,
                      { profile?.timerMode = .stopwatch; try? ctx.save() }),
                 ])
 
                 sectionLabel("Time Format")
                 radioCard([
-                    ("1", "Plain minutes",
+                    ("textformat.123", "Plain minutes",
                      (profile?.timeDisplayFormat ?? .plainMinutes) == .plainMinutes,
                      { profile?.timeDisplayFormat = .plainMinutes; try? ctx.save() }),
-                    ("∶", "HH:MM",
+                    ("clock",          "HH:MM",
                      (profile?.timeDisplayFormat ?? .plainMinutes) == .hhMM,
                      { profile?.timeDisplayFormat = .hhMM; try? ctx.save() }),
                 ])
 
                 sectionLabel("During Run")
                 toggleCard([
-                    ("♥",  "Heart Rate", bindBool(\.showHR)),
-                    ("⊙",  "Distance",   bindBool(\.showDistance)),
-                    ("△",  "Calories",   bindBool(\.showCalories)),
-                    ("⊞",  "Steps",      bindBool(\.showSteps)),
-                    ("〜", "Haptic",      bindBool(\.hapticEnabled)),
+                    ("heart",         "Heart Rate", bindBool(\.showHR)),
+                    ("location.circle","Distance",  bindBool(\.showDistance)),
+                    ("flame",          "Calories",  bindBool(\.showCalories)),
+                    ("figure.walk",    "Steps",     bindBool(\.showSteps)),
                 ])
             }
             .padding(.horizontal, 18)
@@ -65,13 +64,13 @@ struct DisplayView: View {
                 let (icon, name, isSelected, action) = items[i]
                 Button(action: action) {
                     HStack(spacing: 10) {
-                        Text(icon)
+                        Image(systemName: icon)
                             .font(.system(size: 16))
-                            .foregroundColor(theme.textDim)
+                            .foregroundColor(theme.text)
                             .frame(width: 20)
                         Text(name)
-                            .font(.system(size: 14))
-                            .foregroundColor(theme.textMid)
+                            .font(.system(size: 16))
+                            .foregroundColor(theme.text)
                         Spacer()
                         if isSelected {
                             Image(systemName: "checkmark")
@@ -101,13 +100,13 @@ struct DisplayView: View {
             ForEach(items.indices, id: \.self) { i in
                 let (icon, name, binding) = items[i]
                 HStack(spacing: 10) {
-                    Text(icon)
+                    Image(systemName: icon)
                         .font(.system(size: 16))
-                        .foregroundColor(theme.textDim)
+                        .foregroundColor(theme.text)
                         .frame(width: 20)
                     Text(name)
-                        .font(.system(size: 14))
-                        .foregroundColor(theme.textMid)
+                        .font(.system(size: 16))
+                        .foregroundColor(theme.text)
                     Spacer()
                     Toggle("", isOn: binding)
                         .tint(theme.accent)
