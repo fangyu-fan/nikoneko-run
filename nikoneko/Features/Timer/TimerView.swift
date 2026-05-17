@@ -16,7 +16,7 @@ struct TimerView: View {
             theme.bg.ignoresSafeArea()
 
             VStack(spacing: 0) {
-                PlaceholderCharacterView(
+                LottieCharacterView(
                     characterId: characterId,
                     color: theme.accentMid,
                     bpm: bpm,

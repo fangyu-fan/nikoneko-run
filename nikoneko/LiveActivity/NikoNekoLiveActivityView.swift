@@ -20,7 +20,7 @@ struct NikoNekoLiveActivityView: Widget {
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     VStack(alignment: .trailing, spacing: 4) {
-                        PlaceholderCharacterView(
+                        LottieCharacterView(
                             characterId: context.state.characterId,
                             color: theme.accentMid,
                             bpm: context.state.bpm,
@@ -32,7 +32,7 @@ struct NikoNekoLiveActivityView: Widget {
                     }
                 }
             } compactLeading: {
-                PlaceholderCharacterView(
+                LottieCharacterView(
                     characterId: context.state.characterId,
                     color: theme.accentMid,
                     bpm: context.state.bpm,
@@ -44,7 +44,7 @@ struct NikoNekoLiveActivityView: Widget {
                     .font(.system(size: 14, weight: .light)).foregroundColor(theme.text)
                     .monospacedDigit()
             } minimal: {
-                PlaceholderCharacterView(
+                LottieCharacterView(
                     characterId: context.state.characterId,
                     color: theme.accentMid,
                     bpm: context.state.bpm,
@@ -77,7 +77,7 @@ struct LockScreenCardView: View {
                 Text("♩ \(state.bpm)").font(.system(size: 10)).foregroundColor(theme.textDim)
             }
             Spacer()
-            PlaceholderCharacterView(
+            LottieCharacterView(
                 characterId: state.characterId,
                 color: theme.accentMid,
                 bpm: state.bpm,

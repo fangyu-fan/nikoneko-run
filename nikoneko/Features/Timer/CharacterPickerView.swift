@@ -23,7 +23,7 @@ struct CharacterPickerView: View {
         NavigationStack {
             List(characters, id: \.id) { char in
                 HStack {
-                    PlaceholderCharacterView(
+                    LottieCharacterView(
                         characterId: char.id,
                         color: theme.accentMid,
                         bpm: 120,

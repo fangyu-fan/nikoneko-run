@@ -29,7 +29,7 @@ struct SummaryView: View {
         VStack(spacing: 20) {
             Spacer()
 
-            PlaceholderCharacterView(
+            LottieCharacterView(
                 characterId: session.characterId,
                 color: theme.accentMid,
                 bpm: 180,
