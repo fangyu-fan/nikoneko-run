@@ -1,0 +1,46 @@
+/* Timer */
+"timer.mode.countdown"    = "Countdown";
+"timer.mode.stopwatch"    = "Stopwatch";
+"timer.action.start"      = "Start";
+"timer.action.stop"       = "Hold to stop";
+"timer.action.pause"      = "Paused";
+
+/* Report tabs */
+"report.tab.day"          = "Day";
+"report.tab.week"         = "Week";
+"report.tab.month"        = "Month";
+"report.tab.year"         = "Year";
+
+/* Metrics */
+"report.metric.duration"  = "Duration";
+"report.metric.distance"  = "Distance";
+"report.metric.calories"  = "Calories";
+"report.metric.steps"     = "Steps";
+"report.metric.avgHR"     = "Avg HR";
+"report.metric.maxHR"     = "Max HR";
+"report.metric.cadence"   = "Avg Cadence";
+
+/* Summary */
+"summary.done"            = "Done";
+"summary.share"           = "Share";
+"summary.streak"          = "day streak";
+"summary.goalReached"     = "Goal reached";
+"summary.noRuns"          = "No runs yet";
+
+/* Settings */
+"settings.appearance"     = "Appearance";
+"settings.display"        = "Display";
+"settings.defaults"       = "Defaults";
+"settings.widget"         = "Widget";
+"settings.notifications"  = "Notifications";
+"settings.dataSync"       = "Data & Sync";
+"settings.language"       = "Language";
+"settings.theme"          = "Theme";
+
+/* Notifications */
+"notif.title"             = "Time to run.";
+"notif.body"              = "Your slow jog is waiting.";
+
+/* Errors */
+"error.saveFailed"        = "Couldn't save. Try again.";
+"error.healthkit"         = "Health access unavailable.";

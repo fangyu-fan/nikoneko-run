@@ -1,0 +1,46 @@
+/* Timer */
+"timer.mode.countdown"    = "倒數";
+"timer.mode.stopwatch"    = "計時";
+"timer.action.start"      = "開始";
+"timer.action.stop"       = "長按結束";
+"timer.action.pause"      = "已暫停";
+
+/* Report tabs */
+"report.tab.day"          = "日";
+"report.tab.week"         = "週";
+"report.tab.month"        = "月";
+"report.tab.year"         = "年";
+
+/* Metrics */
+"report.metric.duration"  = "時長";
+"report.metric.distance"  = "距離";
+"report.metric.calories"  = "熱量";
+"report.metric.steps"     = "步數";
+"report.metric.avgHR"     = "平均心率";
+"report.metric.maxHR"     = "最高心率";
+"report.metric.cadence"   = "平均步頻";
+
+/* Summary */
+"summary.done"            = "完成";
+"summary.share"           = "分享";
+"summary.streak"          = "天連跑";
+"summary.goalReached"     = "達標";
+"summary.noRuns"          = "還沒有紀錄";
+
+/* Settings */
+"settings.appearance"     = "外觀";
+"settings.display"        = "顯示";
+"settings.defaults"       = "預設值";
+"settings.widget"         = "小工具";
+"settings.notifications"  = "通知";
+"settings.dataSync"       = "資料與同步";
+"settings.language"       = "語言";
+"settings.theme"          = "主題";
+
+/* Notifications */
+"notif.title"             = "該去跑步了";
+"notif.body"              = "今天的慢跑等著你。";
+
+/* Errors */
+"error.saveFailed"        = "儲存失敗，請再試一次。";
+"error.healthkit"         = "無法存取健康資料。";
