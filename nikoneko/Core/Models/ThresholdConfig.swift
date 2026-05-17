@@ -3,23 +3,21 @@ import SwiftData
 
 @Model
 final class ThresholdConfig {
-    var widgetKind: String
-    var threshold1: Int
-    var threshold2: Int
-    var threshold3: Int
-    var cellInfo: WidgetCellInfo
-    var showDayNumbers: Bool
-    var showStreak: Bool
-    var showTotalTime: Bool
+    var widgetKind: String = ""
+    var threshold1: Int = 10
+    var threshold2: Int = 50
+    var threshold3: Int = 90
+    var cellInfoRaw: String = WidgetCellInfo.duration.rawValue
+    var showDayNumbers: Bool = true
+    var showStreak: Bool = true
+    var showTotalTime: Bool = true
+
+    var cellInfo: WidgetCellInfo {
+        get { WidgetCellInfo(rawValue: cellInfoRaw) ?? .duration }
+        set { cellInfoRaw = newValue.rawValue }
+    }
 
     init(widgetKind: String) {
         self.widgetKind = widgetKind
-        self.threshold1 = 10
-        self.threshold2 = 50
-        self.threshold3 = 90
-        self.cellInfo = .duration
-        self.showDayNumbers = true
-        self.showStreak = true
-        self.showTotalTime = true
     }
 }

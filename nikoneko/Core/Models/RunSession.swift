@@ -30,19 +30,23 @@ enum WidgetCellInfo: String, Codable {
 
 @Model
 final class RunSession {
-    var id: UUID
-    var startDate: Date
-    var duration: TimeInterval
-    var distance: Double
-    var calories: Double
-    var steps: Int
-    var avgHR: Int
-    var maxHR: Int
-    var avgCadence: Int
-    var bpm: Int
-    var characterId: String
-    var themeId: String
-    var mode: TimerMode
+    var id: UUID = UUID()
+    var startDate: Date = Date()
+    var duration: TimeInterval = 0
+    var distance: Double = 0
+    var calories: Double = 0
+    var steps: Int = 0
+    var avgHR: Int = 0
+    var maxHR: Int = 0
+    var avgCadence: Int = 0
+    var bpm: Int = 180
+    var characterId: String = "cat_a"
+    var themeId: String = "obsidian"
+    var modeRaw: String = TimerMode.countdown.rawValue
+    var mode: TimerMode {
+        get { TimerMode(rawValue: modeRaw) ?? .countdown }
+        set { modeRaw = newValue.rawValue }
+    }
 
     init(
         id: UUID = UUID(),

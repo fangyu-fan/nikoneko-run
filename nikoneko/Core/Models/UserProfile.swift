@@ -3,57 +3,49 @@ import SwiftData
 
 @Model
 final class UserProfile {
-    var id: UUID
-    var defaultDuration: Int
-    var dailyGoalMinutes: Int
-    var defaultBPM: Int
-    var soundType: SoundType
-    var volumeLockEnabled: Bool
-    var timerMode: TimerMode
-    var timeDisplayFormat: TimeFormat
-    var showHR: Bool
-    var showProgressRing: Bool
-    var hapticEnabled: Bool
-    var showDistance: Bool
-    var showCalories: Bool
-    var showSteps: Bool
-    var activeThemeId: String
-    var activeCharacterId: String
-    var language: AppLanguage
-    var heightCm: Double
-    var weightKg: Double
-    var useHealthForBody: Bool
-    var notificationsEnabled: Bool
-    var notificationHour: Int
-    var notificationMinute: Int
-    var healthKitEnabled: Bool
-    var iCloudEnabled: Bool
+    var id: UUID = UUID()
+    var defaultDuration: Int = 20
+    var dailyGoalMinutes: Int = 20
+    var defaultBPM: Int = 180
+    var soundTypeRaw: String = SoundType.tap.rawValue
+    var volumeLockEnabled: Bool = false
+    var timerModeRaw: String = TimerMode.countdown.rawValue
+    var timeDisplayFormatRaw: String = TimeFormat.plainMinutes.rawValue
+    var showHR: Bool = true
+    var showProgressRing: Bool = true
+    var hapticEnabled: Bool = true
+    var showDistance: Bool = true
+    var showCalories: Bool = true
+    var showSteps: Bool = true
+    var activeThemeId: String = "obsidian"
+    var activeCharacterId: String = "cat_a"
+    var languageRaw: String = AppLanguage.english.rawValue
+    var heightCm: Double = 170
+    var weightKg: Double = 65
+    var useHealthForBody: Bool = false
+    var notificationsEnabled: Bool = false
+    var notificationHour: Int = 7
+    var notificationMinute: Int = 0
+    var healthKitEnabled: Bool = false
+    var iCloudEnabled: Bool = false
 
-    init() {
-        self.id = UUID()
-        self.defaultDuration = 20
-        self.dailyGoalMinutes = 20
-        self.defaultBPM = 180
-        self.soundType = .tap
-        self.volumeLockEnabled = false
-        self.timerMode = .countdown
-        self.timeDisplayFormat = .plainMinutes
-        self.showHR = true
-        self.showProgressRing = true
-        self.hapticEnabled = true
-        self.showDistance = true
-        self.showCalories = true
-        self.showSteps = true
-        self.activeThemeId = "obsidian"
-        self.activeCharacterId = "cat_a"
-        self.language = .english
-        self.heightCm = 170
-        self.weightKg = 65
-        self.useHealthForBody = false
-        self.notificationsEnabled = false
-        self.notificationHour = 7
-        self.notificationMinute = 0
-        self.healthKitEnabled = false
-        self.iCloudEnabled = false
+    // Computed enum accessors
+    var soundType: SoundType {
+        get { SoundType(rawValue: soundTypeRaw) ?? .tap }
+        set { soundTypeRaw = newValue.rawValue }
     }
+    var timerMode: TimerMode {
+        get { TimerMode(rawValue: timerModeRaw) ?? .countdown }
+        set { timerModeRaw = newValue.rawValue }
+    }
+    var timeDisplayFormat: TimeFormat {
+        get { TimeFormat(rawValue: timeDisplayFormatRaw) ?? .plainMinutes }
+        set { timeDisplayFormatRaw = newValue.rawValue }
+    }
+    var language: AppLanguage {
+        get { AppLanguage(rawValue: languageRaw) ?? .english }
+        set { languageRaw = newValue.rawValue }
+    }
+
+    init() {}
 }
