@@ -5,7 +5,7 @@ enum TimerMode: String, Codable {
     case countdown, stopwatch
 }
 
-enum SoundType: String, Codable {
+enum SoundType: String, Codable, CaseIterable {
     case tap, bell, drum, wood
 }
 
