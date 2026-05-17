@@ -1,0 +1,723 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		11D640EC8A8243985ED5C6B4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E2557D24257006B3A70623E /* ContentView.swift */; };
+		1C22AFA84D6C0A451062471B /* RunSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47A41CB5A0DCC8540B92790 /* RunSession.swift */; };
+		1FE862B862923F545FBB6999 /* DrumPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15637ACAD2484A82A22BDF92 /* DrumPickerView.swift */; };
+		245588D9C10C8D3D4CDEF8F9 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683561C28DAAD36040FC64B6 /* TimerView.swift */; };
+		32CBC192B0462D0A929B6279 /* JogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9700B55E207C8421EF31FF /* JogApp.swift */; };
+		38A20A6739EC0EC32EDDAF9F /* NikoNekoWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB679D1A96C74C6D9ECC5CB0 /* NikoNekoWidgetBundle.swift */; };
+		3B70160644FA316EE67E9F24 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE70810786A82B53399969C0 /* Color+Hex.swift */; };
+		5FADD0201D1B6E8E31B9B79E /* CharacterPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31A4722E86CCC15FEF8A34E /* CharacterPickerView.swift */; };
+		683D451A170E65E6C8AE53DB /* ThemeTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D4FF987E86A2ED1BF4CA64 /* ThemeTokens.swift */; };
+		7A04A782CED3C8A5FDE59A68 /* BPMPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAFF643108FF44CE0A575F9B /* BPMPanelView.swift */; };
+		7CB244948A1DA1DE6C73A710 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0766CFAF5B8392B7C3B1BA99 /* UserProfile.swift */; };
+		82215704DC246B9BB13ECD1A /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3976078715F6225646B2ACBA /* ThemeManager.swift */; };
+		A9D26887E563CFFD485F6AFE /* PlaceholderCharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A80A80A06A255F8197DB14B /* PlaceholderCharacterView.swift */; };
+		C2FCE20EFCD323FC9BF7E362 /* ThemeLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 276EE26A2EA0588721536ADC /* ThemeLibrary.swift */; };
+		C53DF6D8656AD38A847A78B4 /* ThresholdConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B6E57BB9AB171C43795D8D3 /* ThresholdConfig.swift */; };
+		CB0D7B65CA278F3FCD8E67CD /* ThemeLibraryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C6C35DB6789D15893E88FB /* ThemeLibraryTests.swift */; };
+		CF9744269F992B9BDEF28D98 /* AppGroupDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41CC69BAD559A35148CE22CE /* AppGroupDefaults.swift */; };
+		F7173C25F57435EC47C9A812 /* TimerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23B0F4EDAB5707630CF45A9 /* TimerViewModel.swift */; };
+		F7BC978AD298CDA3A6841412 /* AppGroupDefaultsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61118AA292061AB685874C87 /* AppGroupDefaultsTests.swift */; };
+		FA096AF93CDA70DEE91A3501 /* TimerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39530A75977A09DA84D2124C /* TimerViewModelTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		113A6AEF44D6787528AA2F7B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 39764C712F7E7B302B3DCF7F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 153FBF27F168F014C2265E0F;
+			remoteInfo = nikoneko;
+		};
+		4E4325D690ED23E694D12343 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 39764C712F7E7B302B3DCF7F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 153FBF27F168F014C2265E0F;
+			remoteInfo = nikoneko;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		03D4FF987E86A2ED1BF4CA64 /* ThemeTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeTokens.swift; sourceTree = "<group>"; };
+		0766CFAF5B8392B7C3B1BA99 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		0F8388470D6412953108A09D /* nikoneko.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = nikoneko.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		15637ACAD2484A82A22BDF92 /* DrumPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrumPickerView.swift; sourceTree = "<group>"; };
+		1A80A80A06A255F8197DB14B /* PlaceholderCharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderCharacterView.swift; sourceTree = "<group>"; };
+		276EE26A2EA0588721536ADC /* ThemeLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeLibrary.swift; sourceTree = "<group>"; };
+		355E073745B4615EEFEBDD9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		39530A75977A09DA84D2124C /* TimerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewModelTests.swift; sourceTree = "<group>"; };
+		3976078715F6225646B2ACBA /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
+		41CC69BAD559A35148CE22CE /* AppGroupDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupDefaults.swift; sourceTree = "<group>"; };
+		47C6C35DB6789D15893E88FB /* ThemeLibraryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeLibraryTests.swift; sourceTree = "<group>"; };
+		5E2557D24257006B3A70623E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		61118AA292061AB685874C87 /* AppGroupDefaultsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupDefaultsTests.swift; sourceTree = "<group>"; };
+		61A73F6EE18AB3CDBB78EDEB /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		683561C28DAAD36040FC64B6 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
+		6C9700B55E207C8421EF31FF /* JogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JogApp.swift; sourceTree = "<group>"; };
+		8BC965E669918E66458C20DA /* nikonekoTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = nikonekoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B6E57BB9AB171C43795D8D3 /* ThresholdConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdConfig.swift; sourceTree = "<group>"; };
+		A31A4722E86CCC15FEF8A34E /* CharacterPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterPickerView.swift; sourceTree = "<group>"; };
+		A773C14EF9E00ACA62E02764 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		AE1027956259A50017675FD5 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		BAFF643108FF44CE0A575F9B /* BPMPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPMPanelView.swift; sourceTree = "<group>"; };
+		C47A41CB5A0DCC8540B92790 /* RunSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunSession.swift; sourceTree = "<group>"; };
+		CE70810786A82B53399969C0 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
+		D23B0F4EDAB5707630CF45A9 /* TimerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewModel.swift; sourceTree = "<group>"; };
+		F32F0C166D5DDA3A539EF0ED /* NikoNekoWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = NikoNekoWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		FB679D1A96C74C6D9ECC5CB0 /* NikoNekoWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NikoNekoWidgetBundle.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		1055F723C307BC1DAA3992BE /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C47A41CB5A0DCC8540B92790 /* RunSession.swift */,
+				9B6E57BB9AB171C43795D8D3 /* ThresholdConfig.swift */,
+				0766CFAF5B8392B7C3B1BA99 /* UserProfile.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		143871248E2FF0577B88FA07 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				AA1F8AB125C283D0BAB09631 /* Extensions */,
+				1055F723C307BC1DAA3992BE /* Models */,
+				A03140EC013430FCCDB1065A /* Theme */,
+				41CC69BAD559A35148CE22CE /* AppGroupDefaults.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		3A94E9989EB0B6316DD6075B /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		50865C69F40BED41C96951AB /* App */ = {
+			isa = PBXGroup;
+			children = (
+				5E2557D24257006B3A70623E /* ContentView.swift */,
+				355E073745B4615EEFEBDD9F /* Info.plist */,
+				6C9700B55E207C8421EF31FF /* JogApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		50DD77A67A66347DD0654BA7 /* Lottie */ = {
+			isa = PBXGroup;
+			children = (
+				AE1027956259A50017675FD5 /* .gitkeep */,
+			);
+			path = Lottie;
+			sourceTree = "<group>";
+		};
+		52EF4A1F3A4C0729480C10C0 /* LiveActivity */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = LiveActivity;
+			sourceTree = "<group>";
+		};
+		5FCE3792D669DD58AF736091 = {
+			isa = PBXGroup;
+			children = (
+				7F22622DD5D8311C93AF7291 /* nikoneko */,
+				AE62125485B3DC3B898BC020 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		67078DCA44469CD77CD01CCA /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				A2FC1D84DC363E72A632F72E /* IntegrationTests */,
+				D4B5397D1A474F610B592EB2 /* UnitTests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		6B8EA27D4F2A25635F37A53A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				EC857D7B90F7F55865B446B8 /* Sounds */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		7F22622DD5D8311C93AF7291 /* nikoneko */ = {
+			isa = PBXGroup;
+			children = (
+				50865C69F40BED41C96951AB /* App */,
+				E3C0318861C43519E75DE61B /* Characters */,
+				143871248E2FF0577B88FA07 /* Core */,
+				863EAC55D8A89E0182F26D2E /* Features */,
+				52EF4A1F3A4C0729480C10C0 /* LiveActivity */,
+				6B8EA27D4F2A25635F37A53A /* Resources */,
+				3A94E9989EB0B6316DD6075B /* Services */,
+				67078DCA44469CD77CD01CCA /* Tests */,
+				FB9AAFF4DA062BEB283F2593 /* Widgets */,
+			);
+			path = nikoneko;
+			sourceTree = "<group>";
+		};
+		863EAC55D8A89E0182F26D2E /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				9A14851F7C908DE0C751BBDA /* Report */,
+				CFE742941A1BCCCAE7D2A1B0 /* Settings */,
+				CCA5076C5102527D15E08917 /* Summary */,
+				B2AB15218B366A80A051A394 /* Timer */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		9A14851F7C908DE0C751BBDA /* Report */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Report;
+			sourceTree = "<group>";
+		};
+		A03140EC013430FCCDB1065A /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				276EE26A2EA0588721536ADC /* ThemeLibrary.swift */,
+				3976078715F6225646B2ACBA /* ThemeManager.swift */,
+				03D4FF987E86A2ED1BF4CA64 /* ThemeTokens.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		A2FC1D84DC363E72A632F72E /* IntegrationTests */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = IntegrationTests;
+			sourceTree = "<group>";
+		};
+		AA1F8AB125C283D0BAB09631 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				CE70810786A82B53399969C0 /* Color+Hex.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		AE62125485B3DC3B898BC020 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0F8388470D6412953108A09D /* nikoneko.app */,
+				8BC965E669918E66458C20DA /* nikonekoTests.xctest */,
+				F32F0C166D5DDA3A539EF0ED /* NikoNekoWidgets.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B2AB15218B366A80A051A394 /* Timer */ = {
+			isa = PBXGroup;
+			children = (
+				BAFF643108FF44CE0A575F9B /* BPMPanelView.swift */,
+				A31A4722E86CCC15FEF8A34E /* CharacterPickerView.swift */,
+				15637ACAD2484A82A22BDF92 /* DrumPickerView.swift */,
+				683561C28DAAD36040FC64B6 /* TimerView.swift */,
+				D23B0F4EDAB5707630CF45A9 /* TimerViewModel.swift */,
+			);
+			path = Timer;
+			sourceTree = "<group>";
+		};
+		CCA5076C5102527D15E08917 /* Summary */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Summary;
+			sourceTree = "<group>";
+		};
+		CFE742941A1BCCCAE7D2A1B0 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		D4B5397D1A474F610B592EB2 /* UnitTests */ = {
+			isa = PBXGroup;
+			children = (
+				61118AA292061AB685874C87 /* AppGroupDefaultsTests.swift */,
+				47C6C35DB6789D15893E88FB /* ThemeLibraryTests.swift */,
+				39530A75977A09DA84D2124C /* TimerViewModelTests.swift */,
+			);
+			path = UnitTests;
+			sourceTree = "<group>";
+		};
+		E3C0318861C43519E75DE61B /* Characters */ = {
+			isa = PBXGroup;
+			children = (
+				50DD77A67A66347DD0654BA7 /* Lottie */,
+				1A80A80A06A255F8197DB14B /* PlaceholderCharacterView.swift */,
+			);
+			path = Characters;
+			sourceTree = "<group>";
+		};
+		EC857D7B90F7F55865B446B8 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				61A73F6EE18AB3CDBB78EDEB /* .gitkeep */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
+		FB9AAFF4DA062BEB283F2593 /* Widgets */ = {
+			isa = PBXGroup;
+			children = (
+				A773C14EF9E00ACA62E02764 /* Info.plist */,
+				FB679D1A96C74C6D9ECC5CB0 /* NikoNekoWidgetBundle.swift */,
+			);
+			path = Widgets;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		153FBF27F168F014C2265E0F /* nikoneko */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 815F190338B285BE71AFD777 /* Build configuration list for PBXNativeTarget "nikoneko" */;
+			buildPhases = (
+				0A466BAC5D74639CE605EB89 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = nikoneko;
+			packageProductDependencies = (
+			);
+			productName = nikoneko;
+			productReference = 0F8388470D6412953108A09D /* nikoneko.app */;
+			productType = "com.apple.product-type.application";
+		};
+		552EDB75EC9C1D7554D6E648 /* NikoNekoWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9366B9038FB8A849D26EDE31 /* Build configuration list for PBXNativeTarget "NikoNekoWidgets" */;
+			buildPhases = (
+				71068C11E3E6F4DB050EF0D4 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6B970038C838A4808B9B6F55 /* PBXTargetDependency */,
+			);
+			name = NikoNekoWidgets;
+			packageProductDependencies = (
+			);
+			productName = NikoNekoWidgets;
+			productReference = F32F0C166D5DDA3A539EF0ED /* NikoNekoWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		77C2074F5C5F1717DAA22D52 /* nikonekoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3926EF852E698397AA4CD9DB /* Build configuration list for PBXNativeTarget "nikonekoTests" */;
+			buildPhases = (
+				40738FF023B517AC55ABC402 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E455C0732CED32DBB7EA6994 /* PBXTargetDependency */,
+			);
+			name = nikonekoTests;
+			packageProductDependencies = (
+			);
+			productName = nikonekoTests;
+			productReference = 8BC965E669918E66458C20DA /* nikonekoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		39764C712F7E7B302B3DCF7F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					153FBF27F168F014C2265E0F = {
+						DevelopmentTeam = "";
+					};
+					552EDB75EC9C1D7554D6E648 = {
+						DevelopmentTeam = "";
+					};
+					77C2074F5C5F1717DAA22D52 = {
+						DevelopmentTeam = "";
+					};
+				};
+			};
+			buildConfigurationList = 79B16ECA7510F2F43ABF5E81 /* Build configuration list for PBXProject "nikoneko" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 5FCE3792D669DD58AF736091;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = AE62125485B3DC3B898BC020 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				552EDB75EC9C1D7554D6E648 /* NikoNekoWidgets */,
+				153FBF27F168F014C2265E0F /* nikoneko */,
+				77C2074F5C5F1717DAA22D52 /* nikonekoTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0A466BAC5D74639CE605EB89 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF9744269F992B9BDEF28D98 /* AppGroupDefaults.swift in Sources */,
+				7A04A782CED3C8A5FDE59A68 /* BPMPanelView.swift in Sources */,
+				5FADD0201D1B6E8E31B9B79E /* CharacterPickerView.swift in Sources */,
+				3B70160644FA316EE67E9F24 /* Color+Hex.swift in Sources */,
+				11D640EC8A8243985ED5C6B4 /* ContentView.swift in Sources */,
+				1FE862B862923F545FBB6999 /* DrumPickerView.swift in Sources */,
+				32CBC192B0462D0A929B6279 /* JogApp.swift in Sources */,
+				A9D26887E563CFFD485F6AFE /* PlaceholderCharacterView.swift in Sources */,
+				1C22AFA84D6C0A451062471B /* RunSession.swift in Sources */,
+				C2FCE20EFCD323FC9BF7E362 /* ThemeLibrary.swift in Sources */,
+				82215704DC246B9BB13ECD1A /* ThemeManager.swift in Sources */,
+				683D451A170E65E6C8AE53DB /* ThemeTokens.swift in Sources */,
+				C53DF6D8656AD38A847A78B4 /* ThresholdConfig.swift in Sources */,
+				245588D9C10C8D3D4CDEF8F9 /* TimerView.swift in Sources */,
+				F7173C25F57435EC47C9A812 /* TimerViewModel.swift in Sources */,
+				7CB244948A1DA1DE6C73A710 /* UserProfile.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40738FF023B517AC55ABC402 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F7BC978AD298CDA3A6841412 /* AppGroupDefaultsTests.swift in Sources */,
+				CB0D7B65CA278F3FCD8E67CD /* ThemeLibraryTests.swift in Sources */,
+				FA096AF93CDA70DEE91A3501 /* TimerViewModelTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		71068C11E3E6F4DB050EF0D4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				38A20A6739EC0EC32EDDAF9F /* NikoNekoWidgetBundle.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6B970038C838A4808B9B6F55 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 153FBF27F168F014C2265E0F /* nikoneko */;
+			targetProxy = 113A6AEF44D6787528AA2F7B /* PBXContainerItemProxy */;
+		};
+		E455C0732CED32DBB7EA6994 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 153FBF27F168F014C2265E0F /* nikoneko */;
+			targetProxy = 4E4325D690ED23E694D12343 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1D146F3EC9DD13A9137ACABF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko.tests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/nikoneko.app/nikoneko";
+			};
+			name = Release;
+		};
+		289BD2DA3E0179ABDB18F557 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = nikoneko/NikoNekoWidgets.entitlements;
+				INFOPLIST_FILE = nikoneko/Widgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko.widgets;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		3E43AAF97FB4FCF06420B9DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = nikoneko/nikoneko.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = nikoneko/App/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4CEA3CB4ABE5EA31F163F370 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko.tests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/nikoneko.app/nikoneko";
+			};
+			name = Debug;
+		};
+		51D3C17247E282224CBBEC4A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		591D8489D91C53D9720CCD1E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = nikoneko/nikoneko.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = nikoneko/App/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		69A38E91887AFA9F7A0E5286 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		977CB5F7A645CB92AF436D72 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = nikoneko/NikoNekoWidgets.entitlements;
+				INFOPLIST_FILE = nikoneko/Widgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko.widgets;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3926EF852E698397AA4CD9DB /* Build configuration list for PBXNativeTarget "nikonekoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4CEA3CB4ABE5EA31F163F370 /* Debug */,
+				1D146F3EC9DD13A9137ACABF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		79B16ECA7510F2F43ABF5E81 /* Build configuration list for PBXProject "nikoneko" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				51D3C17247E282224CBBEC4A /* Debug */,
+				69A38E91887AFA9F7A0E5286 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		815F190338B285BE71AFD777 /* Build configuration list for PBXNativeTarget "nikoneko" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3E43AAF97FB4FCF06420B9DF /* Debug */,
+				591D8489D91C53D9720CCD1E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		9366B9038FB8A849D26EDE31 /* Build configuration list for PBXNativeTarget "NikoNekoWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				977CB5F7A645CB92AF436D72 /* Debug */,
+				289BD2DA3E0179ABDB18F557 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 39764C712F7E7B302B3DCF7F /* Project object */;
+}

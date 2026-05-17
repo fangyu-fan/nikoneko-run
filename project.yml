@@ -1,0 +1,120 @@
+name: nikoneko
+options:
+  bundleIdPrefix: com.fangyu
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "16"
+  createIntermediateGroups: true
+  groupSortPosition: top
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: 6.0
+    IPHONEOS_DEPLOYMENT_TARGET: 17.0
+    DEVELOPMENT_TEAM: ""
+
+targets:
+  nikoneko:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    bundleId: com.fangyu.nikoneko
+    sources:
+      - path: nikoneko/App
+      - path: nikoneko/Core
+      - path: nikoneko/Features
+      - path: nikoneko/Services
+      - path: nikoneko/Characters
+      - path: nikoneko/LiveActivity
+      - path: nikoneko/Resources
+    settings:
+      base:
+        INFOPLIST_FILE: nikoneko/App/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.fangyu.nikoneko
+        SWIFT_VERSION: 6.0
+        DEVELOPMENT_TEAM: ""
+    entitlements:
+      path: nikoneko/nikoneko.entitlements
+      properties:
+        com.apple.developer.icloud-services:
+          - CloudKit
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.fangyu.nikoneko
+        com.apple.security.application-groups:
+          - group.com.fangyu.nikoneko
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.access: []
+    info:
+      path: nikoneko/App/Info.plist
+      properties:
+        UILaunchScreen:
+          UIColorName: ""
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        NSHealthShareUsageDescription: "nikoneko reads heart rate during runs."
+        NSHealthUpdateUsageDescription: "nikoneko saves workout data to Health."
+        NSMotionUsageDescription: "nikoneko tracks steps and distance."
+        NSBluetoothAlwaysUsageDescription: "nikoneko connects to heart rate monitors."
+        UIBackgroundModes:
+          - audio
+          - location
+        NSLocationWhenInUseUsageDescription: "nikoneko uses location to track distance."
+    capabilities:
+      healthKit: {}
+      backgroundModes:
+        modes: [audio, location]
+      push: {}
+      appGroups:
+        groups:
+          - group.com.fangyu.nikoneko
+      iCloud:
+        services:
+          - cloudKit
+        containers:
+          - iCloud.com.fangyu.nikoneko
+    dependencies: []
+    scheme:
+      testTargets:
+        - nikonekoTests
+
+  nikonekoTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    bundleId: com.fangyu.nikoneko.tests
+    sources:
+      - path: nikoneko/Tests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.fangyu.nikoneko.tests
+        SWIFT_VERSION: 6.0
+        GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - target: nikoneko
+
+  NikoNekoWidgets:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    bundleId: com.fangyu.nikoneko.widgets
+    sources:
+      - path: nikoneko/Widgets
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.fangyu.nikoneko.widgets
+        SWIFT_VERSION: 6.0
+        NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: nikoneko/NikoNekoWidgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.fangyu.nikoneko
+    info:
+      path: nikoneko/Widgets/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    dependencies:
+      - target: nikoneko
+        embed: false
