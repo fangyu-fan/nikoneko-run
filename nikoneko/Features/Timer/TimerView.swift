@@ -24,7 +24,7 @@ struct TimerView: View {
                     bpm: bpm,
                     isAnimating: vm.state == .running
                 )
-                .frame(height: 36)
+                .frame(height: 44)
                 .onTapGesture { showCharacterPicker = true }
                 .padding(.top, 22)
 
@@ -48,7 +48,7 @@ struct TimerView: View {
                 // BPM + volume ctrl row
                 ctrlRow
                     .padding(.horizontal, 16)
-                    .padding(.bottom, 9)
+                    .padding(.bottom, 14)
 
                 // Action button
                 actionButtonArea
@@ -73,10 +73,10 @@ struct TimerView: View {
     private var timerNumeralView: some View {
         VStack(spacing: 2) {
             Text("\(vm.displayMinutes)")
-                .font(.system(size: 70, weight: .ultraLight))
+                .font(.system(size: 88, weight: .ultraLight))
                 .foregroundColor(theme.text)
                 .monospacedDigit()
-                .kerning(-3)
+                .kerning(-4)
             if vm.state == .running && vm.isCountdown {
                 Text(": \(String(format: "%02d", vm.displaySeconds))")
                     .font(.system(size: 13, weight: .light))
@@ -92,25 +92,33 @@ struct TimerView: View {
     // MARK: - Live metrics
 
     private var metricsBlock: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            metricItem(icon: "♥", value: "—", unit: nil)
+        Group {
+            if vm.state == .running {
+                HStack(spacing: 20) {
+                    metricItem(icon: "♥", value: "—", unit: nil)
+                    metricItem(icon: "⊙", value: "—", unit: "km")
+                    metricItem(icon: "⊞", value: "—", unit: nil)
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+            } else {
+                metricItem(icon: "♥", value: "—", unit: nil)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.leading, 16)
     }
 
     private func metricItem(icon: String, value: String, unit: String?) -> some View {
         HStack(spacing: 3) {
             Text(icon)
-                .font(.system(size: 10))
+                .font(.system(size: 13))
                 .foregroundColor(theme.textDim)
             Text(value)
-                .font(.system(size: 13, weight: .light))
+                .font(.system(size: 16, weight: .light))
                 .foregroundColor(theme.textMid)
                 .monospacedDigit()
             if let unit {
                 Text(unit)
-                    .font(.system(size: 9))
+                    .font(.system(size: 11))
                     .foregroundColor(theme.textDim)
             }
         }
@@ -124,14 +132,14 @@ struct TimerView: View {
             Button(action: { showBPMPanel = true }) {
                 HStack(spacing: 3) {
                     Text("♩")
-                        .font(.system(size: 10))
+                        .font(.system(size: 14))
                         .foregroundColor(theme.textDim)
                     Text("\(bpm)")
-                        .font(.system(size: 10))
+                        .font(.system(size: 14))
                         .foregroundColor(theme.textDim)
                         .monospacedDigit()
                     Text("bpm")
-                        .font(.system(size: 8))
+                        .font(.system(size: 11))
                         .foregroundColor(theme.textDim)
                 }
             }
@@ -141,13 +149,13 @@ struct TimerView: View {
             // Volume slider
             HStack(spacing: 4) {
                 Text("♪")
-                    .font(.system(size: 9))
+                    .font(.system(size: 12))
                     .foregroundColor(theme.textDim)
 
                 volumeSlider
 
                 Text("♫")
-                    .font(.system(size: 9))
+                    .font(.system(size: 12))
                     .foregroundColor(theme.textDim)
             }
         }
@@ -159,18 +167,18 @@ struct TimerView: View {
                 // Track
                 Capsule()
                     .fill(theme.accentDim)
-                    .frame(height: 1.5)
+                    .frame(height: 2)
 
                 // Fill
                 Capsule()
                     .fill(theme.textDim)
-                    .frame(width: geo.size.width * volume, height: 1.5)
+                    .frame(width: geo.size.width * volume, height: 2)
 
                 // Thumb
                 Circle()
                     .fill(theme.textMid)
-                    .frame(width: 8, height: 8)
-                    .offset(x: geo.size.width * volume - 4)
+                    .frame(width: 11, height: 11)
+                    .offset(x: geo.size.width * volume - 5.5)
             }
             .gesture(
                 DragGesture(minimumDistance: 0)
@@ -179,7 +187,7 @@ struct TimerView: View {
                     }
             )
         }
-        .frame(width: 48, height: 8)
+        .frame(width: 72, height: 11)
     }
 
     // MARK: - Action button
@@ -189,19 +197,19 @@ struct TimerView: View {
             ZStack {
                 Circle()
                     .strokeBorder(theme.accentDim, lineWidth: 1)
-                    .frame(width: 64, height: 64)
+                    .frame(width: 80, height: 80)
 
                 if vm.state == .running {
                     Circle()
                         .trim(from: 0, to: longPressProgress)
                         .stroke(theme.accentMid,
                                 style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
-                        .frame(width: 70, height: 70)
+                        .frame(width: 88, height: 88)
                         .rotationEffect(.degrees(-90))
                 }
 
                 Image(systemName: vm.state == .idle ? "play.fill" : "stop.fill")
-                    .font(.system(size: vm.state == .idle ? 22 : 16))
+                    .font(.system(size: vm.state == .idle ? 26 : 20))
                     .foregroundColor(vm.state == .idle ? theme.text : theme.textMid)
             }
             .simultaneousGesture(TapGesture().onEnded {
@@ -226,7 +234,7 @@ struct TimerView: View {
             })
 
             Text(vm.state == .idle ? "tap to start" : "hold 2s to stop")
-                .font(.system(size: 6.5))
+                .font(.system(size: 10))
                 .foregroundColor(theme.textDim)
         }
     }

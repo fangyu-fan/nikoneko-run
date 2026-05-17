@@ -31,18 +31,19 @@ struct DrumPickerView: View {
 
     private func ghostText(value: Int, offset: CGFloat) -> some View {
         Text("\(value)")
-            .font(.system(size: 48, weight: .ultraLight))
+            .font(.system(size: 58, weight: .ultraLight))
             .foregroundColor(theme.text.opacity(0.15))
             .offset(y: offset)
             .monospacedDigit()
+            .kerning(-3)
     }
 
     private func selectedText(value: Int) -> some View {
         Text("\(value)")
-            .font(.system(size: 70, weight: .ultraLight))
+            .font(.system(size: 88, weight: .ultraLight))
             .foregroundColor(theme.text)
             .monospacedDigit()
-            .kerning(-3)
+            .kerning(-4)
     }
 
     static func stepsFrom(translationY: CGFloat, stepHeight: CGFloat) -> Int {
