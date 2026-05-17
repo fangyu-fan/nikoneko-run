@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		001E3A9E2863961477057DA2 /* ReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2033754460492D7D77F18039 /* ReportViewModel.swift */; };
+		084EA4DF5B4146D0B3B9E224 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F2C3B82D860DBEAE46000161 /* Localizable.strings */; };
 		0A4CA9A149DCC196B6299F53 /* HeatmapWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A91EFC02093F13F7835EC07 /* HeatmapWidget.swift */; };
 		0E9FA4ACAB221DC27926DC81 /* DrumPickerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD482BE3F0359120522BC4B /* DrumPickerTests.swift */; };
 		116B897AF98886EBC20E141B /* WidgetSharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692A4CE44C4629742DF29CB4 /* WidgetSharedData.swift */; };
@@ -44,7 +45,9 @@
 		88B84CC75AACE3C5594864C2 /* SummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3C6394E4CA30F033907F733 /* SummaryViewModel.swift */; };
 		8AB8674DE987BB6124193A2D /* MotionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62191EE7B8EE56F062463D2 /* MotionService.swift */; };
 		97B761E1E11BA02B234FB2C8 /* WidgetDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8E0F352C37B73F692CC63D0 /* WidgetDataTests.swift */; };
+		9A7DED754E0D45F4F30FE23C /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B96B25A530CAD4829826F8B /* NotificationService.swift */; };
 		A00CD2EFAD44BA1062193307 /* WidgetSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE1A57D985D42E58F16F21A /* WidgetSettingsView.swift */; };
+		A21530874B4CE5255B0B71EF /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B479A6B08DA7AF4D6DF0489 /* HealthKitService.swift */; };
 		A5B6D967C59FA96ADD3304FD /* LottieCharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC93C89ACDC3B32CD28C3F6 /* LottieCharacterView.swift */; };
 		A9D26887E563CFFD485F6AFE /* PlaceholderCharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A80A80A06A255F8197DB14B /* PlaceholderCharacterView.swift */; };
 		ACBB147C11F9E8DC31BA296F /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99EFA2C278A02AF7C6A03F91 /* ShareCardView.swift */; };
@@ -61,6 +64,7 @@
 		D7AF75D6579CFCBF3B87363A /* ReportViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B651FBED4DA2547C58BDD0AF /* ReportViewModelTests.swift */; };
 		E4DFBCC46CFC50B78E09F947 /* NikoNekoLiveActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB4FFF4351D6AEBD495C876 /* NikoNekoLiveActivityView.swift */; };
 		E93A8C7AB9AE9AEA912AF603 /* StreakWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E4AF6D353E4E702654D308 /* StreakWidget.swift */; };
+		ED783424F7C4AFE59C4C4465 /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27218DDBF5760415222496 /* LanguageManager.swift */; };
 		F7173C25F57435EC47C9A812 /* TimerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23B0F4EDAB5707630CF45A9 /* TimerViewModel.swift */; };
 		F7BC978AD298CDA3A6841412 /* AppGroupDefaultsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61118AA292061AB685874C87 /* AppGroupDefaultsTests.swift */; };
 		FA096AF93CDA70DEE91A3501 /* TimerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39530A75977A09DA84D2124C /* TimerViewModelTests.swift */; };
@@ -88,6 +92,7 @@
 		03D4FF987E86A2ED1BF4CA64 /* ThemeTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeTokens.swift; sourceTree = "<group>"; };
 		0590DDEE163696F0BB7616C5 /* MotionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionServiceTests.swift; sourceTree = "<group>"; };
 		0766CFAF5B8392B7C3B1BA99 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		0B27218DDBF5760415222496 /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
 		0F8388470D6412953108A09D /* nikoneko.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = nikoneko.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		15637ACAD2484A82A22BDF92 /* DrumPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrumPickerView.swift; sourceTree = "<group>"; };
 		16D4725502CD58ABA44F5E4B /* DisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayView.swift; sourceTree = "<group>"; };
@@ -108,6 +113,8 @@
 		40B2416199CDA9A73244756D /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
 		41CC69BAD559A35148CE22CE /* AppGroupDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupDefaults.swift; sourceTree = "<group>"; };
 		47C6C35DB6789D15893E88FB /* ThemeLibraryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeLibraryTests.swift; sourceTree = "<group>"; };
+		4B479A6B08DA7AF4D6DF0489 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
+		4B96B25A530CAD4829826F8B /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		55E4AF6D353E4E702654D308 /* StreakWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakWidget.swift; sourceTree = "<group>"; };
 		5E2557D24257006B3A70623E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		5E52428AFEA5830C9CA70441 /* SummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryView.swift; sourceTree = "<group>"; };
@@ -125,6 +132,7 @@
 		83F9DCA77BE44839B071ADB6 /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
 		88C0C5D0756AB6633FABFC4D /* SummaryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryViewModelTests.swift; sourceTree = "<group>"; };
 		8BC965E669918E66458C20DA /* nikonekoTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = nikonekoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9118A77F59F326480E2C1664 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		936762368324ECC658B74C0F /* HeartRateServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateServiceTests.swift; sourceTree = "<group>"; };
 		93C4C9329B6E813CD1FFF321 /* BLEHeartRateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEHeartRateManager.swift; sourceTree = "<group>"; };
 		99EFA2C278A02AF7C6A03F91 /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
@@ -150,6 +158,7 @@
 		F62191EE7B8EE56F062463D2 /* MotionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionService.swift; sourceTree = "<group>"; };
 		FB679D1A96C74C6D9ECC5CB0 /* NikoNekoWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NikoNekoWidgetBundle.swift; sourceTree = "<group>"; };
 		FE2FB9352036C37A85C1E358 /* WidgetSharedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSharedData.swift; sourceTree = "<group>"; };
+		FF7B559E3D5EF803936C4B5F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -170,6 +179,7 @@
 				1055F723C307BC1DAA3992BE /* Models */,
 				A03140EC013430FCCDB1065A /* Theme */,
 				41CC69BAD559A35148CE22CE /* AppGroupDefaults.swift */,
+				0B27218DDBF5760415222496 /* LanguageManager.swift */,
 				692A4CE44C4629742DF29CB4 /* WidgetSharedData.swift */,
 			);
 			path = Core;
@@ -179,10 +189,12 @@
 			isa = PBXGroup;
 			children = (
 				93C4C9329B6E813CD1FFF321 /* BLEHeartRateManager.swift */,
+				4B479A6B08DA7AF4D6DF0489 /* HealthKitService.swift */,
 				3F3BE25830E57B84BE11522F /* HeartRateService.swift */,
 				B3D721D963CCB92F5122648C /* LiveActivityService.swift */,
 				64A139D04CE594B0310B390D /* MetronomeService.swift */,
 				F62191EE7B8EE56F062463D2 /* MotionService.swift */,
+				4B96B25A530CAD4829826F8B /* NotificationService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -234,6 +246,7 @@
 		6B8EA27D4F2A25635F37A53A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				F2C3B82D860DBEAE46000161 /* Localizable.strings */,
 				EC857D7B90F7F55865B446B8 /* Sounds */,
 			);
 			path = Resources;
@@ -408,6 +421,7 @@
 			buildConfigurationList = 815F190338B285BE71AFD777 /* Build configuration list for PBXNativeTarget "nikoneko" */;
 			buildPhases = (
 				0A466BAC5D74639CE605EB89 /* Sources */,
+				071EF46E49AACDA97808A030 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -482,6 +496,7 @@
 			knownRegions = (
 				Base,
 				en,
+				"zh-Hant",
 			);
 			mainGroup = 5FCE3792D669DD58AF736091;
 			minimizedProjectReferenceProxies = 1;
@@ -496,6 +511,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		071EF46E49AACDA97808A030 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				084EA4DF5B4146D0B3B9E224 /* Localizable.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		0A466BAC5D74639CE605EB89 /* Sources */ = {
@@ -515,14 +541,17 @@
 				7D2D06F23FD23EDD46FC449C /* DefaultsView.swift in Sources */,
 				FFAF81159DD3F1F71B9FD84C /* DisplayView.swift in Sources */,
 				1FE862B862923F545FBB6999 /* DrumPickerView.swift in Sources */,
+				A21530874B4CE5255B0B71EF /* HealthKitService.swift in Sources */,
 				C50EE854F60BBD3C0005656F /* HeartRateService.swift in Sources */,
 				32CBC192B0462D0A929B6279 /* JogApp.swift in Sources */,
+				ED783424F7C4AFE59C4C4465 /* LanguageManager.swift in Sources */,
 				5BB77C26A163FFD28DB3C047 /* LiveActivityService.swift in Sources */,
 				A5B6D967C59FA96ADD3304FD /* LottieCharacterView.swift in Sources */,
 				D6501BC66A4A5476CA4F2E3A /* MetronomeService.swift in Sources */,
 				8AB8674DE987BB6124193A2D /* MotionService.swift in Sources */,
 				4FB72CB5628303C7F508576D /* NikoNekoLiveActivityAttributes.swift in Sources */,
 				E4DFBCC46CFC50B78E09F947 /* NikoNekoLiveActivityView.swift in Sources */,
+				9A7DED754E0D45F4F30FE23C /* NotificationService.swift in Sources */,
 				2AACC927B60CDFC431B51819 /* NotificationsView.swift in Sources */,
 				A9D26887E563CFFD485F6AFE /* PlaceholderCharacterView.swift in Sources */,
 				150770602ED1172F1DFC11AD /* ReportView.swift in Sources */,
@@ -591,6 +620,18 @@
 			targetProxy = 4E4325D690ED23E694D12343 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		F2C3B82D860DBEAE46000161 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FF7B559E3D5EF803936C4B5F /* en */,
+				9118A77F59F326480E2C1664 /* zh-Hant */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1D146F3EC9DD13A9137ACABF /* Release */ = {

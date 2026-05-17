@@ -22,4 +22,11 @@ final class WidgetDataTests: XCTestCase {
         let streak = AppGroupDefaults.currentStreak(from: summaries, goalMinutes: 20)
         XCTAssertEqual(streak, 7)
     }
+
+    func test_themeWrittenToAppGroup() {
+        AppGroupDefaults.shared.set("zinc", forKey: "activeThemeId")
+        let theme = WidgetSharedData.loadTheme()
+        XCTAssertEqual(theme.id, "zinc")
+        AppGroupDefaults.shared.removeObject(forKey: "activeThemeId")
+    }
 }
