@@ -10,7 +10,7 @@ final class ReportViewModel {
     var selectedMetric: Metric = .distance
     var currentOffset: Int = 0
 
-    private var sessions: [RunSession] = []
+    var sessions: [RunSession] = []
 
     func loadSessions(_ sessions: [RunSession]) {
         self.sessions = sessions
@@ -50,6 +50,93 @@ final class ReportViewModel {
         return sessions
             .filter { $0.startDate >= range.start && $0.startDate < range.end }
             .sorted { $0.startDate > $1.startDate }
+    }
+
+    // MARK: - UI Helpers
+
+    var dateRangeLabel: String {
+        let fmt = DateFormatter()
+        let range = dateRange
+        switch period {
+        case .day:
+            fmt.dateFormat = "yyyy/MM/dd"
+            return fmt.string(from: range.start)
+        case .week:
+            fmt.dateFormat = "MM/dd"
+            let s = fmt.string(from: range.start)
+            let e = fmt.string(from: Calendar.current.date(byAdding: .day, value: -1, to: range.end)!)
+            return "\(s) ~ \(e)"
+        case .month:
+            fmt.dateFormat = "yyyy/MM"
+            return fmt.string(from: range.start)
+        case .year:
+            fmt.dateFormat = "yyyy"
+            return fmt.string(from: range.start)
+        }
+    }
+
+    func metricIcon(_ metric: Metric) -> String {
+        switch metric {
+        case .distance: return "⊙"
+        case .calories:  return "△"
+        case .steps:     return "⊞"
+        case .hrAvg:     return "♥"
+        case .hrMax:     return "♥"
+        case .cadence:   return "♩"
+        }
+    }
+
+    func metricLabel(_ metric: Metric) -> String {
+        switch metric {
+        case .distance: return "Distance"
+        case .calories:  return "Calories"
+        case .steps:     return "Steps"
+        case .hrAvg:     return "Avg HR"
+        case .hrMax:     return "Max HR"
+        case .cadence:   return "Cadence"
+        }
+    }
+
+    func metricValueString(_ metric: Metric) -> String {
+        let range = dateRange
+        let inRange = sessions.filter { $0.startDate >= range.start && $0.startDate < range.end }
+        switch metric {
+        case .distance:
+            let km = inRange.reduce(0.0) { $0 + $1.distance } / 1000
+            return km >= 100 ? String(format: "%.0f", km) : String(format: "%.1f", km)
+        case .calories:
+            let cal = inRange.reduce(0.0) { $0 + $1.calories }
+            return cal >= 1000 ? String(format: "%.1fk", cal / 1000) : "\(Int(cal))"
+        case .steps:
+            let s = inRange.reduce(0) { $0 + $1.steps }
+            return s >= 1000 ? String(format: "%.1fk", Double(s) / 1000) : "\(s)"
+        case .hrAvg:
+            guard !inRange.isEmpty else { return "—" }
+            return "\(inRange.reduce(0) { $0 + $1.avgHR } / inRange.count)"
+        case .hrMax:
+            let mx = inRange.map(\.maxHR).max() ?? 0
+            return mx > 0 ? "\(mx)" : "—"
+        case .cadence:
+            guard !inRange.isEmpty else { return "—" }
+            return "\(inRange.reduce(0) { $0 + $1.avgCadence } / inRange.count)"
+        }
+    }
+
+    func logSecondaryValue(session: RunSession) -> String {
+        switch selectedMetric {
+        case .distance:
+            return String(format: "%.1f km", session.distance / 1000)
+        case .calories:
+            return "\(Int(session.calories)) cal"
+        case .steps:
+            return "\(session.steps) steps"
+        case .hrAvg:
+            return session.avgHR > 0 ? "HR \(session.avgHR)" : ""
+        case .hrMax:
+            return session.maxHR > 0 ? "HR max \(session.maxHR)" : ""
+        case .cadence:
+            return session.avgCadence > 0 ? "\(session.avgCadence) spm" : ""
+        }
     }
 
     var chartBars: [ChartBar] {
