@@ -4,6 +4,10 @@ import SwiftUI
 @main
 struct NikoNekoWidgetBundle: WidgetBundle {
     var body: some Widget {
-        // Widgets will be added in Wave 2
+        StreakWidget()
+        TotalTimeWidget()
+        HeatmapWidget()
+        CalendarWidget()
+        NikoNekoLiveActivityView()
     }
 }
