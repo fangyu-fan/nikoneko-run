@@ -17,6 +17,8 @@ struct SettingsView: View {
                             .fill(theme.accentDim)
                             .frame(height: 0.5)
                             .padding(.leading, 44)
+                        // Language picker lives inside AppearanceView alongside Theme —
+                        // both settings share the same destination screen by design.
                         settingsRow(icon: "1", name: "Language", value: "EN",
                                     destination: AppearanceView())
                     }
