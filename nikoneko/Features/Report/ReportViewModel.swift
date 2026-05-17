@@ -70,7 +70,8 @@ final class ReportViewModel {
         case .week:
             fmt.dateFormat = "MM/dd"
             let s = fmt.string(from: range.start)
-            let e = fmt.string(from: Calendar.current.date(byAdding: .day, value: -1, to: range.end)!)
+            let endDay = Calendar.current.date(byAdding: .day, value: -1, to: range.end) ?? range.start
+            let e = fmt.string(from: endDay)
             return "\(s) ~ \(e)"
         case .month:
             fmt.dateFormat = "yyyy/MM"
@@ -164,12 +165,12 @@ final class ReportViewModel {
                 )
             }
         case .week:
+            let fmt = DateFormatter()
+            fmt.dateFormat = "EEE"
+            fmt.locale = Locale.current
             return (0..<7).map { dayOffset in
                 let day = cal.date(byAdding: .day, value: dayOffset, to: range.start) ?? range.start
                 let daySessions = sessions.filter { cal.isDate($0.startDate, inSameDayAs: day) }
-                let fmt = DateFormatter()
-                fmt.dateFormat = "EEE"
-                fmt.locale = Locale.current
                 let label = String(fmt.string(from: day).prefix(1))
                 return ChartBar(
                     label: label,
@@ -178,9 +179,9 @@ final class ReportViewModel {
                 )
             }
         case .month:
-            let daysInMonth = cal.range(of: .day, in: .month, for: range.start)!.count
+            let daysInMonth = cal.range(of: .day, in: .month, for: range.start)?.count ?? 30
             return (0..<daysInMonth).map { dayOffset in
-                let day = cal.date(byAdding: .day, value: dayOffset, to: range.start)!
+                let day = cal.date(byAdding: .day, value: dayOffset, to: range.start) ?? range.start
                 let daySessions = sessions.filter { cal.isDate($0.startDate, inSameDayAs: day) }
                 return ChartBar(
                     label: "\(dayOffset + 1)",
@@ -190,8 +191,8 @@ final class ReportViewModel {
             }
         case .year:
             return (0..<12).map { monthOffset in
-                let month = cal.date(byAdding: .month, value: monthOffset, to: range.start)!
-                let monthInterval = cal.dateInterval(of: .month, for: month)!
+                let month = cal.date(byAdding: .month, value: monthOffset, to: range.start) ?? range.start
+                let monthInterval = cal.dateInterval(of: .month, for: month) ?? DateInterval(start: month, duration: 0)
                 let monthSessions = sessions.filter {
                     $0.startDate >= monthInterval.start && $0.startDate < monthInterval.end
                 }
