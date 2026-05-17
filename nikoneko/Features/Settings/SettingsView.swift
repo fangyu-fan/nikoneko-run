@@ -12,37 +12,43 @@ struct SettingsView: View {
                     settingsCard {
                         settingsRow(icon: "◑", name: "Theme",
                                     value: themeManager.current.id.capitalized,
-                                    destination: AnyView(AppearanceView()))
-                        Divider().background(theme.accentDim).padding(.leading, 44)
+                                    destination: AppearanceView())
+                        Rectangle()
+                            .fill(theme.accentDim)
+                            .frame(height: 0.5)
+                            .padding(.leading, 44)
                         settingsRow(icon: "1", name: "Language", value: "EN",
-                                    destination: AnyView(AppearanceView()))
+                                    destination: AppearanceView())
                     }
 
                     sectionLabel("Display")
                     settingsCard {
                         settingsRow(icon: "◷", name: "Display", value: "plain min",
-                                    destination: AnyView(DisplayView()))
+                                    destination: DisplayView())
                     }
 
                     sectionLabel("Defaults")
                     settingsCard {
                         settingsRow(icon: "◎", name: "Training", value: "15 min · 180 bpm",
-                                    destination: AnyView(DefaultsView()))
+                                    destination: DefaultsView())
                     }
 
                     sectionLabel("Widget")
                     settingsCard {
                         settingsRow(icon: "▦", name: "Widget", value: "10 · 50 · 90",
-                                    destination: AnyView(WidgetSettingsView()))
+                                    destination: WidgetSettingsView())
                     }
 
                     sectionLabel("System")
                     settingsCard {
                         settingsRow(icon: "◷", name: "Notifications", value: "Off",
-                                    destination: AnyView(NotificationsView()))
-                        Divider().background(theme.accentDim).padding(.leading, 44)
+                                    destination: NotificationsView())
+                        Rectangle()
+                            .fill(theme.accentDim)
+                            .frame(height: 0.5)
+                            .padding(.leading, 44)
                         settingsRow(icon: "☁", name: "Data & Sync", value: "",
-                                    destination: AnyView(DataSyncView()))
+                                    destination: DataSyncView())
                     }
                 }
                 .padding(.horizontal, 16)
@@ -73,8 +79,8 @@ struct SettingsView: View {
         .padding(.bottom, 4)
     }
 
-    private func settingsRow(icon: String, name: String, value: String,
-                              destination: AnyView) -> some View {
+    private func settingsRow<D: View>(icon: String, name: String, value: String,
+                                       destination: D) -> some View {
         NavigationLink(destination: destination) {
             HStack(spacing: 0) {
                 Text(icon)

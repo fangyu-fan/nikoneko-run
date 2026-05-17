@@ -19,7 +19,10 @@ struct DefaultsView: View {
                                step: 5, range: 5...999) { v in
                         profile?.defaultDuration = v; try? ctx.save()
                     }
-                    Divider().background(theme.accentDim).padding(.leading, 44)
+                    Rectangle()
+                        .fill(theme.accentDim)
+                        .frame(height: 0.5)
+                        .padding(.leading, 44)
                     stepperRow(icon: "◎", name: "Daily Goal",
                                value: profile?.dailyGoalMinutes ?? 15,
                                step: 5, range: 5...999) { v in
@@ -37,7 +40,10 @@ struct DefaultsView: View {
                                step: 1, range: 140...220) { v in
                         profile?.defaultBPM = v; try? ctx.save()
                     }
-                    Divider().background(theme.accentDim).padding(.leading, 44)
+                    Rectangle()
+                        .fill(theme.accentDim)
+                        .frame(height: 0.5)
+                        .padding(.leading, 44)
                     soundRow
                 }
                 .background(theme.surface)

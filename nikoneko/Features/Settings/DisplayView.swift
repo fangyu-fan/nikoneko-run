@@ -15,20 +15,20 @@ struct DisplayView: View {
                 sectionLabel("Timer Mode")
                 radioCard([
                     ("◷", "Countdown",
-                     profile?.timerMode == .countdown || profile?.timerMode == nil,
+                     (profile?.timerMode ?? .countdown) == .countdown,
                      { profile?.timerMode = .countdown; try? ctx.save() }),
                     ("◷", "Stopwatch",
-                     profile?.timerMode == .stopwatch,
+                     (profile?.timerMode ?? .countdown) == .stopwatch,
                      { profile?.timerMode = .stopwatch; try? ctx.save() }),
                 ])
 
                 sectionLabel("Time Format")
                 radioCard([
                     ("1", "Plain min",
-                     profile?.timeDisplayFormat == .plainMinutes || profile?.timeDisplayFormat == nil,
+                     (profile?.timeDisplayFormat ?? .plainMinutes) == .plainMinutes,
                      { profile?.timeDisplayFormat = .plainMinutes; try? ctx.save() }),
                     ("∶", "HH:MM",
-                     profile?.timeDisplayFormat == .hhMM,
+                     (profile?.timeDisplayFormat ?? .plainMinutes) == .hhMM,
                      { profile?.timeDisplayFormat = .hhMM; try? ctx.save() }),
                 ])
 
@@ -84,7 +84,10 @@ struct DisplayView: View {
                 }
                 .buttonStyle(.plain)
                 if i < items.count - 1 {
-                    Divider().background(theme.accentDim).padding(.leading, 44)
+                    Rectangle()
+                        .fill(theme.accentDim)
+                        .frame(height: 0.5)
+                        .padding(.leading, 44)
                 }
             }
         }
@@ -113,7 +116,10 @@ struct DisplayView: View {
                 .padding(.horizontal, 14)
                 .frame(minHeight: 46)
                 if i < items.count - 1 {
-                    Divider().background(theme.accentDim).padding(.leading, 44)
+                    Rectangle()
+                        .fill(theme.accentDim)
+                        .frame(height: 0.5)
+                        .padding(.leading, 44)
                 }
             }
         }
