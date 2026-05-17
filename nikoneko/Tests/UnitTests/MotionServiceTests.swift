@@ -1,6 +1,7 @@
 import XCTest
 @testable import nikoneko
 
+@MainActor
 final class MotionServiceTests: XCTestCase {
 
     func test_calorieEstimateFor2000Steps_65kg_170cm() {
