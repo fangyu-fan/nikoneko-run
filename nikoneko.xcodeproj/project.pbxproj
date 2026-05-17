@@ -27,6 +27,7 @@
 		F7173C25F57435EC47C9A812 /* TimerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23B0F4EDAB5707630CF45A9 /* TimerViewModel.swift */; };
 		F7BC978AD298CDA3A6841412 /* AppGroupDefaultsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61118AA292061AB685874C87 /* AppGroupDefaultsTests.swift */; };
 		FA096AF93CDA70DEE91A3501 /* TimerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39530A75977A09DA84D2124C /* TimerViewModelTests.swift */; };
+		B3A4C5D6E7F8091A2B3C4D5E /* AppGroupBridgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5C /* AppGroupBridgeTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,6 +75,7 @@
 		D23B0F4EDAB5707630CF45A9 /* TimerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewModel.swift; sourceTree = "<group>"; };
 		F32F0C166D5DDA3A539EF0ED /* NikoNekoWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = NikoNekoWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB679D1A96C74C6D9ECC5CB0 /* NikoNekoWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NikoNekoWidgetBundle.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B5C /* AppGroupBridgeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupBridgeTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -202,6 +204,7 @@
 		A2FC1D84DC363E72A632F72E /* IntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				A1B2C3D4E5F60718293A4B5C /* AppGroupBridgeTests.swift */,
 			);
 			path = IntegrationTests;
 			sourceTree = "<group>";
@@ -414,6 +417,7 @@
 				F7BC978AD298CDA3A6841412 /* AppGroupDefaultsTests.swift in Sources */,
 				CB0D7B65CA278F3FCD8E67CD /* ThemeLibraryTests.swift in Sources */,
 				FA096AF93CDA70DEE91A3501 /* TimerViewModelTests.swift in Sources */,
+				B3A4C5D6E7F8091A2B3C4D5E /* AppGroupBridgeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

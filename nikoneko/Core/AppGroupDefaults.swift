@@ -43,19 +43,20 @@ enum AppGroupDefaults {
         }
         writeSummaries(Array(summaries))
     }
+}
 
+extension AppGroupDefaults {
     static func currentStreak(from summaries: [DaySessionSummary], goalMinutes: Int) -> Int {
         let goalSeconds = Double(goalMinutes) * 60
         let calendar = Calendar.current
+        var streak = 0
         let today = calendar.startOfDay(for: Date())
         var checkDate = today
-        var streak = 0
 
         for _ in 0..<365 {
             let dayTotal = summaries
                 .filter { calendar.isDate($0.date, inSameDayAs: checkDate) }
-                .reduce(0) { $0 + $1.duration }
-
+                .reduce(0.0) { $0 + $1.duration }
             if dayTotal >= goalSeconds {
                 streak += 1
             } else if checkDate < today {
