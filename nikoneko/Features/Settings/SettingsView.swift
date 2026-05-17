@@ -19,7 +19,7 @@ struct SettingsView: View {
                             .padding(.leading, 44)
                         // Language picker lives inside AppearanceView alongside Theme —
                         // both settings share the same destination screen by design.
-                        settingsRow(icon: "1", name: "Language", value: "EN",
+                        settingsRow(icon: "1", name: "Language", value: "English",
                                     destination: AppearanceView())
                     }
 
@@ -53,7 +53,7 @@ struct SettingsView: View {
                                     destination: DataSyncView())
                     }
                 }
-                .padding(.horizontal, 16)
+                .padding(.horizontal, 18)
                 .padding(.top, 8)
             }
             .background(theme.bg.ignoresSafeArea())
@@ -64,11 +64,11 @@ struct SettingsView: View {
 
     private func sectionLabel(_ text: String) -> some View {
         Text(text.uppercased())
-            .font(.system(size: 8))
+            .font(.system(size: 10))
             .tracking(1)
             .foregroundColor(theme.textDim)
-            .padding(.top, 12)
-            .padding(.bottom, 4)
+            .padding(.top, 10)
+            .padding(.bottom, 5)
             .padding(.horizontal, 2)
     }
 
@@ -77,7 +77,7 @@ struct SettingsView: View {
             content()
         }
         .background(theme.surface)
-        .cornerRadius(10)
+        .cornerRadius(14)
         .padding(.bottom, 4)
     }
 
@@ -86,26 +86,27 @@ struct SettingsView: View {
         NavigationLink(destination: destination) {
             HStack(spacing: 0) {
                 Text(icon)
-                    .font(.system(size: 12))
+                    .font(.system(size: 16))
                     .foregroundColor(theme.textDim)
-                    .frame(width: 16, alignment: .center)
+                    .frame(width: 20, alignment: .center)
                     .padding(.trailing, 10)
                 Text(name)
-                    .font(.system(size: 11))
+                    .font(.system(size: 14))
                     .foregroundColor(theme.textMid)
                 Spacer()
                 if !value.isEmpty {
                     Text(value)
-                        .font(.system(size: 10))
+                        .font(.system(size: 13))
                         .foregroundColor(theme.textDim)
                 }
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 10))
+                    .font(.system(size: 13))
                     .foregroundColor(theme.textDim)
                     .padding(.leading, 4)
             }
-            .padding(.horizontal, 14)
-            .frame(minHeight: 46)
+            .padding(.vertical, 13)
+            .padding(.horizontal, 16)
+            .frame(minHeight: 50)
         }
         .buttonStyle(.plain)
     }

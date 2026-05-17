@@ -24,7 +24,7 @@ struct DisplayView: View {
 
                 sectionLabel("Time Format")
                 radioCard([
-                    ("1", "Plain min",
+                    ("1", "Plain minutes",
                      (profile?.timeDisplayFormat ?? .plainMinutes) == .plainMinutes,
                      { profile?.timeDisplayFormat = .plainMinutes; try? ctx.save() }),
                     ("∶", "HH:MM",
@@ -41,7 +41,7 @@ struct DisplayView: View {
                     ("〜", "Haptic",      bindBool(\.hapticEnabled)),
                 ])
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal, 18)
             .padding(.top, 8)
         }
         .background(theme.bg.ignoresSafeArea())
@@ -51,11 +51,11 @@ struct DisplayView: View {
 
     private func sectionLabel(_ text: String) -> some View {
         Text(text.uppercased())
-            .font(.system(size: 8))
+            .font(.system(size: 10))
             .tracking(1)
             .foregroundColor(theme.textDim)
-            .padding(.top, 12)
-            .padding(.bottom, 4)
+            .padding(.top, 10)
+            .padding(.bottom, 5)
             .padding(.horizontal, 2)
     }
 
@@ -66,33 +66,33 @@ struct DisplayView: View {
                 Button(action: action) {
                     HStack(spacing: 10) {
                         Text(icon)
-                            .font(.system(size: 12))
+                            .font(.system(size: 16))
                             .foregroundColor(theme.textDim)
-                            .frame(width: 16)
+                            .frame(width: 20)
                         Text(name)
-                            .font(.system(size: 11))
+                            .font(.system(size: 14))
                             .foregroundColor(theme.textMid)
                         Spacer()
                         if isSelected {
                             Image(systemName: "checkmark")
-                                .font(.system(size: 11))
+                                .font(.system(size: 13))
                                 .foregroundColor(theme.accent)
                         }
                     }
-                    .padding(.horizontal, 14)
-                    .frame(minHeight: 46)
+                    .padding(.vertical, 13)
+                    .padding(.horizontal, 16)
+                    .frame(minHeight: 50)
                 }
                 .buttonStyle(.plain)
                 if i < items.count - 1 {
                     Rectangle()
                         .fill(theme.accentDim)
                         .frame(height: 0.5)
-                        .padding(.leading, 44)
                 }
             }
         }
         .background(theme.surface)
-        .cornerRadius(10)
+        .cornerRadius(14)
         .padding(.bottom, 4)
     }
 
@@ -102,29 +102,29 @@ struct DisplayView: View {
                 let (icon, name, binding) = items[i]
                 HStack(spacing: 10) {
                     Text(icon)
-                        .font(.system(size: 12))
+                        .font(.system(size: 16))
                         .foregroundColor(theme.textDim)
-                        .frame(width: 16)
+                        .frame(width: 20)
                     Text(name)
-                        .font(.system(size: 11))
+                        .font(.system(size: 14))
                         .foregroundColor(theme.textMid)
                     Spacer()
                     Toggle("", isOn: binding)
                         .tint(theme.accent)
                         .labelsHidden()
                 }
-                .padding(.horizontal, 14)
-                .frame(minHeight: 46)
+                .padding(.vertical, 13)
+                .padding(.horizontal, 16)
+                .frame(minHeight: 50)
                 if i < items.count - 1 {
                     Rectangle()
                         .fill(theme.accentDim)
                         .frame(height: 0.5)
-                        .padding(.leading, 44)
                 }
             }
         }
         .background(theme.surface)
-        .cornerRadius(10)
+        .cornerRadius(14)
         .padding(.bottom, 4)
     }
 
