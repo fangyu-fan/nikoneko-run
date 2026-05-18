@@ -12,8 +12,9 @@ enum NotificationService {
         center.removePendingNotificationRequests(withIdentifiers: ["daily-reminder"])
 
         let content = UNMutableNotificationContent()
-        content.title = NSLocalizedString("notif.title", comment: "")
-        content.body  = NSLocalizedString("notif.body", comment: "")
+        // Read from LanguageBundle so the notification language matches app language setting
+        content.title = Bundle.main.localizedString(forKey: "notif.push.title", value: "Time to run.", table: nil)
+        content.body  = Bundle.main.localizedString(forKey: "notif.push.body",  value: "Your slow jog is waiting.", table: nil)
         content.sound = .default
 
         var components = DateComponents()

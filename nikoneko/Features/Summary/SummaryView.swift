@@ -5,6 +5,7 @@ struct SummaryView: View {
     let session: RunSession
     @Query private var profiles: [UserProfile]
     @Environment(ThemeManager.self) private var themeManager
+    @Environment(LanguageManager.self) private var lm
     @Environment(\.dismiss) private var dismiss
 
     private var theme: ThemeTokens { themeManager.current }
@@ -29,53 +30,47 @@ struct SummaryView: View {
         VStack(spacing: 16) {
             Spacer()
 
-            // Celebrating character — faster speed signals completion
             LottieCharacterView(
-                
                 color: theme.accentMid,
                 bpm: 240,
                 isAnimating: true
             )
             .frame(height: 52)
 
-            // Duration hero
             VStack(spacing: 2) {
                 Text("\(Int(session.duration / 60))")
                     .font(.system(size: 78, weight: .ultraLight))
                     .foregroundColor(theme.text)
                     .monospacedDigit()
                     .kerning(-3.5)
-                Text("MIN · COMPLETED")
+                Text(lm.L("summary.completed"))
                     .font(.system(size: 11))
                     .foregroundColor(theme.textDim)
                     .tracking(0.1 * 11)
                     .textCase(.uppercase)
             }
 
-            // 2×2 stat grid
             LazyVGrid(
                 columns: [GridItem(.flexible()), GridItem(.flexible())],
                 spacing: 5
             ) {
-                statCell(icon: "♥", label: "Avg HR",
+                statCell(icon: "♥", label: lm.L("summary.stat.avgHR"),
                          value: session.avgHR > 0 ? "\(session.avgHR)" : "—")
-                statCell(icon: "♩", label: "BPM",
+                statCell(icon: "♩", label: lm.L("summary.stat.bpm"),
                          value: "\(session.bpm)")
-                statCell(icon: "◎", label: "Goal",
+                statCell(icon: "◎", label: lm.L("summary.stat.goal"),
                          value: goalPercent)
-                statCell(icon: "◷", label: "Total",
+                statCell(icon: "◷", label: lm.L("summary.stat.total"),
                          value: String(format: "%.1fh", vm.totalHours))
             }
 
-            // Streak chip
             streakChip(vm)
 
             Spacer()
 
             VStack(spacing: 12) {
-                // Done button — filled, inverted colors
                 Button(action: { dismiss() }) {
-                    Text("Done")
+                    Text(lm.L("summary.done"))
                         .font(.system(size: 15, weight: .medium))
                         .tracking(0.04 * 15)
                         .foregroundColor(theme.bg)
@@ -85,9 +80,8 @@ struct SummaryView: View {
                         .cornerRadius(18)
                 }
 
-                // Share label
                 Button(action: {}) {
-                    Text("Share")
+                    Text(lm.L("summary.share"))
                         .font(.system(size: 12))
                         .tracking(0.04 * 12)
                         .foregroundColor(theme.textDim)
@@ -130,7 +124,7 @@ struct SummaryView: View {
                     .foregroundColor(theme.accent)
                     .monospacedDigit()
                     .kerning(-1.5)
-                Text("day streak")
+                Text(lm.L("summary.streak"))
                     .font(.system(size: 11))
                     .foregroundColor(theme.bar[1])
             }

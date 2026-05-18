@@ -3,6 +3,7 @@ import SwiftData
 
 struct ReportView: View {
     @Environment(ThemeManager.self) private var themeManager
+    @Environment(LanguageManager.self) private var lm
     @Query(sort: \RunSession.startDate, order: .reverse) private var sessions: [RunSession]
     @State private var vm = ReportViewModel()
     @State private var selectedSession: RunSession? = nil
@@ -36,14 +37,14 @@ struct ReportView: View {
 
                 // SUMMARY (metric cards)
                 VStack(alignment: .leading, spacing: 8) {
-                    sectionHeader("SUMMARY")
+                    sectionHeader(lm.L("report.section.summary"))
                         .padding(.horizontal, 18)
                     metricCards
                 }
 
                 // CHART
                 VStack(spacing: 8) {
-                    sectionHeader("CHART · \(vm.metricLabel(vm.selectedMetric).uppercased())")
+                    sectionHeader("\(lm.L("report.section.chart")) · \(vm.metricLabel(vm.selectedMetric).uppercased())")
                         .padding(.horizontal, 18)
                     if vm.period == .month || vm.period == .year {
                         HeatmapView(bars: vm.chartBars, period: vm.period, valueUnit: vm.metricUnit(vm.selectedMetric), yearStartWeekday: vm.yearStartWeekday)
@@ -52,7 +53,7 @@ struct ReportView: View {
                         BarChartView(
                             bars: vm.chartBars,
                             yUnit: vm.metricUnit(vm.selectedMetric),
-                            xUnit: vm.period == .day ? "hour" : "day",
+                            xUnit: vm.period == .day ? lm.L("report.unit.hour") : lm.L("report.unit.day"),
                             onTap: { bar, x in
                                 if bar.value > 0 {
                                     tappedBar = bar
@@ -89,7 +90,7 @@ struct ReportView: View {
             .padding(.bottom, 20)
         }
         .background(theme.bg.ignoresSafeArea())
-        .navigationTitle("Report")
+        .navigationTitle(lm.L("report.title"))
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -141,7 +142,7 @@ struct ReportView: View {
             ForEach(ReportViewModel.Period.allCases, id: \.self) { p in
                 Button(action: { vm.period = p; vm.currentOffset = 0 }) {
                     VStack(spacing: 0) {
-                        Text(p.rawValue.capitalized)
+                        Text(lm.L("report.tab.\(p.rawValue)"))
                             .font(.system(size: 16, weight: .medium))
                             .foregroundColor(vm.period == p ? theme.accent : theme.text)
                             .padding(.vertical, 9)
@@ -186,12 +187,12 @@ struct ReportView: View {
     private var heroBlock: some View {
         Button(action: { vm.selectedMetric = .duration }) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("DURATION")
+                Text(lm.L("report.label.duration"))
                     .font(.system(size: 10))
                     .tracking(0.8)
                     .foregroundColor(theme.textDim)
                 HStack(alignment: .firstTextBaseline, spacing: 0) {
-                    Text("total ")
+                    Text("\(lm.L("report.total")) ")
                         .font(.system(size: 24))
                         .foregroundColor(vm.selectedMetric == .duration ? theme.accent : theme.text)
                     Text(heroText)
@@ -219,7 +220,7 @@ struct ReportView: View {
     }
 
     private var heroUnit: String {
-        vm.heroDuration < 3600 ? "min" : "hrs"
+        vm.heroDuration < 3600 ? lm.L("report.unit.min") : lm.L("report.unit.hrs")
     }
 
     // MARK: - Metric cards
@@ -245,9 +246,9 @@ struct ReportView: View {
 
     private var logList: some View {
         VStack(spacing: 0) {
-            sectionHeader("SESSIONS")
+            sectionHeader(lm.L("report.section.sessions"))
             if vm.logItems.isEmpty {
-                Text("No data")
+                Text(lm.L("report.noData"))
                     .font(.system(size: 14))
                     .foregroundColor(theme.textDim)
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -308,17 +309,17 @@ struct ReportView: View {
         let messages: [String]
         switch streak {
         case 1:
-            messages = ["The hardest one. You did it.", "You showed up. That's everything.", "It starts today."]
+            messages = [lm.L("streak.msg.1a"), lm.L("streak.msg.1b"), lm.L("streak.msg.1c")]
         case 2, 3:
-            messages = ["Still going. Good.", "Momentum starts here.", "Back again. That matters."]
+            messages = [lm.L("streak.msg.2a"), lm.L("streak.msg.2b"), lm.L("streak.msg.2c")]
         case 4...6:
-            messages = ["Your legs remember.", "Halfway to a week. Don't stop.", "You're building something."]
+            messages = [lm.L("streak.msg.4a"), lm.L("streak.msg.4b"), lm.L("streak.msg.4c")]
         case 7...13:
-            messages = ["One full week. You earned this.", "A week of showing up.", "Slow and steady."]
+            messages = [lm.L("streak.msg.7a"), lm.L("streak.msg.7b"), lm.L("streak.msg.7c")]
         case 14...29:
-            messages = ["This is becoming a habit.", "You're different now.", "The habit is setting in."]
+            messages = [lm.L("streak.msg.14a"), lm.L("streak.msg.14b"), lm.L("streak.msg.14c")]
         default:
-            messages = ["Remarkable.", "No excuses, just runs.", "The body adapts."]
+            messages = [lm.L("streak.msg.def.a"), lm.L("streak.msg.def.b"), lm.L("streak.msg.def.c")]
         }
         let message = messages[streak % messages.count]
 
@@ -334,7 +335,7 @@ struct ReportView: View {
                     .frame(width: 44)
             }
             VStack(alignment: .leading, spacing: 2) {
-                Text("\(streak) day streak")
+                Text("\(streak) \(lm.L("streak.days"))")
                     .font(.system(size: 11))
                     .foregroundColor(theme.textDim)
                 Text(message)
@@ -427,6 +428,7 @@ struct LogRow: View {
     let session: RunSession
     let vm: ReportViewModel
     @Environment(ThemeManager.self) private var themeManager
+    @Environment(LanguageManager.self) private var lm
     private var theme: ThemeTokens { themeManager.current }
 
     var body: some View {
@@ -453,7 +455,7 @@ struct LogRow: View {
                     .fill(theme.textDim)
                     .frame(width: 3, height: 3)
 
-                Text("\(Int(session.duration / 60)) min")
+                Text("\(Int(session.duration / 60)) \(lm.L("session.unit.min"))")
                     .font(.system(size: 16))
                     .foregroundColor(theme.text)
 
@@ -492,6 +494,7 @@ struct HeatmapView: View {
     var valueUnit: String = ""
     var yearStartWeekday: Int = 0  // Mon=0 … Sun=6
     @Environment(ThemeManager.self) private var themeManager
+    @Environment(LanguageManager.self) private var lm
     private var theme: ThemeTokens { themeManager.current }
     private var maxValue: Double { bars.map(\.value).max() ?? 1 }
 
@@ -504,8 +507,10 @@ struct HeatmapView: View {
         let rows = Int(ceil(Double(bars.count) / Double(cols)))
         return VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 4) {
-                ForEach(["M","T","W","T","F","S","S"], id: \.self) { d in
-                    Text(d).font(.system(size: 9)).foregroundColor(theme.textDim).frame(maxWidth: .infinity)
+                ForEach([lm.L("heatmap.mon"), lm.L("heatmap.tue"), lm.L("heatmap.wed"),
+                         lm.L("heatmap.thu"), lm.L("heatmap.fri"), lm.L("heatmap.sat"), lm.L("heatmap.sun")],
+                        id: \.self) { d in
+                    Text(String(d.prefix(1))).font(.system(size: 9)).foregroundColor(theme.textDim).frame(maxWidth: .infinity)
                 }
             }
             ForEach(0..<rows, id: \.self) { row in
@@ -529,7 +534,14 @@ struct HeatmapView: View {
         let cellSpacing: CGFloat = 3
         let dayLabelWidth: CGFloat = 32
         let rowHeight = 14 + 7 * (cellSize + cellSpacing)
-        let monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+        let monthNames = [
+            lm.L("heatmap.month.jan"), lm.L("heatmap.month.feb"),
+            lm.L("heatmap.month.mar"), lm.L("heatmap.month.apr"),
+            lm.L("heatmap.month.may"), lm.L("heatmap.month.jun"),
+            lm.L("heatmap.month.jul"), lm.L("heatmap.month.aug"),
+            lm.L("heatmap.month.sep"), lm.L("heatmap.month.oct"),
+            lm.L("heatmap.month.nov"), lm.L("heatmap.month.dec"),
+        ]
         let cal = Calendar(identifier: .gregorian)
 
         return VStack(alignment: .leading, spacing: 12) {
@@ -543,7 +555,8 @@ struct HeatmapView: View {
 
                 let padded: [ChartBar?] = Array(repeating: nil, count: firstWD) + rowBars.bars.map { Optional($0) }
                 let totalCols = Int(ceil(Double(padded.count) / 7.0))
-                let dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+                let dayLabels = [lm.L("heatmap.mon"), lm.L("heatmap.tue"), lm.L("heatmap.wed"),
+                                 lm.L("heatmap.thu"), lm.L("heatmap.fri"), lm.L("heatmap.sat"), lm.L("heatmap.sun")]
 
                 VStack(alignment: .leading, spacing: 0) {
                     // Month labels
@@ -688,6 +701,7 @@ struct HeatmapView: View {
 struct SessionDetailSheet: View {
     let session: RunSession
     @Environment(ThemeManager.self) private var themeManager
+    @Environment(LanguageManager.self) private var lm
     @Environment(\.dismiss) private var dismiss
     private var theme: ThemeTokens { themeManager.current }
 
@@ -721,7 +735,7 @@ struct SessionDetailSheet: View {
             .padding(.bottom, 12)
 
             HStack(alignment: .firstTextBaseline, spacing: 0) {
-                Text("total ")
+                Text("\(lm.L("session.total")) ")
                     .font(.system(size: 22))
                     .foregroundColor(theme.text)
                 Text("\(durationMins)")
@@ -729,24 +743,24 @@ struct SessionDetailSheet: View {
                     .kerning(-3)
                     .foregroundColor(theme.text)
                     .monospacedDigit()
-                Text(" min")
+                Text(" \(lm.L("session.unit.min"))")
                     .font(.system(size: 22))
                     .foregroundColor(theme.text)
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 4)
 
-            Text("SUMMARY")
+            Text(lm.L("session.summary").uppercased())
                 .font(.system(size: 10)).tracking(0.8).foregroundColor(theme.textDim)
                 .padding(.horizontal, 20).padding(.bottom, 12)
 
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 4) {
-                statCard("location.circle", String(format: "%.1f", session.distance / 1000), "km", "Distance")
-                statCard("flame", "\(Int(session.calories))", "kcal", "Calories")
-                statCard("figure.walk", stepsStr, "", "Steps")
-                statCard("heart", session.avgHR > 0 ? "\(session.avgHR)" : "—", session.avgHR > 0 ? "bpm" : "", "Avg HR")
-                statCard("heart", session.maxHR > 0 ? "\(session.maxHR)" : "—", session.maxHR > 0 ? "bpm" : "", "Max HR")
-                statCard("metronome", session.avgCadence > 0 ? "\(session.avgCadence)" : "—", session.avgCadence > 0 ? "spm" : "", "Cadence")
+                statCard("location.circle", String(format: "%.1f", session.distance / 1000), lm.L("session.unit.km"), lm.L("session.stat.distance"))
+                statCard("flame", "\(Int(session.calories))", lm.L("session.unit.kcal"), lm.L("session.stat.calories"))
+                statCard("shoeprints.fill", stepsStr, "", lm.L("session.stat.steps"))
+                statCard("heart", session.avgHR > 0 ? "\(session.avgHR)" : "—", session.avgHR > 0 ? lm.L("session.unit.bpm") : "", lm.L("session.stat.avgHR"))
+                statCard("heart", session.maxHR > 0 ? "\(session.maxHR)" : "—", session.maxHR > 0 ? lm.L("session.unit.bpm") : "", lm.L("session.stat.maxHR"))
+                statCard("metronome", session.avgCadence > 0 ? "\(session.avgCadence)" : "—", session.avgCadence > 0 ? lm.L("session.unit.spm") : "", lm.L("session.stat.cadence"))
             }
             .padding(.horizontal, 20)
 

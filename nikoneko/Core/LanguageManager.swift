@@ -29,4 +29,8 @@ final class LanguageManager {
         language = lang
         LanguageBundle.languageCode = lang.code
     }
+
+    func L(_ key: String) -> String {
+        NSLocalizedString(key, comment: "")
+    }
 }

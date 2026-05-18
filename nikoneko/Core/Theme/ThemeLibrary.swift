@@ -2,9 +2,10 @@ import SwiftUI
 
 enum ThemeLibrary {
     static let all: [ThemeTokens] = [
-        obsidian, paper, limestone, zinc,
+        obsidian, paper, limestone,
         grove, moss, mocha, seafloor,
-        skyline, navy, lavender, midnight, teal, blush
+        skyline, navy, lavender, midnight, teal, blush,
+        slateRose, sapphireGold
     ]
 
     static let obsidian = ThemeTokens(
@@ -53,22 +54,6 @@ enum ThemeLibrary {
         bar: [Color(hex:"e4dfd6"), Color(hex:"ccc4b4"), Color(hex:"a89880"), Color(hex:"806850"), Color(hex:"3c3830")],
         cal: [Color(hex:"e4dfd6"), Color(hex:"ccc4b4"), Color(hex:"a89880"), Color(hex:"806850"), Color(hex:"3c3830")],
         isDark: false
-    )
-
-    static let zinc = ThemeTokens(
-        id: "zinc",
-        bg:         Color(hex: "0d1117"),
-        surface:    Color(hex: "161b22"),
-        card:       Color(hex: "21262d"),
-        text:       Color(hex: "e6edf3"),
-        textDim:    Color(hex: "30363d"),
-        textMid:    Color(hex: "8b949e"),
-        accent:     Color(hex: "58a6ff"),
-        accentMid:  Color(hex: "79c0ff"),
-        accentDim:  Color(hex: "0d2a4a"),
-        bar: [Color(hex:"161b22"), Color(hex:"0a2a1a"), Color(hex:"006d32"), Color(hex:"26a641"), Color(hex:"39d353")],
-        cal: [Color(hex:"161b22"), Color(hex:"0a2a1a"), Color(hex:"006d32"), Color(hex:"26a641"), Color(hex:"39d353")],
-        isDark: true
     )
 
     static let grove = ThemeTokens(
@@ -228,6 +213,38 @@ enum ThemeLibrary {
         accentDim:  Color(hex: "BBDED6"),
         bar: [Color(hex:"FAD9E6"), Color(hex:"FFB6B9"), Color(hex:"e89090"), Color(hex:"61C0BF"), Color(hex:"3a9898")],
         cal: [Color(hex:"FAD9E6"), Color(hex:"FFB6B9"), Color(hex:"e89090"), Color(hex:"61C0BF"), Color(hex:"3a9898")],
+        isDark: false
+    )
+
+    static let slateRose = ThemeTokens(
+        id: "slateRose",
+        bg:         Color(hex: "F2F2F2"),
+        surface:    Color(hex: "e8e8e8"),
+        card:       Color(hex: "dcdcdc"),
+        text:       Color(hex: "333333"),
+        textDim:    Color(hex: "5c5c5c"),
+        textMid:    Color(hex: "57687c"),
+        accent:     Color(hex: "2C3E50"),
+        accentMid:  Color(hex: "57687c"),
+        accentDim:  Color(hex: "F7CAC9"),
+        bar: [Color(hex:"F7CAC9"), Color(hex:"e0a8a8"), Color(hex:"b07878"), Color(hex:"926b6a"), Color(hex:"2C3E50")],
+        cal: [Color(hex:"F7CAC9"), Color(hex:"e0a8a8"), Color(hex:"b07878"), Color(hex:"926b6a"), Color(hex:"2C3E50")],
+        isDark: false
+    )
+
+    static let sapphireGold = ThemeTokens(
+        id: "sapphireGold",
+        bg:         Color(hex: "F5F5F5"),
+        surface:    Color(hex: "ebebeb"),
+        card:       Color(hex: "e0e0e0"),
+        text:       Color(hex: "333333"),
+        textDim:    Color(hex: "5c5c5c"),
+        textMid:    Color(hex: "4e88ca"),
+        accent:     Color(hex: "005B99"),
+        accentMid:  Color(hex: "003d6b"),
+        accentDim:  Color(hex: "b7e9ff"),
+        bar: [Color(hex:"b7e9ff"), Color(hex:"6eb8f0"), Color(hex:"4e88ca"), Color(hex:"005B99"), Color(hex:"FFD700")],
+        cal: [Color(hex:"b7e9ff"), Color(hex:"6eb8f0"), Color(hex:"4e88ca"), Color(hex:"005B99"), Color(hex:"FFD700")],
         isDark: false
     )
 }

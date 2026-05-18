@@ -1,46 +1,193 @@
 /* Timer */
-"timer.mode.countdown"    = "Countdown";
-"timer.mode.stopwatch"    = "Stopwatch";
-"timer.action.start"      = "Start";
-"timer.action.stop"       = "Hold to stop";
-"timer.action.pause"      = "Paused";
+"timer.mode.countdown"        = "Countdown";
+"timer.mode.stopwatch"        = "Stopwatch";
+"timer.action.start"          = "Start";
+"timer.action.stop"           = "Hold to stop";
+"timer.action.pause"          = "Paused";
+"timer.bpm"                   = "BPM";
+"timer.done"                  = "Done";
+"timer.second.format"         = ": %02d";
 
 /* Report tabs */
-"report.tab.day"          = "Day";
-"report.tab.week"         = "Week";
-"report.tab.month"        = "Month";
-"report.tab.year"         = "Year";
+"report.tab.day"              = "Day";
+"report.tab.week"             = "Week";
+"report.tab.month"            = "Month";
+"report.tab.year"             = "Year";
+
+/* Report sections */
+"report.section.summary"      = "SUMMARY";
+"report.section.sessions"     = "SESSIONS";
+"report.section.chart"        = "CHART";
+"report.noData"               = "No data";
+"report.total"                = "total";
+"report.label.duration"       = "DURATION";
+"report.unit.min"             = "min";
+"report.unit.hrs"             = "hrs";
+"report.unit.hour"            = "hour";
+"report.unit.day"             = "day";
 
 /* Metrics */
-"report.metric.duration"  = "Duration";
-"report.metric.distance"  = "Distance";
-"report.metric.calories"  = "Calories";
-"report.metric.steps"     = "Steps";
-"report.metric.avgHR"     = "Avg HR";
-"report.metric.maxHR"     = "Max HR";
-"report.metric.cadence"   = "Avg Cadence";
+"report.metric.duration"      = "Duration";
+"report.metric.distance"      = "Distance";
+"report.metric.calories"      = "Calories";
+"report.metric.steps"         = "Steps";
+"report.metric.avgHR"         = "Avg HR";
+"report.metric.maxHR"         = "Max HR";
+"report.metric.cadence"       = "Avg Cadence";
+"report.metric.count"         = "Runs";
 
-/* Summary */
-"summary.done"            = "Done";
-"summary.share"           = "Share";
-"summary.streak"          = "day streak";
-"summary.goalReached"     = "Goal reached";
-"summary.noRuns"          = "No runs yet";
+/* Session detail */
+"session.total"               = "total";
+"session.summary"             = "SUMMARY";
+"session.stat.distance"       = "Distance";
+"session.stat.calories"       = "Calories";
+"session.stat.steps"          = "Steps";
+"session.stat.avgHR"          = "Avg HR";
+"session.stat.maxHR"          = "Max HR";
+"session.stat.cadence"        = "Cadence";
+"session.unit.min"            = "min";
+"session.unit.km"             = "km";
+"session.unit.kcal"           = "kcal";
+"session.unit.bpm"            = "bpm";
+"session.unit.spm"            = "spm";
+
+/* Streak toast */
+"streak.days"                 = "day streak";
+"streak.msg.1a"               = "The hardest one. You did it.";
+"streak.msg.1b"               = "You showed up. That's everything.";
+"streak.msg.1c"               = "It starts today.";
+"streak.msg.2a"               = "Still going. Good.";
+"streak.msg.2b"               = "Momentum starts here.";
+"streak.msg.2c"               = "Back again. That matters.";
+"streak.msg.4a"               = "Your legs remember.";
+"streak.msg.4b"               = "Halfway to a week. Don't stop.";
+"streak.msg.4c"               = "You're building something.";
+"streak.msg.7a"               = "One full week. You earned this.";
+"streak.msg.7b"               = "A week of showing up.";
+"streak.msg.7c"               = "Slow and steady.";
+"streak.msg.14a"              = "This is becoming a habit.";
+"streak.msg.14b"              = "You're different now.";
+"streak.msg.14c"              = "The habit is setting in.";
+"streak.msg.def.a"            = "Remarkable.";
+"streak.msg.def.b"            = "No excuses, just runs.";
+"streak.msg.def.c"            = "The body adapts.";
+
+/* Summary screen */
+"summary.completed"           = "MIN · COMPLETED";
+"summary.stat.avgHR"          = "Avg HR";
+"summary.stat.bpm"            = "BPM";
+"summary.stat.goal"           = "Goal";
+"summary.stat.total"          = "Total";
+"summary.streak"              = "day streak";
+"summary.done"                = "Done";
+"summary.share"               = "Share";
 
 /* Settings */
-"settings.appearance"     = "Appearance";
-"settings.display"        = "Display";
-"settings.defaults"       = "Defaults";
-"settings.widget"         = "Widget";
-"settings.notifications"  = "Notifications";
-"settings.dataSync"       = "Data & Sync";
-"settings.language"       = "Language";
-"settings.theme"          = "Theme";
+"settings.title"              = "Settings";
+"settings.section.appearance" = "APPEARANCE";
+"settings.section.display"    = "DISPLAY";
+"settings.section.defaults"   = "DEFAULTS";
+"settings.section.widget"     = "WIDGET";
+"settings.section.system"     = "SYSTEM";
+"settings.row.theme"          = "Theme";
+"settings.row.language"       = "Language";
+"settings.row.display"        = "Display";
+"settings.row.training"       = "Training";
+"settings.row.widget"         = "Widget";
+"settings.row.notifications"  = "Notifications";
+"settings.row.dataSync"       = "Data & Sync";
+
+/* Display settings */
+"display.title"               = "Display";
+"display.section.timerMode"   = "TIMER MODE";
+"display.section.timeFormat"  = "TIME FORMAT";
+"display.section.duringRun"   = "DURING RUN";
+"display.timerMode.countdown" = "Countdown";
+"display.timerMode.stopwatch" = "Stopwatch";
+"display.timeFormat.plain"    = "Plain minutes";
+"display.timeFormat.hhmm"     = "HH:MM";
+"display.metric.heartRate"    = "Heart Rate";
+"display.metric.distance"     = "Distance";
+"display.metric.calories"     = "Calories";
+"display.metric.steps"        = "Steps";
+
+/* Training defaults */
+"defaults.title"              = "Training Defaults";
+"defaults.section.time"       = "TIME";
+"defaults.section.beat"       = "BEAT";
+"defaults.row.duration"       = "Duration";
+"defaults.row.dailyGoal"      = "Daily Goal";
+"defaults.row.bpm"            = "BPM";
+"defaults.row.sound"          = "Sound";
+"defaults.row.lockVolume"     = "Lock Volume";
+"defaults.row.haptic"         = "Haptic";
+"defaults.sound.tap"          = "Tap";
+"defaults.sound.bell"         = "Bell";
+"defaults.sound.drum"         = "Drum";
+"defaults.sound.wood"         = "Wood";
+
+/* Widget settings */
+"widget.title"                = "Widget";
 
 /* Notifications */
-"notif.title"             = "Time to run.";
-"notif.body"              = "Your slow jog is waiting.";
+"notif.title.screen"          = "Notifications";
+"notif.section.reminder"      = "REMINDER";
+"notif.row.dailyReminder"     = "Daily Reminder";
+"notif.row.time"              = "Time";
+"notif.push.title"            = "Time to run.";
+"notif.push.body"             = "Your slow jog is waiting.";
+
+/* Data & Sync */
+"dataSync.title"              = "Data & Sync";
+"dataSync.section.integrations" = "INTEGRATIONS";
+"dataSync.section.data"       = "DATA";
+"dataSync.row.appleHealth"    = "Apple Health";
+"dataSync.row.iCloud"         = "iCloud Sync";
+"dataSync.row.exportCSV"      = "Export CSV";
+"dataSync.row.clearAll"       = "Clear All Data";
+"dataSync.confirm.title"      = "Delete all run data?";
+"dataSync.confirm.delete"     = "Delete All";
+"dataSync.confirm.cancel"     = "Cancel";
+
+/* Language */
+"language.title"              = "Language";
+"language.english"            = "English";
+"language.chinese"            = "Traditional Chinese";
+
+/* Theme */
+"theme.title"                 = "Theme";
 
 /* Errors */
-"error.saveFailed"        = "Couldn't save. Try again.";
-"error.healthkit"         = "Health access unavailable.";
+"error.saveFailed"            = "Couldn't save. Try again.";
+"error.healthkit"             = "Health access unavailable.";
+
+/* Heatmap day labels */
+"heatmap.mon"                 = "Mon";
+"heatmap.tue"                 = "Tue";
+"heatmap.wed"                 = "Wed";
+"heatmap.thu"                 = "Thu";
+"heatmap.fri"                 = "Fri";
+"heatmap.sat"                 = "Sat";
+"heatmap.sun"                 = "Sun";
+
+/* Heatmap month labels */
+"heatmap.month.jan"           = "Jan";
+"heatmap.month.feb"           = "Feb";
+"heatmap.month.mar"           = "Mar";
+"heatmap.month.apr"           = "Apr";
+"heatmap.month.may"           = "May";
+"heatmap.month.jun"           = "Jun";
+"heatmap.month.jul"           = "Jul";
+"heatmap.month.aug"           = "Aug";
+"heatmap.month.sep"           = "Sep";
+"heatmap.month.oct"           = "Oct";
+"heatmap.month.nov"           = "Nov";
+"heatmap.month.dec"           = "Dec";
+
+/* Report nav title */
+"report.title"                = "Report";
+
+/* Data & Sync additions */
+"dataSync.row.importCSV"      = "Import CSV";
+"dataSync.icloud.note"        = "Restart app to apply iCloud changes.";
+"dataSync.import.error"       = "Couldn't import. Check the file format.";

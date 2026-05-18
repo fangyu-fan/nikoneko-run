@@ -3,8 +3,10 @@ import SwiftData
 
 struct DisplayView: View {
     @Environment(ThemeManager.self) private var themeManager
+    @Environment(LanguageManager.self) private var lm
     @Query private var profiles: [UserProfile]
     @Environment(\.modelContext) private var ctx
+    @Environment(\.dismiss) private var dismiss
 
     private var theme: ThemeTokens { themeManager.current }
     private var profile: UserProfile? { profiles.first }
@@ -12,40 +14,50 @@ struct DisplayView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                sectionLabel("Timer Mode")
+                sectionLabel(lm.L("display.section.timerMode"))
                 radioCard([
-                    ("timer",       "Countdown",
+                    ("timer",       lm.L("display.timerMode.countdown"),
                      (profile?.timerMode ?? .countdown) == .countdown,
                      { profile?.timerMode = .countdown; try? ctx.save() }),
-                    ("stopwatch",   "Stopwatch",
+                    ("stopwatch",   lm.L("display.timerMode.stopwatch"),
                      (profile?.timerMode ?? .countdown) == .stopwatch,
                      { profile?.timerMode = .stopwatch; try? ctx.save() }),
                 ])
 
-                sectionLabel("Time Format")
+                sectionLabel(lm.L("display.section.timeFormat"))
                 radioCard([
-                    ("textformat.123", "Plain minutes",
+                    ("textformat.123", lm.L("display.timeFormat.plain"),
                      (profile?.timeDisplayFormat ?? .plainMinutes) == .plainMinutes,
                      { profile?.timeDisplayFormat = .plainMinutes; try? ctx.save() }),
-                    ("clock",          "HH:MM",
+                    ("clock",          lm.L("display.timeFormat.hhmm"),
                      (profile?.timeDisplayFormat ?? .plainMinutes) == .hhMM,
                      { profile?.timeDisplayFormat = .hhMM; try? ctx.save() }),
                 ])
 
-                sectionLabel("During Run")
+                sectionLabel(lm.L("display.section.duringRun"))
                 toggleCard([
-                    ("heart",         "Heart Rate", bindBool(\.showHR)),
-                    ("location.circle","Distance",  bindBool(\.showDistance)),
-                    ("flame",          "Calories",  bindBool(\.showCalories)),
-                    ("figure.walk",    "Steps",     bindBool(\.showSteps)),
+                    ("heart",          lm.L("display.metric.heartRate"), bindBool(\.showHR)),
+                    ("location.circle", lm.L("display.metric.distance"),  bindBool(\.showDistance)),
+                    ("flame",           lm.L("display.metric.calories"),  bindBool(\.showCalories)),
+                    ("shoeprints.fill",     lm.L("display.metric.steps"),     bindBool(\.showSteps)),
                 ])
             }
             .padding(.horizontal, 18)
             .padding(.top, 8)
         }
         .background(theme.bg.ignoresSafeArea())
-        .navigationTitle("Display")
+        .navigationTitle(lm.L("display.title"))
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button { dismiss() } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 16, weight: .regular))
+                        .foregroundColor(theme.textMid)
+                }
+            }
+        }
     }
 
     private func sectionLabel(_ text: String) -> some View {
@@ -81,6 +93,7 @@ struct DisplayView: View {
                     .padding(.vertical, 13)
                     .padding(.horizontal, 16)
                     .frame(minHeight: 50)
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 if i < items.count - 1 {
@@ -130,7 +143,11 @@ struct DisplayView: View {
     private func bindBool(_ kp: ReferenceWritableKeyPath<UserProfile, Bool>) -> Binding<Bool> {
         Binding(
             get: { profile?[keyPath: kp] ?? false },
-            set: { v in profile?[keyPath: kp] = v; try? ctx.save() }
+            set: { v in
+                guard let p = profile else { return }
+                p[keyPath: kp] = v
+                try? ctx.save()
+            }
         )
     }
 }

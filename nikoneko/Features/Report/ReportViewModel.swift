@@ -116,7 +116,7 @@ final class ReportViewModel {
         case .duration:  return "timer"
         case .distance:  return "location.circle"
         case .calories:  return "flame"
-        case .steps:     return "figure.walk"
+        case .steps:     return "shoeprints.fill"
         case .hrAvg:     return "heart"
         case .hrMax:     return "heart"
         case .count:     return "number.circle"
@@ -125,25 +125,25 @@ final class ReportViewModel {
 
     func metricUnit(_ metric: Metric) -> String {
         switch metric {
-        case .duration:  return "min"
-        case .distance:  return "km"
-        case .calories:  return "kcal"
-        case .steps:     return "steps"
-        case .hrAvg:     return "bpm"
-        case .hrMax:     return "bpm"
-        case .count:     return "times"
+        case .duration:  return NSLocalizedString("report.unit.min", comment: "")
+        case .distance:  return NSLocalizedString("session.unit.km", comment: "")
+        case .calories:  return NSLocalizedString("session.unit.kcal", comment: "")
+        case .steps:     return NSLocalizedString("report.metric.steps", comment: "")
+        case .hrAvg:     return NSLocalizedString("session.unit.bpm", comment: "")
+        case .hrMax:     return NSLocalizedString("session.unit.bpm", comment: "")
+        case .count:     return NSLocalizedString("report.metric.count", comment: "")
         }
     }
 
     func metricLabel(_ metric: Metric) -> String {
         switch metric {
-        case .duration:  return "Duration"
-        case .distance:  return "Distance"
-        case .calories:  return "Calories"
-        case .steps:     return "Steps"
-        case .hrAvg:     return "Avg HR"
-        case .hrMax:     return "Max HR"
-        case .count:     return "Sessions"
+        case .duration:  return NSLocalizedString("report.metric.duration", comment: "")
+        case .distance:  return NSLocalizedString("report.metric.distance", comment: "")
+        case .calories:  return NSLocalizedString("report.metric.calories", comment: "")
+        case .steps:     return NSLocalizedString("report.metric.steps", comment: "")
+        case .hrAvg:     return NSLocalizedString("report.metric.avgHR", comment: "")
+        case .hrMax:     return NSLocalizedString("report.metric.maxHR", comment: "")
+        case .count:     return NSLocalizedString("report.metric.count", comment: "")
         }
     }
 

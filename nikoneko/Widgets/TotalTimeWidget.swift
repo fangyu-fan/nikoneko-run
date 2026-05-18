@@ -1,38 +1,44 @@
 import WidgetKit
 import SwiftUI
 
-struct TotalTimeEntry: TimelineEntry {
+struct TodayDurationEntry: TimelineEntry {
     let date: Date
-    let totalHours: Double
+    let durationMin: Int
     let theme: ThemeTokens
 }
 
-struct TotalTimeProvider: TimelineProvider {
-    func placeholder(in context: Context) -> TotalTimeEntry {
-        TotalTimeEntry(date: Date(), totalHours: 48.4, theme: ThemeLibrary.obsidian)
+struct TodayDurationProvider: TimelineProvider {
+    func placeholder(in context: Context) -> TodayDurationEntry {
+        TodayDurationEntry(date: Date(), durationMin: 24, theme: ThemeLibrary.obsidian)
     }
-    func getSnapshot(in context: Context, completion: @escaping (TotalTimeEntry) -> Void) {
+    func getSnapshot(in context: Context, completion: @escaping (TodayDurationEntry) -> Void) {
         completion(entry())
     }
-    func getTimeline(in context: Context, completion: @escaping (Timeline<TotalTimeEntry>) -> Void) {
+    func getTimeline(in context: Context, completion: @escaping (Timeline<TodayDurationEntry>) -> Void) {
         let next = Calendar.current.date(byAdding: .hour, value: 1, to: Date())!
         completion(Timeline(entries: [entry()], policy: .after(next)))
     }
-    private func entry() -> TotalTimeEntry {
-        let theme = WidgetSharedData.loadTheme()
-        let total = AppGroupDefaults.loadSummaries().reduce(0) { $0 + $1.duration } / 3600
-        return TotalTimeEntry(date: Date(), totalHours: total, theme: theme)
+    private func entry() -> TodayDurationEntry {
+        let theme = WidgetTheme.load(for: "widget.todayDuration.themeId")
+        let stats = WidgetTheme.todayStats(from: AppGroupDefaults.loadSummaries())
+        return TodayDurationEntry(date: Date(), durationMin: stats.durationMin, theme: theme)
     }
 }
 
-struct TotalTimeWidgetView: View {
-    let entry: TotalTimeEntry
+struct TodayDurationWidgetView: View {
+    let entry: TodayDurationEntry
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("TOTAL").font(.system(size: 8)).tracking(1).foregroundColor(entry.theme.textDim)
-            Text(String(format: "%.1f", entry.totalHours))
-                .font(.system(size: 32, weight: .ultraLight)).foregroundColor(entry.theme.accent)
-            Text("hours").font(.system(size: 9)).foregroundColor(entry.theme.textDim)
+            Text("TODAY")
+                .font(.system(size: 8)).tracking(1)
+                .foregroundColor(entry.theme.textDim)
+            Text("\(entry.durationMin)")
+                .font(.system(size: 44, weight: .ultraLight))
+                .foregroundColor(entry.theme.accent)
+                .monospacedDigit()
+            Text("min today")
+                .font(.system(size: 9))
+                .foregroundColor(entry.theme.textDim)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .padding(14)
@@ -41,14 +47,14 @@ struct TotalTimeWidgetView: View {
     }
 }
 
-struct TotalTimeWidget: Widget {
-    let kind = "TotalTimeWidget"
+struct TodayDurationWidget: Widget {
+    let kind = "TodayDurationWidget"
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: TotalTimeProvider()) { entry in
-            TotalTimeWidgetView(entry: entry)
+        StaticConfiguration(kind: kind, provider: TodayDurationProvider()) { entry in
+            TodayDurationWidgetView(entry: entry)
         }
-        .configurationDisplayName("Total Time")
-        .description("Cumulative jogging hours.")
+        .configurationDisplayName("Today Duration")
+        .description("Minutes jogged today.")
         .supportedFamilies([.systemSmall])
     }
 }

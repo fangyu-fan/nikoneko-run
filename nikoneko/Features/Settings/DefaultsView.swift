@@ -3,57 +3,57 @@ import SwiftData
 
 struct DefaultsView: View {
     @Environment(ThemeManager.self) private var themeManager
+    @Environment(LanguageManager.self) private var lm
     @Query private var profiles: [UserProfile]
+    @Query private var configs: [ThresholdConfig]
     @Environment(\.modelContext) private var ctx
+    @Environment(\.dismiss) private var dismiss
 
     private var theme: ThemeTokens { themeManager.current }
     private var profile: UserProfile? { profiles.first }
+    private var config: ThresholdConfig? { configs.first }
+
+    // Local drag state — committed to SwiftData on drag end
+    @State private var t1: Double = 25
+    @State private var t2: Double = 60
+    @State private var t3: Double = 90
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                sectionLabel("Time")
+                sectionLabel(lm.L("defaults.section.time"))
                 VStack(spacing: 0) {
-                    stepperRow(icon: "timer", name: "Duration",
+                    stepperRow(icon: "timer", name: lm.L("defaults.row.duration"),
                                value: profile?.defaultDuration ?? 15,
                                step: 5, range: 5...999) { v in
                         profile?.defaultDuration = v; try? ctx.save()
                     }
-                    Rectangle()
-                        .fill(theme.accentDim)
-                        .frame(height: 0.5)
-                    stepperRow(icon: "flag", name: "Daily Goal",
+                    Rectangle().fill(theme.accentDim).frame(height: 0.5)
+                    stepperRow(icon: "flag", name: lm.L("defaults.row.dailyGoal"),
                                value: profile?.dailyGoalMinutes ?? 15,
                                step: 5, range: 5...999) { v in
                         profile?.dailyGoalMinutes = v; try? ctx.save()
                     }
+                    Rectangle().fill(theme.accentDim).frame(height: 0.5)
+                    thresholdSlider
                 }
                 .background(theme.surface)
                 .cornerRadius(14)
                 .padding(.bottom, 4)
 
-                sectionLabel("Beat")
+                sectionLabel(lm.L("defaults.section.beat"))
                 VStack(spacing: 0) {
-                    stepperRow(icon: "metronome", name: "BPM",
+                    stepperRow(icon: "metronome", name: lm.L("defaults.row.bpm"),
                                value: profile?.defaultBPM ?? 180,
                                step: 1, range: 140...220,
                                isBPM: true) { v in
                         profile?.defaultBPM = v; try? ctx.save()
                     }
-                    Rectangle()
-                        .fill(theme.accentDim)
-                        .frame(height: 0.5)
+                    Rectangle().fill(theme.accentDim).frame(height: 0.5)
                     soundRow
-                    Rectangle()
-                        .fill(theme.accentDim)
-                        .frame(height: 0.5)
-                    Rectangle()
-                        .fill(theme.accentDim)
-                        .frame(height: 0.5)
+                    Rectangle().fill(theme.accentDim).frame(height: 0.5)
                     lockVolumeRow
-                    Rectangle()
-                        .fill(theme.accentDim)
-                        .frame(height: 0.5)
+                    Rectangle().fill(theme.accentDim).frame(height: 0.5)
                     hapticRow
                 }
                 .background(theme.surface)
@@ -64,9 +64,147 @@ struct DefaultsView: View {
             .padding(.top, 8)
         }
         .background(theme.bg.ignoresSafeArea())
-        .navigationTitle("Training Defaults")
+        .navigationTitle(lm.L("defaults.title"))
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button { dismiss() } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 16, weight: .regular))
+                        .foregroundColor(theme.textMid)
+                }
+            }
+        }
+        .onAppear {
+            ensureConfig()
+            t1 = Double(config?.threshold1 ?? 25)
+            t2 = Double(config?.threshold2 ?? 60)
+            t3 = Double(config?.threshold3 ?? 90)
+        }
+        .onChange(of: config?.threshold1) { _, v in if let v { t1 = Double(v) } }
+        .onChange(of: config?.threshold2) { _, v in if let v { t2 = Double(v) } }
+        .onChange(of: config?.threshold3) { _, v in if let v { t3 = Double(v) } }
     }
+
+    // MARK: - Threshold Slider
+
+    private var thresholdSlider: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Image(systemName: "chart.bar.fill")
+                    .font(.system(size: 16))
+                    .foregroundColor(theme.text)
+                    .frame(width: 20)
+                Text("Goal Thresholds")
+                    .font(.system(size: 16))
+                    .foregroundColor(theme.text)
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 14)
+
+            GeometryReader { geo in
+                let w = geo.size.width
+                let minGap: Double = 5
+                let barH: CGFloat = 10
+                let handleR: CGFloat = 14
+
+                ZStack(alignment: .leading) {
+                    // Segmented gradient bar
+                    HStack(spacing: 0) {
+                        // 0 → t1 : cal[0]
+                        theme.cal[0].frame(width: w * t1 / 100)
+                        // t1 → t2 : cal[2]
+                        theme.cal[2].frame(width: w * (t2 - t1) / 100)
+                        // t2 → t3 : cal[3]
+                        theme.cal[3].frame(width: w * (t3 - t2) / 100)
+                        // t3 → 100 : cal[4]
+                        theme.cal[4].frame(maxWidth: .infinity)
+                    }
+                    .frame(height: barH)
+                    .cornerRadius(barH / 2)
+
+                    // Handle T1
+                    handle(color: theme.cal[1])
+                        .position(x: w * t1 / 100, y: barH / 2)
+                        .gesture(DragGesture(minimumDistance: 0)
+                            .onChanged { v in
+                                let pct = (v.location.x / w * 100).clamped(to: 1...(t2 - minGap))
+                                t1 = pct
+                            }
+                            .onEnded { _ in
+                                config?.threshold1 = Int(t1.rounded())
+                                try? ctx.save()
+                            })
+
+                    // Handle T2
+                    handle(color: theme.cal[2])
+                        .position(x: w * t2 / 100, y: barH / 2)
+                        .gesture(DragGesture(minimumDistance: 0)
+                            .onChanged { v in
+                                let pct = (v.location.x / w * 100).clamped(to: (t1 + minGap)...(t3 - minGap))
+                                t2 = pct
+                            }
+                            .onEnded { _ in
+                                config?.threshold2 = Int(t2.rounded())
+                                try? ctx.save()
+                            })
+
+                    // Handle T3
+                    handle(color: theme.cal[3])
+                        .position(x: w * t3 / 100, y: barH / 2)
+                        .gesture(DragGesture(minimumDistance: 0)
+                            .onChanged { v in
+                                let pct = (v.location.x / w * 100).clamped(to: (t2 + minGap)...99)
+                                t3 = pct
+                            }
+                            .onEnded { _ in
+                                config?.threshold3 = Int(t3.rounded())
+                                try? ctx.save()
+                            })
+                }
+                .frame(height: handleR * 2)
+            }
+            .frame(height: 28)
+            .padding(.horizontal, 16)
+
+            // Labels row
+            HStack(spacing: 0) {
+                Text("0%")
+                    .frame(width: 0, alignment: .leading)
+                Spacer()
+                    .frame(width: CGFloat(t1) / 100 * 1) // placeholder — real spacing via HStack
+                Text("\(Int(t1.rounded()))%")
+                    .foregroundColor(theme.textMid)
+                Spacer()
+                Text("\(Int(t2.rounded()))%")
+                    .foregroundColor(theme.textMid)
+                Spacer()
+                Text("\(Int(t3.rounded()))%")
+                    .foregroundColor(theme.textMid)
+                Spacer()
+                Text("100%")
+            }
+            .font(.system(size: 10))
+            .foregroundColor(theme.textDim)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 14)
+        }
+    }
+
+    private func handle(color: Color) -> some View {
+        ZStack {
+            Circle()
+                .fill(theme.surface)
+                .frame(width: 22, height: 22)
+                .shadow(color: .black.opacity(0.15), radius: 3, y: 1)
+            Circle()
+                .fill(color)
+                .frame(width: 12, height: 12)
+        }
+    }
+
+    // MARK: - Section helpers
 
     private func sectionLabel(_ text: String) -> some View {
         Text(text.uppercased())
@@ -92,17 +230,13 @@ struct DefaultsView: View {
                 .foregroundColor(theme.text)
             Spacer()
             HStack(spacing: 8) {
-                stepButton("−") {
-                    onChange(max(range.lowerBound, value - step))
-                }
+                stepButton("−") { onChange(max(range.lowerBound, value - step)) }
                 Text("\(value)")
                     .font(.system(size: 16, weight: .ultraLight))
                     .foregroundColor(theme.text)
                     .monospacedDigit()
                     .frame(minWidth: isBPM ? 40 : 52, alignment: .center)
-                stepButton("+") {
-                    onChange(min(range.upperBound, value + step))
-                }
+                stepButton("+") { onChange(min(range.upperBound, value + step)) }
             }
         }
         .padding(.vertical, 13)
@@ -116,10 +250,23 @@ struct DefaultsView: View {
                 .font(.system(size: 16))
                 .foregroundColor(theme.text)
                 .frame(width: 26, height: 26)
-                .overlay(Circle().stroke(theme.accentDim, lineWidth: 0.5))
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .overlay(Circle().stroke(theme.accentDim, lineWidth: 0.5).frame(width: 26, height: 26))
     }
+
+    private func ensureConfig() {
+        guard configs.isEmpty else { return }
+        let c = ThresholdConfig(widgetKind: "defaults")
+        c.threshold1 = 25
+        c.threshold2 = 60
+        c.threshold3 = 90
+        ctx.insert(c)
+        try? ctx.save()
+    }
+
+    // MARK: - Beat rows
 
     private var soundRow: some View {
         HStack(spacing: 10) {
@@ -127,7 +274,7 @@ struct DefaultsView: View {
                 .font(.system(size: 16))
                 .foregroundColor(theme.text)
                 .frame(width: 20)
-            Text("Sound")
+            Text(lm.L("defaults.row.sound"))
                 .font(.system(size: 16))
                 .foregroundColor(theme.text)
             Spacer()
@@ -144,7 +291,7 @@ struct DefaultsView: View {
                 .font(.system(size: 16))
                 .foregroundColor(theme.text)
                 .frame(width: 20)
-            Text("Lock Volume")
+            Text(lm.L("defaults.row.lockVolume"))
                 .font(.system(size: 16))
                 .foregroundColor(theme.text)
             Spacer()
@@ -158,7 +305,12 @@ struct DefaultsView: View {
     }
 
     private var soundPicker: some View {
-        let options: [(SoundType, String)] = [(.tap, "叩"), (.bell, "鈴"), (.drum, "鼓"), (.wood, "木")]
+        let options: [(SoundType, String)] = [
+            (.tap,  lm.L("defaults.sound.tap")),
+            (.bell, lm.L("defaults.sound.bell")),
+            (.drum, lm.L("defaults.sound.drum")),
+            (.wood, lm.L("defaults.sound.wood")),
+        ]
         let current = profile?.soundType ?? .tap
         return HStack(spacing: 2) {
             ForEach(options, id: \.0) { (type, label) in
@@ -185,7 +337,7 @@ struct DefaultsView: View {
                 .font(.system(size: 16))
                 .foregroundColor(theme.text)
                 .frame(width: 20)
-            Text("Haptic")
+            Text(lm.L("defaults.row.haptic"))
                 .font(.system(size: 16))
                 .foregroundColor(theme.text)
             Spacer()
@@ -201,7 +353,19 @@ struct DefaultsView: View {
     private func bindBool(_ kp: ReferenceWritableKeyPath<UserProfile, Bool>) -> Binding<Bool> {
         Binding(
             get: { profile?[keyPath: kp] ?? false },
-            set: { v in profile?[keyPath: kp] = v; try? ctx.save() }
+            set: { v in
+                guard let p = profile else { return }
+                p[keyPath: kp] = v
+                try? ctx.save()
+            }
         )
+    }
+}
+
+// MARK: - Clamped helper
+
+private extension Double {
+    func clamped(to range: ClosedRange<Double>) -> Double {
+        min(range.upperBound, max(range.lowerBound, self))
     }
 }

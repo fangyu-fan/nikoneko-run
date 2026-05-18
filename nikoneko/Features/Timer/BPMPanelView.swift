@@ -3,6 +3,7 @@ import SwiftUI
 struct BPMPanelView: View {
     @Binding var bpm: Int
     @Environment(ThemeManager.self) private var themeManager
+    @Environment(LanguageManager.self) private var lm
     @FocusState private var isEditing: Bool
     @State private var inputText: String = ""
 
@@ -12,7 +13,7 @@ struct BPMPanelView: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            Text("BPM")
+            Text(lm.L("timer.bpm"))
                 .font(.system(size: 14, weight: .medium))
                 .tracking(1)
                 .foregroundColor(theme.textDim)
@@ -61,7 +62,7 @@ struct BPMPanelView: View {
             }
 
             if isEditing {
-                Button("Done") { commitInput() }
+                Button(lm.L("timer.done")) { commitInput() }
                     .font(.system(size: 14, weight: .medium))
                     .foregroundColor(theme.accent)
                     .padding(.top, 4)
@@ -82,14 +83,17 @@ struct BPMPanelView: View {
     }
 
     private func bpmButton(label: String, delta: Int) -> some View {
-        Button(label) {
+        Button {
             bpm = min(maxBPM, max(minBPM, bpm + delta))
+        } label: {
+            Text(label)
+                .font(.system(size: 15))
+                .foregroundColor(theme.text)
+                .frame(width: 52, height: 52)
+                .contentShape(Rectangle())
         }
-        .font(.system(size: 15))
-        .foregroundColor(theme.text)
-        .frame(width: 52, height: 52)
+        .buttonStyle(.plain)
         .background(theme.card)
         .cornerRadius(10)
-        .fixedSize()
     }
 }

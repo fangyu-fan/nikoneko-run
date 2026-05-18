@@ -5,9 +5,12 @@ import SwiftUI
 struct NikoNekoWidgetBundle: WidgetBundle {
     var body: some Widget {
         StreakWidget()
-        TotalTimeWidget()
+        TodayDurationWidget()
+        TodayDistanceWidget()
+        TodayStepsWidget()
         HeatmapWidget()
         CalendarWidget()
+        AllStatsWidget()
         NikoNekoLiveActivityView()
     }
 }

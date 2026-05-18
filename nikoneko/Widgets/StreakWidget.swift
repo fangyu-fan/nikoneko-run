@@ -19,7 +19,7 @@ struct StreakProvider: TimelineProvider {
         completion(Timeline(entries: [entry()], policy: .after(next)))
     }
     private func entry() -> StreakEntry {
-        let theme = WidgetSharedData.loadTheme()
+        let theme = WidgetTheme.load(for: "widget.streak.themeId")
         let summaries = AppGroupDefaults.loadSummaries()
         let goal = max(AppGroupDefaults.shared.integer(forKey: "dailyGoalMinutes"), 1)
         let streak = AppGroupDefaults.currentStreak(from: summaries, goalMinutes: goal)
@@ -31,10 +31,16 @@ struct StreakWidgetView: View {
     let entry: StreakEntry
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("STREAK").font(.system(size: 8)).tracking(1).foregroundColor(entry.theme.textDim)
+            Text("STREAK")
+                .font(.system(size: 8)).tracking(1)
+                .foregroundColor(entry.theme.textDim)
             Text("\(entry.streak)")
-                .font(.system(size: 32, weight: .ultraLight)).foregroundColor(entry.theme.accent)
-            Text("days").font(.system(size: 9)).foregroundColor(entry.theme.textDim)
+                .font(.system(size: 44, weight: .ultraLight))
+                .foregroundColor(entry.theme.accent)
+                .monospacedDigit()
+            Text("day streak")
+                .font(.system(size: 9))
+                .foregroundColor(entry.theme.textDim)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .padding(14)

@@ -33,21 +33,32 @@ final class MetronomeService {
     }
 
     private func loadBuffer() {
+        // Use the engine's output sample rate so buffer format always matches
+        let engineSampleRate = engine.mainMixerNode.outputFormat(forBus: 0).sampleRate
+        let sampleRate = engineSampleRate > 0 ? engineSampleRate : 44100
+
         if let url = Bundle.main.url(forResource: soundType.rawValue, withExtension: "wav"),
            let file = try? AVAudioFile(forReading: url) {
             let format = file.processingFormat
             let frameCount = AVAudioFrameCount(file.length)
-            if let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount) {
+            if let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount),
+               buf.frameCapacity > 0 {
                 try? file.read(into: buf)
                 buffer = buf
+            } else {
+                buffer = synthesizeClick(sampleRate: sampleRate)
             }
         } else {
-            buffer = synthesizeClick(sampleRate: 44100)
+            buffer = synthesizeClick(sampleRate: sampleRate)
         }
     }
 
     private func synthesizeClick(sampleRate: Double) -> AVAudioPCMBuffer? {
-        let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1)!
+        // Must match engine output format — use same sample rate and channel count
+        let outputFormat = engine.mainMixerNode.outputFormat(forBus: 0)
+        let channels = outputFormat.channelCount > 0 ? outputFormat.channelCount : 1
+        let rate = outputFormat.sampleRate > 0 ? outputFormat.sampleRate : sampleRate
+        guard let format = AVAudioFormat(standardFormatWithSampleRate: rate, channels: channels) else { return nil }
         // 40ms click — enough for a wood block transient
         let frameCount: AVAudioFrameCount = AVAudioFrameCount(sampleRate * 0.04)
         guard let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount) else { return nil }
@@ -73,13 +84,19 @@ final class MetronomeService {
 
     func start() {
         isPlaying = true
-        if !engine.isRunning { try? engine.start() }
+        if !engine.isRunning {
+            do { try engine.start() } catch { isPlaying = false; return }
+        }
         nextBeatTime = AVAudioTime(hostTime: mach_absolute_time())
         scheduleBeat()
     }
 
     private func scheduleBeat() {
-        guard isPlaying, let buf = buffer, let beatTime = nextBeatTime else { return }
+        guard isPlaying,
+              let buf = buffer,
+              buf.frameLength > 0,
+              let beatTime = nextBeatTime,
+              engine.isRunning else { return }
         player.scheduleBuffer(buf, at: beatTime, options: []) { [weak self] in
             Task { @MainActor [weak self] in
                 guard let self, self.isPlaying else { return }

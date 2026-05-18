@@ -20,9 +20,12 @@ struct CalendarProvider: TimelineProvider {
         completion(Timeline(entries: [entry()], policy: .after(next)))
     }
     private func entry() -> CalendarEntry {
-        CalendarEntry(
+        let themeId = AppGroupDefaults.shared.string(forKey: "widget.calendar.themeId")
+            ?? AppGroupDefaults.shared.string(forKey: "activeThemeId") ?? "obsidian"
+        let theme = ThemeLibrary.all.first { $0.id == themeId } ?? ThemeLibrary.obsidian
+        return CalendarEntry(
             date: Date(), summaries: AppGroupDefaults.loadSummaries(),
-            theme: WidgetSharedData.loadTheme(), t1: 10, t2: 50, t3: 90
+            theme: theme, t1: 10, t2: 50, t3: 90
         )
     }
 }

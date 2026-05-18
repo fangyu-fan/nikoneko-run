@@ -3,6 +3,7 @@ import SwiftUI
 struct DrumPickerView: View {
     @Binding var value: Int
     let range: ClosedRange<Int>
+    var hapticEnabled: Bool = true
 
     @Environment(ThemeManager.self) private var themeManager
     private var theme: ThemeTokens { themeManager.current }
@@ -47,7 +48,7 @@ struct DrumPickerView: View {
                     let steps = Int((-g.translation.height / rowHeight).rounded())
                     let preview = Self.clamped(baseValue + steps, to: range)
                     if preview != value {
-                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        if hapticEnabled { UIImpactFeedbackGenerator(style: .light).impactOccurred() }
                         value = preview
                     }
                 }

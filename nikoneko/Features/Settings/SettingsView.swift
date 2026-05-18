@@ -2,66 +2,66 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(ThemeManager.self) private var themeManager
+    @Environment(LanguageManager.self) private var lm
     private var theme: ThemeTokens { themeManager.current }
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    sectionLabel("Appearance")
-                    settingsCard {
-                        settingsRow(icon: "paintpalette", name: "Theme",
-                                    value: themeManager.current.id.capitalized,
-                                    destination: AppearanceView())
-                        Rectangle()
-                            .fill(theme.accentDim)
-                            .frame(height: 0.5)
-                            .padding(.leading, 44)
-                        settingsRow(icon: "globe", name: "Language", value: "English",
-                                    destination: AppearanceView())
-                    }
-
-                    sectionLabel("Display")
-                    settingsCard {
-                        settingsRow(icon: "eye", name: "Display", value: "plain min",
-                                    destination: DisplayView())
-                    }
-
-                    sectionLabel("Defaults")
-                    settingsCard {
-                        settingsRow(icon: "slider.horizontal.3", name: "Training", value: "15 min · 180 bpm",
-                                    destination: DefaultsView())
-                    }
-
-                    sectionLabel("Widget")
-                    settingsCard {
-                        settingsRow(icon: "rectangle.3.group", name: "Widget", value: "10 · 50 · 90",
-                                    destination: WidgetSettingsView())
-                    }
-
-                    sectionLabel("System")
-                    settingsCard {
-                        settingsRow(icon: "bell", name: "Notifications", value: "Off",
-                                    destination: NotificationsView())
-                        Rectangle()
-                            .fill(theme.accentDim)
-                            .frame(height: 0.5)
-                            .padding(.leading, 44)
-                        settingsRow(icon: "icloud", name: "Data & Sync", value: "",
-                                    destination: DataSyncView())
-                    }
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                sectionLabel(lm.L("settings.section.appearance"))
+                settingsCard {
+                    settingsRow(icon: "paintpalette", name: lm.L("settings.row.theme"),
+                                value: themeManager.current.id.capitalized.replacingOccurrences(of: "_", with: " "),
+                                destination: AppearanceView())
+                    divider
+                    settingsRow(icon: "globe", name: lm.L("settings.row.language"),
+                                value: "",
+                                destination: LanguageView())
                 }
-                .padding(.horizontal, 18)
-                .padding(.top, 8)
+
+                sectionLabel(lm.L("settings.section.display"))
+                settingsCard {
+                    settingsRow(icon: "iphone", name: lm.L("settings.row.display"),
+                                value: "",
+                                destination: DisplayView())
+                }
+
+                sectionLabel(lm.L("settings.section.defaults"))
+                settingsCard {
+                    settingsRow(icon: "slider.horizontal.3", name: lm.L("settings.row.training"),
+                                value: "",
+                                destination: DefaultsView())
+                }
+
+                sectionLabel(lm.L("settings.section.widget"))
+                settingsCard {
+                    settingsRow(icon: "rectangle.3.group", name: lm.L("settings.row.widget"),
+                                value: "",
+                                destination: WidgetSettingsView())
+                }
+
+                sectionLabel(lm.L("settings.section.system"))
+                settingsCard {
+                    settingsRow(icon: "bell", name: lm.L("settings.row.notifications"),
+                                value: "",
+                                destination: NotificationsView())
+                    divider
+                    settingsRow(icon: "icloud", name: lm.L("settings.row.dataSync"),
+                                value: "",
+                                destination: DataSyncView())
+                }
             }
-            .background(theme.bg.ignoresSafeArea())
-            .navigationTitle("Settings")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    backButton
-                }
+            .padding(.horizontal, 18)
+            .padding(.top, 8)
+            .padding(.bottom, 24)
+        }
+        .background(theme.bg.ignoresSafeArea())
+        .navigationTitle(lm.L("settings.title"))
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                backButton
             }
         }
     }
@@ -73,6 +73,13 @@ struct SettingsView: View {
                 .font(.system(size: 16, weight: .regular))
                 .foregroundColor(theme.textMid)
         }
+    }
+
+    private var divider: some View {
+        Rectangle()
+            .fill(theme.accentDim)
+            .frame(height: 0.5)
+            .padding(.leading, 44)
     }
 
     private func sectionLabel(_ text: String) -> some View {
@@ -120,6 +127,8 @@ struct SettingsView: View {
             .padding(.vertical, 13)
             .padding(.horizontal, 16)
             .frame(minHeight: 50)
+            .frame(maxWidth: .infinity)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }
