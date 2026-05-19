@@ -83,16 +83,6 @@ struct DataSyncView: View {
         .background(theme.bg.ignoresSafeArea())
         .navigationTitle(lm.L("dataSync.title"))
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button { dismiss() } label: {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 16, weight: .regular))
-                        .foregroundColor(theme.textMid)
-                }
-            }
-        }
         .sheet(isPresented: $showShareSheet) {
             if let url = exportURL {
                 ShareSheet(url: url)

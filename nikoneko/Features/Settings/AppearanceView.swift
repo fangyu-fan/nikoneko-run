@@ -34,16 +34,6 @@ struct AppearanceView: View {
         .background(theme.bg.ignoresSafeArea())
         .navigationTitle(lm.L("theme.title"))
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button { dismiss() } label: {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 16, weight: .regular))
-                        .foregroundColor(theme.textMid)
-                }
-            }
-        }
     }
 
     private func themeRow(_ t: ThemeTokens) -> some View {
@@ -136,16 +126,6 @@ struct LanguageView: View {
         .background(theme.bg.ignoresSafeArea())
         .navigationTitle(languageManager.L("language.title"))
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button { dismiss() } label: {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 16, weight: .regular))
-                        .foregroundColor(theme.textMid)
-                }
-            }
-        }
     }
 
     private func langRow(_ lang: AppLanguage, label: String) -> some View {

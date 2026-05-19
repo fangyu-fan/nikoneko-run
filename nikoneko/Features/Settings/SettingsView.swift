@@ -58,21 +58,6 @@ struct SettingsView: View {
         .background(theme.bg.ignoresSafeArea())
         .navigationTitle(lm.L("settings.title"))
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                backButton
-            }
-        }
-    }
-
-    @Environment(\.dismiss) private var dismiss
-    private var backButton: some View {
-        Button { dismiss() } label: {
-            Image(systemName: "chevron.left")
-                .font(.system(size: 16, weight: .regular))
-                .foregroundColor(theme.textMid)
-        }
     }
 
     private var divider: some View {

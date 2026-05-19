@@ -17,14 +17,6 @@ struct ReportView: View {
 
     private var theme: ThemeTokens { themeManager.current }
 
-    private var backButton: some View {
-        Button { dismiss() } label: {
-            Image(systemName: "chevron.left")
-                .font(.system(size: 16, weight: .regular))
-                .foregroundColor(theme.text)
-        }
-    }
-
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -92,12 +84,6 @@ struct ReportView: View {
         .background(theme.bg.ignoresSafeArea())
         .navigationTitle(lm.L("report.title"))
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                backButton
-            }
-        }
         .sheet(item: $selectedSession) { session in
             SessionDetailSheet(session: session)
                 .presentationDetents([.fraction(0.55)])

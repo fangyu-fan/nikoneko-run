@@ -4,26 +4,26 @@ struct DrumPickerView: View {
     @Binding var value: Int
     let range: ClosedRange<Int>
     var hapticEnabled: Bool = true
+    var zeroPadded: Bool = false
 
     @Environment(ThemeManager.self) private var themeManager
     private var theme: ThemeTokens { themeManager.current }
 
     private let rowHeight: CGFloat = 90
-    @State private var baseValue: Int = 0
+    private let stepDistance: CGFloat = 8
+
+    @State private var startValue: Int = 0
+    @State private var isDragging: Bool = false
+    @State private var countsDown: Bool = false
 
     var body: some View {
         ZStack {
-            // Ghost above
             if range.contains(value - 1) {
-                slot(value - 1, isCenter: false)
-                    .offset(y: -rowHeight)
+                slot(value - 1, isCenter: false).offset(y: -rowHeight)
             }
-            // Center
             slot(value, isCenter: true)
-            // Ghost below
             if range.contains(value + 1) {
-                slot(value + 1, isCenter: false)
-                    .offset(y: rowHeight)
+                slot(value + 1, isCenter: false).offset(y: rowHeight)
             }
         }
         .frame(height: rowHeight * 3)
@@ -42,32 +42,37 @@ struct DrumPickerView: View {
             )
         )
         .contentShape(Rectangle())
-        .gesture(
-            DragGesture()
+        .highPriorityGesture(
+            DragGesture(minimumDistance: 4)
                 .onChanged { g in
-                    let steps = Int((-g.translation.height / rowHeight).rounded())
-                    let preview = Self.clamped(baseValue + steps, to: range)
-                    if preview != value {
-                        if hapticEnabled { UIImpactFeedbackGenerator(style: .light).impactOccurred() }
-                        value = preview
+                    if !isDragging {
+                        isDragging = true
+                        startValue = value  // lock anchor at gesture start
+                    }
+                    countsDown = g.velocity.height < 0
+                    let steps = Int((-g.translation.height / stepDistance).rounded())
+                    let next = Self.clamped(startValue + steps, to: range)
+                    if next != value {
+                        if hapticEnabled && (next / 10) != (value / 10) {
+                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        }
+                        value = next
                     }
                 }
                 .onEnded { g in
-                    let steps = Int((-g.translation.height / rowHeight).rounded())
-                    value = Self.clamped(baseValue + steps, to: range)
-                    baseValue = value
+                    let steps = Int((-g.translation.height / stepDistance).rounded())
+                    value = Self.clamped(startValue + steps, to: range)
+                    isDragging = false
                 }
         )
-        .onAppear { baseValue = value }
+        .onAppear { startValue = value }
+        .onChange(of: value) { _, v in
+            if !isDragging { startValue = v }
+        }
     }
 
-    // Each slot has the same fixed height so ZStack centers them correctly.
-    // Center slot uses minimumScaleFactor(1) to prevent SwiftUI from shrinking the
-    // 108pt numeral to fit inside rowHeight — it will overflow, which is intentional
-    // (clipped by parent). This ensures the numeral's visual center matches the
-    // running-state numeral which renders at full size in a taller frame.
     private func slot(_ num: Int, isCenter: Bool) -> some View {
-        Text("\(num)")
+        Text(zeroPadded ? String(format: "%02d", num) : "\(num)")
             .font(.system(size: isCenter ? 108 : 48,
                           weight: isCenter ? .ultraLight : .thin))
             .foregroundColor(theme.text.opacity(isCenter ? 1.0 : 0.20))
@@ -75,7 +80,8 @@ struct DrumPickerView: View {
             .kerning(isCenter ? -5 : -2)
             .fixedSize()
             .frame(maxWidth: .infinity, minHeight: rowHeight, maxHeight: rowHeight, alignment: .center)
-            .animation(.easeOut(duration: 0.1), value: value)
+            .contentTransition(.numericText(countsDown: countsDown))
+            .animation(.smooth(duration: 0.15), value: value)
     }
 
     static func clamped(_ v: Int, to range: ClosedRange<Int>) -> Int {

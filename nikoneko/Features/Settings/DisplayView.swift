@@ -48,16 +48,6 @@ struct DisplayView: View {
         .background(theme.bg.ignoresSafeArea())
         .navigationTitle(lm.L("display.title"))
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button { dismiss() } label: {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 16, weight: .regular))
-                        .foregroundColor(theme.textMid)
-                }
-            }
-        }
     }
 
     private func sectionLabel(_ text: String) -> some View {

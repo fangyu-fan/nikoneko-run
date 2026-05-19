@@ -8,6 +8,7 @@ struct TimerView: View {
     private var profile: UserProfile? { profiles.first }
     @Bindable var vm: TimerViewModel
     @State private var selectedHours: Int = 0
+    @State private var selectedSeconds: Int = 0
     @State private var metronome = MetronomeService()
     @State private var hrService = HeartRateService()
     @State private var motionService = MotionService()
@@ -42,7 +43,7 @@ struct TimerView: View {
     // HH:MM mode — separate HH and MM for identical slot sizing
     private var hhText: String {
         let seconds = vm.isCountdown ? vm.remaining : vm.elapsed
-        return String(format: "%02d", Int(seconds) / 3600)
+        return "\(Int(seconds) / 3600)"
     }
 
     private var mmText: String {
@@ -53,6 +54,14 @@ struct TimerView: View {
     private var ssText: String {
         let seconds = vm.isCountdown ? vm.remaining : vm.elapsed
         return String(format: "%02d", Int(seconds) % 60)
+    }
+
+    private var hhmmssText: String {
+        let seconds = vm.isCountdown ? vm.remaining : vm.elapsed
+        let hh = Int(seconds) / 3600
+        let mm = (Int(seconds) % 3600) / 60
+        let ss = Int(seconds) % 60
+        return String(format: "%d:%02d:%02d", hh, mm, ss)
     }
 
     var body: some View {
@@ -77,12 +86,26 @@ struct TimerView: View {
                 // at true size (overflowing rowHeight), matching the running numeral's layout.
                 // Both therefore have the same visual center = ZStack geometric center.
                 ZStack(alignment: .center) {
-                    // Plain mode — single minutes wheel (untouched)
+                    // Plain mode idle
                     if timeDisplayFormat != .hhMM {
-                        DrumPickerView(value: $vm.selectedMinutes, range: 1...999,
-                                      hapticEnabled: profile?.hapticEnabled ?? true)
-                            .opacity(vm.state == .idle ? 1 : 0)
-                            .allowsHitTesting(vm.state == .idle)
+                        if vm.isCountdown {
+                            // Countdown: scrollable minutes picker
+                            DrumPickerView(value: $vm.selectedMinutes,
+                                          range: 1...999,
+                                          hapticEnabled: profile?.hapticEnabled ?? true)
+                                .opacity(vm.state == .idle ? 1 : 0)
+                                .allowsHitTesting(vm.state == .idle)
+                        } else {
+                            // Stopwatch: static 0 — no picker
+                            Text("0")
+                                .font(.system(size: 108, weight: .ultraLight))
+                                .foregroundColor(theme.text)
+                                .monospacedDigit()
+                                .kerning(-5)
+                                .fixedSize()
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .opacity(vm.state == .idle ? 1 : 0)
+                        }
 
                         // Plain running numeral — ZStack so offset is from center, matching DrumPickerView ghost
                         ZStack {
@@ -110,72 +133,34 @@ struct TimerView: View {
                         }
                     }
 
-                    // HH:MM mode — SAME layout for idle and running, only content changes
+                    // HH:MM mode — HH:MM:SS three equal slots, same size idle and running
                     if timeDisplayFormat == .hhMM {
-                        ZStack(alignment: .center) {
+                        ZStack {
                             Color.clear.frame(maxWidth: .infinity)
 
-                            // Identical HStack structure for both idle and running.
-                            // Idle: DrumPickers. Running: Text numerals.
-                            // Width is always: SS_mirror + HH + colon + MM + SS
-                            HStack(alignment: .bottom, spacing: 0) {
-                                // Left mirror of SS — keeps HH:MM centered
-                                Text("00")
-                                    .font(.system(size: 32, weight: .ultraLight))
-                                    .monospacedDigit()
-                                    .fixedSize()
-                                    .hidden()
-                                    .padding(.trailing, 4)
+                            HStack(alignment: .center, spacing: 0) {
+                                Spacer(minLength: 0)
+                                // HH — single digit max 9, narrower slot
+                                slot(idle: DrumPickerView(value: $selectedHours, range: 0...9,
+                                                          hapticEnabled: profile?.hapticEnabled ?? true),
+                                     running: Text(hhText), width: 72)
 
-                                // HH slot
-                                Group {
-                                    if vm.state == .idle {
-                                        DrumPickerView(value: $selectedHours, range: 0...9,
-                                                      hapticEnabled: profile?.hapticEnabled ?? true)
-                                            .frame(width: 120)
-                                    } else {
-                                        Text(hhText)
-                                            .font(.system(size: 80, weight: .ultraLight))
-                                            .foregroundColor(theme.text)
-                                            .monospacedDigit()
-                                            .kerning(-3)
-                                            .fixedSize()
-                                            .frame(width: 100, alignment: .center)
-                                    }
-                                }
+                                colon
 
-                                // Colon
-                                Text(":")
-                                    .font(.system(size: 72, weight: .ultraLight))
-                                    .foregroundColor(theme.text)
-                                    .padding(.bottom, vm.state == .idle ? 8 : 0)
+                                // MM — always two digits
+                                slot(idle: DrumPickerView(value: $vm.selectedMinutes, range: 0...59,
+                                                          hapticEnabled: profile?.hapticEnabled ?? true,
+                                                          zeroPadded: true),
+                                     running: Text(mmText), width: 100)
 
-                                // MM slot
-                                Group {
-                                    if vm.state == .idle {
-                                        DrumPickerView(value: $vm.selectedMinutes, range: 0...59,
-                                                      hapticEnabled: profile?.hapticEnabled ?? true)
-                                            .frame(width: 120)
-                                    } else {
-                                        Text(mmText)
-                                            .font(.system(size: 80, weight: .ultraLight))
-                                            .foregroundColor(theme.text)
-                                            .monospacedDigit()
-                                            .kerning(-3)
-                                            .fixedSize()
-                                            .frame(width: 100, alignment: .center)
-                                    }
-                                }
+                                colon
 
-                                // SS — hidden in idle, visible when running
-                                Text(vm.state != .idle ? ssText : "00")
-                                    .font(.system(size: 32, weight: .ultraLight))
-                                    .foregroundColor(theme.text)
-                                    .monospacedDigit()
-                                    .fixedSize()
-                                    .opacity(vm.state != .idle ? 1 : 0)
-                                    .padding(.leading, 4)
-                                    .padding(.bottom, 6)
+                                // SS — picker fixed at 0 in idle; running shows live seconds
+                                slot(idle: DrumPickerView(value: $selectedSeconds, range: 0...0,
+                                                          hapticEnabled: false,
+                                                          zeroPadded: true),
+                                     running: Text(ssText), width: 100)
+                                Spacer(minLength: 0)
                             }
                         }
                         .contentShape(Rectangle())
@@ -236,6 +221,18 @@ struct TimerView: View {
         .onChange(of: bpm) { _, newBPM in
             metronome.updateBPM(newBPM)
         }
+        .onChange(of: vm.isCountdown) { _, countdown in
+            if !countdown {
+                // Stopwatch: reset to 0 so display shows 0:00 / 0:00:00
+                vm.selectedMinutes = 0
+                selectedHours = 0
+            } else {
+                // Restore default duration when switching back
+                let defMins = profile?.defaultDuration ?? 15
+                selectedHours = defMins / 60
+                vm.selectedMinutes = defMins % 60
+            }
+        }
         .sheet(isPresented: $showBPMPanel) {
             BPMPanelView(bpm: $bpm)
                 .presentationBackground(theme.bg)
@@ -246,31 +243,51 @@ struct TimerView: View {
     // MARK: - Live metrics
 
     private var metricsBlock: some View {
-        HStack(spacing: 28) {
-            if vm.state == .running {
-                if profile?.showHR ?? true {
-                    metricItem(icon: "heart",
-                               value: hrService.currentHR > 0 ? "\(hrService.currentHR)" : "—",
-                               unit: nil)
-                }
-                if profile?.showDistance ?? true {
-                    metricItem(icon: "location.circle",
-                               value: String(format: "%.2f", motionService.distance / 1000),
-                               unit: "km")
-                }
-                if profile?.showCalories ?? true {
-                    metricItem(icon: "flame",
-                               value: "\(Int(motionService.calories))",
-                               unit: nil)
-                }
-                if profile?.showSteps ?? true {
-                    metricItem(icon: "shoeprints.fill",
-                               value: "\(motionService.steps)",
-                               unit: nil)
+        ZStack(alignment: .leading) {
+            // Countdown/Stopwatch segment control — only visible when idle
+            if vm.state == .idle {
+                SegmentedPicker(
+                    selection: Binding(
+                        get: { vm.isCountdown ? 0 : 1 },
+                        set: { vm.isCountdown = $0 == 0 }
+                    ),
+                    segments: ["Countdown", "Stopwatch"],
+                    selectedTint: UIColor(theme.accent),
+                    background: UIColor(theme.surface),
+                    selectedTextColor: UIColor(theme.bg),
+                    normalTextColor: UIColor(theme.textMid)
+                )
+                .frame(width: 220, height: 32)
+                .frame(maxWidth: .infinity, alignment: .center)
+            }
+
+            // Live metrics — centered when running
+            HStack(spacing: 28) {
+                if vm.state == .running {
+                    if profile?.showHR ?? true {
+                        metricItem(icon: "heart",
+                                   value: hrService.currentHR > 0 ? "\(hrService.currentHR)" : "—",
+                                   unit: nil)
+                    }
+                    if profile?.showDistance ?? true {
+                        metricItem(icon: "location.circle",
+                                   value: String(format: "%.2f", motionService.distance / 1000),
+                                   unit: "km")
+                    }
+                    if profile?.showCalories ?? true {
+                        metricItem(icon: "flame",
+                                   value: "\(Int(motionService.calories))",
+                                   unit: nil)
+                    }
+                    if profile?.showSteps ?? true {
+                        metricItem(icon: "shoeprints.fill",
+                                   value: "\(motionService.steps)",
+                                   unit: nil)
+                    }
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .center)
         }
-        .frame(maxWidth: .infinity, alignment: .center)
     }
 
     private func metricItem(icon: String, value: String, unit: String?) -> some View {
@@ -288,6 +305,34 @@ struct TimerView: View {
                     .foregroundColor(theme.text)
             }
         }
+    }
+
+
+    // MARK: - HH:MM slot helpers
+
+    @ViewBuilder
+    private func slot<I: View>(idle: I, running: Text, width: CGFloat = 100) -> some View {
+        Group {
+            if vm.state == .idle {
+                idle
+            } else {
+                running
+                    .font(.system(size: 108, weight: .ultraLight))
+                    .foregroundColor(theme.text)
+                    .monospacedDigit()
+                    .kerning(-5)
+                    .fixedSize()
+            }
+        }
+        .frame(width: width)
+    }
+
+    private var colon: some View {
+        Text(":")
+            .font(.system(size: 108, weight: .ultraLight))
+            .foregroundColor(theme.text)
+            .padding(.bottom, 18)
+            .padding(.horizontal, 8)
     }
 
     // MARK: - Ctrl row (BPM + volume)
@@ -404,6 +449,26 @@ struct TimerView: View {
                 .font(.system(size: 14))
         }
         .frame(height: 169)
+    }
+}
+
+// MARK: - HH:MM slot helpers (only used by TimerView HH:MM mode)
+
+private struct HHMMSlot<Idle: View, Running: View>: View {
+    let isIdle: Bool
+    let idle: Idle
+    let running: Running
+
+    var body: some View {
+        Group {
+            if isIdle { idle } else { running
+                    .font(.system(size: 108, weight: .ultraLight))
+                    .monospacedDigit()
+                    .kerning(-5)
+                    .fixedSize()
+            }
+        }
+        .frame(width: 100)
     }
 }
 

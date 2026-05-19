@@ -66,16 +66,6 @@ struct DefaultsView: View {
         .background(theme.bg.ignoresSafeArea())
         .navigationTitle(lm.L("defaults.title"))
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button { dismiss() } label: {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 16, weight: .regular))
-                        .foregroundColor(theme.textMid)
-                }
-            }
-        }
         .onAppear {
             ensureConfig()
             t1 = Double(config?.threshold1 ?? 25)
