@@ -56,10 +56,17 @@ struct CalendarWidgetView: View {
         let dailyMax = maxDailyValue()
 
         VStack(alignment: .leading, spacing: 0) {
-            Text("CHART · \(entry.metric.localizedStringResource.key.uppercased())")
-                .font(.system(size: 9)).tracking(0.8)
-                .foregroundColor(entry.theme.textMid)
-                .padding(.bottom, 8)
+            // Header
+            HStack {
+                Text("NIKONEKO RUN")
+                    .font(.system(size: 9)).tracking(0.8)
+                    .foregroundColor(entry.theme.textMid)
+                Spacer()
+                Text(monthYearLabel())
+                    .font(.system(size: 9)).tracking(0.8)
+                    .foregroundColor(entry.theme.textMid)
+            }
+            .padding(.bottom, 8)
 
             HStack(spacing: 4) {
                 ForEach(dayHeaders, id: \.self) { d in
@@ -107,13 +114,139 @@ struct CalendarWidgetView: View {
                 }
             }
             .frame(maxWidth: .infinity)
+
+            Spacer()
+
+            // Bottom stats row: today (left) · month (center) · streak (right)
+            HStack(alignment: .top, spacing: 0) {
+                let todayStats = statValueUnit(dayValue(for: today))
+                statCell(icon: metricIcon(), label: "TODAY",
+                         value: todayStats.value, unit: todayStats.unit,
+                         alignment: .leading)
+                let monthStats = statValueUnit(monthTotal())
+                statCell(icon: metricIcon(), label: "THIS MONTH",
+                         value: monthStats.value, unit: monthStats.unit,
+                         alignment: .center)
+                statCell(icon: "flame", label: "STREAK",
+                         value: "\(currentStreak())", unit: "days",
+                         alignment: .trailing)
+            }
+            .padding(.top, 10)
         }
         .padding(14)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(entry.theme.bg)
         .containerBackground(entry.theme.bg, for: .widget)
-        .background(entry.theme.bg)
-        .containerBackground(entry.theme.bg, for: .widget)
+    }
+
+    @ViewBuilder
+    private func statCell(icon: String, label: String, value: String, unit: String, alignment: HorizontalAlignment) -> some View {
+        let hAlign: Alignment = alignment == .leading ? .leading : alignment == .trailing ? .trailing : .center
+        VStack(alignment: alignment, spacing: 3) {
+            HStack(spacing: 3) {
+                Image(systemName: icon)
+                    .font(.system(size: 8, weight: .light))
+                    .foregroundColor(entry.theme.textMid)
+                Text(label)
+                    .font(.system(size: 7)).tracking(0.4)
+                    .foregroundColor(entry.theme.textMid)
+            }
+            HStack(alignment: .lastTextBaseline, spacing: 3) {
+                Text(value)
+                    .font(.system(size: 24, weight: .ultraLight))
+                    .foregroundColor(entry.theme.text)
+                    .monospacedDigit()
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
+                Text(unit)
+                    .font(.system(size: 10, weight: .light))
+                    .foregroundColor(entry.theme.textMid)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: hAlign)
+    }
+
+    private func statValueUnit(_ raw: Double) -> (value: String, unit: String) {
+        switch entry.metric {
+        case .duration:
+            if raw >= 60 { return (String(format: "%.0f", raw / 60), "hr") }
+            return ("\(Int(raw))", "min")
+        case .steps:
+            if raw >= 1000 { return (String(format: "%.1f", raw / 1000), "k") }
+            return ("\(Int(raw))", "steps")
+        case .calories:
+            return ("\(Int(raw))", "kcal")
+        case .distance:
+            return (String(format: "%.1f", raw), "km")
+        case .runs:
+            return ("\(Int(raw))", "runs")
+        case .streak:
+            return ("\(Int(raw))", "days")
+        }
+    }
+
+    private func monthTotal() -> Double {
+        let year = cal.component(.year, from: entry.date)
+        let month = cal.component(.month, from: entry.date)
+        return entry.summaries
+            .filter {
+                cal.component(.year, from: $0.date) == year &&
+                cal.component(.month, from: $0.date) == month
+            }
+            .reduce(0.0) { sum, s in
+                switch entry.metric {
+                case .duration:  return sum + s.duration / 60
+                case .steps:     return sum + Double(s.steps)
+                case .calories:  return sum + s.duration / 60 * 7
+                case .distance:  return sum + Double(s.steps) / 1500
+                case .runs:      return sum + 1
+                case .streak:    return sum
+                }
+            }
+    }
+
+    private func monthYearLabel() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.string(from: entry.date)
+    }
+
+    private func metricIcon() -> String {
+        switch entry.metric {
+        case .duration:  return "timer"
+        case .steps:     return "shoeprints.fill"
+        case .calories:  return "flame"
+        case .distance:  return "location.circle"
+        case .runs:      return "number.circle"
+        case .streak:    return "flame"
+        }
+    }
+
+    private func metricUnit() -> String {
+        switch entry.metric {
+        case .duration:  return "min"
+        case .steps:     return "steps"
+        case .calories:  return "kcal"
+        case .distance:  return "km"
+        case .runs:      return "runs"
+        case .streak:    return "days"
+        }
+    }
+
+private func currentStreak() -> Int {
+        let today = cal.startOfDay(for: entry.date)
+        var streak = 0
+        var cursor = today
+        while true {
+            let hasSessions = entry.summaries.contains { cal.isDate($0.date, inSameDayAs: cursor) }
+            if hasSessions {
+                streak += 1
+                cursor = cal.date(byAdding: .day, value: -1, to: cursor)!
+            } else {
+                break
+            }
+        }
+        return streak
     }
 
     private func dayValue(for date: Date) -> Double {

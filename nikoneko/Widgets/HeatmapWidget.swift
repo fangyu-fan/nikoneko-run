@@ -72,11 +72,17 @@ struct HeatmapWidgetView: View {
             .max() ?? 1.0
 
         VStack(alignment: .leading, spacing: 3) {
-            // Title row
-            Text("HEATMAP · \(entry.metric.rawValue.uppercased())")
-                .font(.system(size: 9))
-                .tracking(0.7)
-                .foregroundColor(entry.theme.textMid)
+            // Header
+            HStack {
+                Text("NIKONEKO RUN")
+                    .font(.system(size: 9)).tracking(0.8)
+                    .foregroundColor(entry.theme.textMid)
+                Spacer()
+                Text(String(Calendar.current.component(.year, from: entry.date)))
+                    .font(.system(size: 9)).tracking(0.8)
+                    .foregroundColor(entry.theme.textMid)
+            }
+            .padding(.bottom, 4)
 
             // Month abbreviation row
             HStack(spacing: gap) {

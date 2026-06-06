@@ -6,7 +6,7 @@ struct ShareCardView: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            Text("NIKO NEKO")
+            Text("NIKONEKO RUN")
                 .font(.system(size: 11, weight: .medium))
                 .tracking(3)
                 .foregroundColor(theme.textDim)

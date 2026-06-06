@@ -147,6 +147,11 @@ struct AllStatsWidgetView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
+            // Header
+            Text("NIKONEKO RUN")
+                .font(.system(size: 9)).tracking(0.8)
+                .foregroundColor(entry.theme.textMid)
+
             // Hero section
             VStack(alignment: .leading, spacing: 2) {
                 Text("DURATION")

@@ -144,10 +144,9 @@ struct BarChartWidgetView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            // Header label
-            Text("CHART · \(entry.metric.rawValue.uppercased())")
-                .font(.system(size: 9))
-                .tracking(0.5)
+            // Header
+            Text("NIKONEKO RUN")
+                .font(.system(size: 9)).tracking(0.8)
                 .foregroundColor(entry.theme.textMid)
 
             // Chart area

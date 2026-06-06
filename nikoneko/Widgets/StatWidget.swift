@@ -173,8 +173,11 @@ struct StatWidgetView: View {
 
     var body: some View {
         VStack {
-            // Top-right icon
+            // Header: app name left, metric icon right
             HStack {
+                Text("NIKONEKO RUN")
+                    .font(.system(size: 9)).tracking(0.8)
+                    .foregroundColor(entry.theme.textMid)
                 Spacer()
                 Image(systemName: iconName(for: entry.metric))
                     .font(.system(size: 18, weight: .light))
