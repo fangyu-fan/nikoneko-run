@@ -150,22 +150,22 @@ struct AllStatsWidgetView: View {
             // Hero section
             VStack(alignment: .leading, spacing: 2) {
                 Text("DURATION")
-                    .font(.system(size: 10)).tracking(1.2).foregroundColor(Color(white: 0.733))
+                    .font(.system(size: 10)).tracking(1.2).foregroundColor(entry.theme.textMid)
                 HStack(alignment: .lastTextBaseline, spacing: 6) {
                     Text("total")
-                        .font(.system(size: 16, weight: .light)).foregroundColor(Color(white: 0.667))
+                        .font(.system(size: 16, weight: .light)).foregroundColor(entry.theme.textMid)
                     Text(entry.durationFormatted)
                         .font(.system(size: 64, weight: .light)).foregroundColor(entry.theme.text)
                         .monospacedDigit().kerning(-3).minimumScaleFactor(0.6).lineLimit(1)
                     Text(entry.durationUnit)
-                        .font(.system(size: 18, weight: .light)).foregroundColor(Color(white: 0.667))
+                        .font(.system(size: 18, weight: .light)).foregroundColor(entry.theme.textMid)
                 }
             }
 
             // Summary section
             VStack(alignment: .leading, spacing: 8) {
                 Text("SUMMARY")
-                    .font(.system(size: 10)).tracking(1.2).foregroundColor(Color(white: 0.733))
+                    .font(.system(size: 10)).tracking(1.2).foregroundColor(entry.theme.textMid)
                 LazyVGrid(
                     columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 3),
                     spacing: 6
@@ -192,18 +192,18 @@ struct AllStatsWidgetView: View {
                     .font(.system(size: 20, weight: .ultraLight)).foregroundColor(entry.theme.text)
                     .monospacedDigit().kerning(-0.8).minimumScaleFactor(0.6).lineLimit(1)
                 Text(unit)
-                    .font(.system(size: 11, weight: .light)).foregroundColor(Color(white: 0.667))
+                    .font(.system(size: 11, weight: .light)).foregroundColor(entry.theme.textMid)
             }
             HStack(spacing: 4) {
                 Image(systemName: icon)
-                    .font(.system(size: 12, weight: .light)).foregroundColor(Color(white: 0.733))
+                    .font(.system(size: 12, weight: .light)).foregroundColor(entry.theme.textMid)
                 Text(label)
-                    .font(.system(size: 9)).foregroundColor(Color(white: 0.733))
+                    .font(.system(size: 9)).foregroundColor(entry.theme.textMid)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(EdgeInsets(top: 10, leading: 11, bottom: 10, trailing: 11))
-        .background(Color(white: 0.922))
+        .background(entry.theme.surface)
         .cornerRadius(12)
     }
 }

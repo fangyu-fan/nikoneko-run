@@ -178,7 +178,7 @@ struct StatWidgetView: View {
                 Spacer()
                 Image(systemName: iconName(for: entry.metric))
                     .font(.system(size: 18, weight: .light))
-                    .foregroundColor(Color(white: 0.784))
+                    .foregroundColor(entry.theme.textMid)
             }
 
             Spacer()
@@ -193,7 +193,7 @@ struct StatWidgetView: View {
                     .lineLimit(1)
                 Text(entry.unit)
                     .font(.system(size: 14, weight: .light))
-                    .foregroundColor(Color(white: 0.667))
+                    .foregroundColor(entry.theme.textMid)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -202,7 +202,7 @@ struct StatWidgetView: View {
             // Bottom label
             Text(entry.bottomLabel)
                 .font(.system(size: 10))
-                .foregroundColor(Color(white: 0.733))
+                .foregroundColor(entry.theme.textMid)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

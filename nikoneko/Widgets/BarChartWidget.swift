@@ -148,7 +148,7 @@ struct BarChartWidgetView: View {
             Text("CHART · \(entry.metric.rawValue.uppercased())")
                 .font(.system(size: 9))
                 .tracking(0.5)
-                .foregroundColor(Color(white: 0.733))
+                .foregroundColor(entry.theme.textMid)
 
             // Chart area
             HStack(alignment: .bottom, spacing: 6) {
@@ -161,7 +161,7 @@ struct BarChartWidgetView: View {
                     Text("0")
                 }
                 .font(.system(size: 7))
-                .foregroundColor(Color(white: 0.8))
+                .foregroundColor(entry.theme.textMid)
                 .frame(width: yAxisWidth)
                 .padding(.bottom, 14)  // baseline + x-label row height
 
@@ -172,11 +172,11 @@ struct BarChartWidgetView: View {
                         // Grid lines at 100% and 50%
                         VStack(spacing: 0) {
                             Rectangle()
-                                .fill(Color(white: 0.875).opacity(0.5))
+                                .fill(entry.theme.textDim.opacity(0.15))
                                 .frame(height: 0.5)
                             Spacer()
                             Rectangle()
-                                .fill(Color(white: 0.875).opacity(0.5))
+                                .fill(entry.theme.textDim.opacity(0.15))
                                 .frame(height: 0.5)
                             Spacer()
                         }
@@ -192,7 +192,7 @@ struct BarChartWidgetView: View {
 
                     // Baseline
                     Rectangle()
-                        .fill(Color(white: 0.875))
+                        .fill(entry.theme.textDim.opacity(0.3))
                         .frame(height: 1)
 
                     // X-axis labels
@@ -200,7 +200,7 @@ struct BarChartWidgetView: View {
                         ForEach(0..<7, id: \.self) { index in
                             Text(xLabels[index])
                                 .font(.system(size: 7))
-                                .foregroundColor(Color(white: 0.8))
+                                .foregroundColor(entry.theme.textMid)
                                 .frame(maxWidth: .infinity)
                         }
                         // Spacer matching y-axis width so x-labels align under bars
@@ -229,9 +229,9 @@ struct BarChartWidgetView: View {
             }()
 
             let barColor: Color = {
-                if value <= 0 { return Color(white: 0.875) }
-                if isToday { return Color(white: 0.067) }
-                return Color(white: 0.533)
+                if value <= 0 { return entry.theme.bar[0] }
+                if isToday { return entry.theme.bar[4] }
+                return entry.theme.bar[2]
             }()
 
             VStack(spacing: 0) {
