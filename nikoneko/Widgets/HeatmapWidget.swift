@@ -76,7 +76,7 @@ struct HeatmapWidgetView: View {
             Text("HEATMAP · \(entry.metric.rawValue.uppercased())")
                 .font(.system(size: 9))
                 .tracking(0.7)
-                .foregroundColor(Color(white: 0.733))
+                .foregroundColor(entry.theme.textMid)
 
             // Month abbreviation row
             HStack(spacing: gap) {
@@ -86,7 +86,7 @@ struct HeatmapWidgetView: View {
                         .font(.system(size: 7))
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
-                        .foregroundColor(Color(white: 0.733))
+                        .foregroundColor(entry.theme.textMid)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
@@ -97,7 +97,7 @@ struct HeatmapWidgetView: View {
                     HStack(spacing: gap) {
                         Text(dayLabels[row])
                             .font(.system(size: 7))
-                            .foregroundColor(Color(white: 0.8))
+                            .foregroundColor(entry.theme.textMid)
                             .frame(width: labelWidth, alignment: .leading)
 
                         ForEach(0..<numCols, id: \.self) { col in

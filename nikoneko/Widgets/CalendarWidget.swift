@@ -1,4 +1,4 @@
-import WidgetKit
+ import WidgetKit
 import SwiftUI
 import AppIntents
 
@@ -49,35 +49,34 @@ struct CalendarWidgetView: View {
 
     var body: some View {
         let monthStart = cal.dateInterval(of: .month, for: entry.date)!.start
-        // weekday offset Mon=0: cal.component(.weekday) Sun=1..Sat=7 → Mon-based offset
-        let rawWeekday = cal.component(.weekday, from: monthStart) // 1=Sun..7=Sat
-        let firstOffset = (rawWeekday + 5) % 7  // Sun→6, Mon→0, Tue→1…
+        let rawWeekday = cal.component(.weekday, from: monthStart)
+        let firstOffset = (rawWeekday + 5) % 7
         let daysInMonth = cal.range(of: .day, in: .month, for: entry.date)!.count
         let today = cal.startOfDay(for: entry.date)
         let dailyMax = maxDailyValue()
 
         VStack(alignment: .leading, spacing: 0) {
-            // Title
             Text("CHART · \(entry.metric.localizedStringResource.key.uppercased())")
                 .font(.system(size: 9)).tracking(0.8)
-                .foregroundColor(Color(white: 0.733))
-                .padding(.bottom, 6)
+                .foregroundColor(entry.theme.textMid)
+                .padding(.bottom, 8)
 
-            // Day headers
-            HStack(spacing: 5) {
+            HStack(spacing: 4) {
                 ForEach(dayHeaders, id: \.self) { d in
-                    Text(d).font(.system(size: 9)).foregroundColor(Color(white: 0.8))
+                    Text(d).font(.system(size: 10)).foregroundColor(entry.theme.textMid)
                         .frame(maxWidth: .infinity)
                 }
             }
-            .padding(.bottom, 2)
+            .padding(.bottom, 4)
 
-            // Calendar grid
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 5), count: 7),
-                      spacing: 5) {
-                // Empty slots before first day
+            LazyVGrid(
+                columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 7),
+                spacing: 4
+            ) {
                 ForEach(0..<firstOffset, id: \.self) { _ in
-                    Color(white: 0.922).aspectRatio(1, contentMode: .fit).cornerRadius(8)
+                    entry.theme.cal[0]
+                        .aspectRatio(1, contentMode: .fit)
+                        .cornerRadius(8)
                 }
                 ForEach(1...daysInMonth, id: \.self) { day in
                     let date = cal.date(from: DateComponents(
@@ -88,8 +87,8 @@ struct CalendarWidgetView: View {
                     let value = isFuture ? 0.0 : dayValue(for: date)
                     let level = colorLevel(value: value, max: dailyMax, isFuture: isFuture, hasData: value > 0)
                     let cellColor = entry.theme.cal[level]
-                    let dateColor: Color = isFuture ? Color(white: 0.816) : (level >= 3 ? Color.white.opacity(0.65) : Color(white: 0.733))
-                    let valColor: Color = level >= 3 ? Color.white.opacity(0.9) : Color(white: 0.533)
+                    let dateColor: Color = isFuture ? entry.theme.textDim : entry.theme.onCal[level].opacity(0.65)
+                    let valColor: Color = entry.theme.onCal[level]
 
                     ZStack(alignment: .topLeading) {
                         cellColor.aspectRatio(1, contentMode: .fit).cornerRadius(8)
@@ -107,9 +106,12 @@ struct CalendarWidgetView: View {
                     .aspectRatio(1, contentMode: .fit)
                 }
             }
+            .frame(maxWidth: .infinity)
         }
-        .padding(18)
+        .padding(14)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(entry.theme.bg)
+        .containerBackground(entry.theme.bg, for: .widget)
         .background(entry.theme.bg)
         .containerBackground(entry.theme.bg, for: .widget)
     }
@@ -181,4 +183,37 @@ struct CalendarWidget: Widget {
         .description("Monthly activity by day.")
         .supportedFamilies([.systemLarge])
     }
+}
+
+// MARK: - Preview
+
+#Preview(as: .systemLarge) {
+    CalendarWidget()
+} timeline: {
+    CalendarEntry(
+        date: Date(),
+        summaries: CalendarPreviewData.summaries,
+        metric: .duration,
+        theme: ThemeLibrary.obsidian
+    )
+}
+
+private enum CalendarPreviewData {
+    static let summaries: [DaySessionSummary] = {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        var result: [DaySessionSummary] = []
+        for daysAgo in 0..<30 {
+            guard daysAgo % Int.random(in: 1...3) == 0 else { continue }
+            let date = cal.date(byAdding: .day, value: -daysAgo, to: today)!
+            result.append(DaySessionSummary(
+                date: date,
+                duration: Double.random(in: 600...2400),
+                completionRatio: Double.random(in: 0.5...1.0),
+                hrAvg: Int.random(in: 110...160),
+                steps: Int.random(in: 2000...8000)
+            ))
+        }
+        return result
+    }()
 }
