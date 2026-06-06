@@ -58,7 +58,7 @@ struct HeatmapWidgetView: View {
 
     private let dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
     private let monthAbbr = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
-    private let labelWidth: CGFloat = 22
+    private let labelWidth: CGFloat = 26
     private let gap: CGFloat = 1.5
     private let numCols = 18
 
@@ -80,11 +80,12 @@ struct HeatmapWidgetView: View {
 
             // Month abbreviation row
             HStack(spacing: gap) {
-                // Placeholder for day label column
                 Spacer().frame(width: labelWidth)
                 ForEach(0..<numCols, id: \.self) { col in
                     Text(monthHeaders[col])
                         .font(.system(size: 7))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
                         .foregroundColor(Color(white: 0.733))
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -94,25 +95,25 @@ struct HeatmapWidgetView: View {
             VStack(spacing: gap) {
                 ForEach(0..<7, id: \.self) { row in
                     HStack(spacing: gap) {
-                        // Day label
                         Text(dayLabels[row])
                             .font(.system(size: 7))
                             .foregroundColor(Color(white: 0.8))
-                            .frame(width: labelWidth, alignment: .trailing)
+                            .frame(width: labelWidth, alignment: .leading)
 
-                        // 18 cells
                         ForEach(0..<numCols, id: \.self) { col in
                             let dateKey = columns[col][row]
                             let value = dateKey.flatMap { dailyValues[$0] } ?? 0.0
                             let ratio = maxValue > 0 ? value / maxValue : 0.0
                             Rectangle()
                                 .fill(cellColor(ratio: ratio))
+                                .frame(maxWidth: .infinity)
                                 .aspectRatio(1, contentMode: .fit)
                                 .cornerRadius(2)
                         }
                     }
                 }
             }
+            .fixedSize(horizontal: false, vertical: true)
         }
         .padding(10)
         .background(entry.theme.bg)
@@ -232,4 +233,37 @@ struct HeatmapWidget: Widget {
         .description("18-week activity heatmap.")
         .supportedFamilies([.systemMedium])
     }
+}
+
+// MARK: - Preview
+
+#Preview(as: .systemMedium) {
+    HeatmapWidget()
+} timeline: {
+    HeatmapEntry(
+        date: Date(),
+        summaries: HeatmapPreviewData.summaries,
+        metric: .duration,
+        theme: ThemeLibrary.obsidian
+    )
+}
+
+private enum HeatmapPreviewData {
+    static let summaries: [DaySessionSummary] = {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        var result: [DaySessionSummary] = []
+        for daysAgo in 0..<126 {
+            guard daysAgo % Int.random(in: 1...3) == 0 else { continue }
+            let date = cal.date(byAdding: .day, value: -daysAgo, to: today)!
+            result.append(DaySessionSummary  (
+                date: date,
+                duration: Double.random(in: 600...2400),
+                completionRatio: Double.random(in: 0.5...1.0),
+                hrAvg: Int.random(in: 110...160),
+                steps: Int.random(in: 2000...8000)
+            ))
+        }
+        return result
+    }()
 }
