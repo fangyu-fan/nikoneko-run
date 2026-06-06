@@ -112,7 +112,7 @@
 		0590DDEE163696F0BB7616C5 /* MotionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionServiceTests.swift; sourceTree = "<group>"; };
 		0766CFAF5B8392B7C3B1BA99 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		0B27218DDBF5760415222496 /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
-		0F8388470D6412953108A09D /* nikoneko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nikoneko.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0F8388470D6412953108A09D /* nikoneko-run.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nikoneko-run.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		15637ACAD2484A82A22BDF92 /* DrumPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrumPickerView.swift; sourceTree = "<group>"; };
 		16D4725502CD58ABA44F5E4B /* DisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayView.swift; sourceTree = "<group>"; };
 		1A80A80A06A255F8197DB14B /* PlaceholderCharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderCharacterView.swift; sourceTree = "<group>"; };
@@ -152,7 +152,7 @@
 		80F008EC514575F3D6BEE87C /* NikoNekoLiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NikoNekoLiveActivityAttributes.swift; sourceTree = "<group>"; };
 		83F9DCA77BE44839B071ADB6 /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
 		88C0C5D0756AB6633FABFC4D /* SummaryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryViewModelTests.swift; sourceTree = "<group>"; };
-		8BC965E669918E66458C20DA /* nikonekoTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = nikonekoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8BC965E669918E66458C20DA /* nikoneko-runTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "nikoneko-runTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9118A77F59F326480E2C1664 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		936762368324ECC658B74C0F /* HeartRateServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateServiceTests.swift; sourceTree = "<group>"; };
 		93C4C9329B6E813CD1FFF321 /* BLEHeartRateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEHeartRateManager.swift; sourceTree = "<group>"; };
@@ -365,8 +365,8 @@
 		AE62125485B3DC3B898BC020 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0F8388470D6412953108A09D /* nikoneko.app */,
-				8BC965E669918E66458C20DA /* nikonekoTests.xctest */,
+				0F8388470D6412953108A09D /* nikoneko-run.app */,
+				8BC965E669918E66458C20DA /* nikoneko-runTests.xctest */,
 				F32F0C166D5DDA3A539EF0ED /* NikoNekoWidgets.appex */,
 			);
 			name = Products;
@@ -469,9 +469,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		153FBF27F168F014C2265E0F /* nikoneko */ = {
+		153FBF27F168F014C2265E0F /* nikoneko-run */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 815F190338B285BE71AFD777 /* Build configuration list for PBXNativeTarget "nikoneko" */;
+			buildConfigurationList = 815F190338B285BE71AFD777 /* Build configuration list for PBXNativeTarget "nikoneko-run" */;
 			buildPhases = (
 				0A466BAC5D74639CE605EB89 /* Sources */,
 				071EF46E49AACDA97808A030 /* Resources */,
@@ -482,12 +482,12 @@
 			dependencies = (
 				EMBED003TARGETDEP001 /* PBXTargetDependency */,
 			);
-			name = nikoneko;
+			name = "nikoneko-run";
 			packageProductDependencies = (
 				E2E7458600F715689DA8114C /* Lottie */,
 			);
 			productName = nikoneko;
-			productReference = 0F8388470D6412953108A09D /* nikoneko.app */;
+			productReference = 0F8388470D6412953108A09D /* nikoneko-run.app */;
 			productType = "com.apple.product-type.application";
 		};
 		552EDB75EC9C1D7554D6E648 /* NikoNekoWidgets */ = {
@@ -507,9 +507,9 @@
 			productReference = F32F0C166D5DDA3A539EF0ED /* NikoNekoWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		77C2074F5C5F1717DAA22D52 /* nikonekoTests */ = {
+		77C2074F5C5F1717DAA22D52 /* nikoneko-runTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3926EF852E698397AA4CD9DB /* Build configuration list for PBXNativeTarget "nikonekoTests" */;
+			buildConfigurationList = 3926EF852E698397AA4CD9DB /* Build configuration list for PBXNativeTarget "nikoneko-runTests" */;
 			buildPhases = (
 				40738FF023B517AC55ABC402 /* Sources */,
 			);
@@ -518,11 +518,11 @@
 			dependencies = (
 				E455C0732CED32DBB7EA6994 /* PBXTargetDependency */,
 			);
-			name = nikonekoTests;
+			name = "nikoneko-runTests";
 			packageProductDependencies = (
 			);
 			productName = nikonekoTests;
-			productReference = 8BC965E669918E66458C20DA /* nikonekoTests.xctest */;
+			productReference = 8BC965E669918E66458C20DA /* nikoneko-runTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -533,11 +533,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1600;
-				TargetAttributes = {
-					77C2074F5C5F1717DAA22D52 = {
-						DevelopmentTeam = B58R97M2WC;
-					};
-				};
 			};
 			buildConfigurationList = 79B16ECA7510F2F43ABF5E81 /* Build configuration list for PBXProject "nikoneko-run" */;
 			developmentRegion = en;
@@ -558,8 +553,8 @@
 			projectRoot = "";
 			targets = (
 				552EDB75EC9C1D7554D6E648 /* NikoNekoWidgets */,
-				153FBF27F168F014C2265E0F /* nikoneko */,
-				77C2074F5C5F1717DAA22D52 /* nikonekoTests */,
+				153FBF27F168F014C2265E0F /* nikoneko-run */,
+				77C2074F5C5F1717DAA22D52 /* nikoneko-runTests */,
 			);
 		};
 /* End PBXProject section */
@@ -680,7 +675,7 @@
 /* Begin PBXTargetDependency section */
 		E455C0732CED32DBB7EA6994 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 153FBF27F168F014C2265E0F /* nikoneko */;
+			target = 153FBF27F168F014C2265E0F /* nikoneko-run */;
 			targetProxy = 4E4325D690ED23E694D12343 /* PBXContainerItemProxy */;
 		};
 		EMBED003TARGETDEP001 /* PBXTargetDependency */ = {
@@ -707,6 +702,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = W3L4T944MU;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -715,10 +711,11 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko.tests;
+				PRODUCT_NAME = "nikoneko-runTests";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/nikoneko.app/nikoneko";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/nikoneko-run.app/nikoneko-run";
 			};
 			name = Release;
 		};
@@ -726,7 +723,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = nikoneko/NikoNekoWidgets.entitlements;
-				DEVELOPMENT_TEAM = 5A5TMU9JP3;
+				DEVELOPMENT_TEAM = W3L4T944MU;
 				INFOPLIST_FILE = nikoneko/Widgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -735,7 +732,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
-				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikonekoo.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run.widgets";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -756,7 +753,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikonekoo;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run";
+				PRODUCT_NAME = "nikoneko-run";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
@@ -768,6 +766,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = W3L4T944MU;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -776,10 +775,11 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko.tests;
+				PRODUCT_NAME = "nikoneko-runTests";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/nikoneko.app/nikoneko";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/nikoneko-run.app/nikoneko-run";
 			};
 			name = Debug;
 		};
@@ -861,7 +861,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikonekoo;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run";
+				PRODUCT_NAME = "nikoneko-run";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
@@ -930,7 +931,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = nikoneko/NikoNekoWidgets.entitlements;
-				DEVELOPMENT_TEAM = 5A5TMU9JP3;
+				DEVELOPMENT_TEAM = W3L4T944MU;
 				INFOPLIST_FILE = nikoneko/Widgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -939,7 +940,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
-				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikonekoo.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run.widgets";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -949,7 +950,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3926EF852E698397AA4CD9DB /* Build configuration list for PBXNativeTarget "nikonekoTests" */ = {
+		3926EF852E698397AA4CD9DB /* Build configuration list for PBXNativeTarget "nikoneko-runTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4CEA3CB4ABE5EA31F163F370 /* Debug */,
@@ -967,7 +968,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		815F190338B285BE71AFD777 /* Build configuration list for PBXNativeTarget "nikoneko" */ = {
+		815F190338B285BE71AFD777 /* Build configuration list for PBXNativeTarget "nikoneko-run" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3E43AAF97FB4FCF06420B9DF /* Debug */,

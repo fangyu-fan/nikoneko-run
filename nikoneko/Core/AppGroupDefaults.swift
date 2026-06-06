@@ -9,7 +9,7 @@ struct DaySessionSummary: Codable {
 }
 
 enum AppGroupDefaults {
-    static let suiteName = "group.com.fangyu.nikoneko"
+    static let suiteName = "group.com.fangyu.nikoneko-run"
 
     static var shared: UserDefaults {
         UserDefaults(suiteName: suiteName) ?? .standard

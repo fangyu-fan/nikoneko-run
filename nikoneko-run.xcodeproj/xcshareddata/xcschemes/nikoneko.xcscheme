@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "153FBF27F168F014C2265E0F"
-               BuildableName = "nikoneko.app"
-               BlueprintName = "nikoneko"
+               BuildableName = "nikoneko-run.app"
+               BlueprintName = "nikoneko-run"
                ReferencedContainer = "container:nikoneko-run.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -31,8 +31,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "153FBF27F168F014C2265E0F"
-            BuildableName = "nikoneko.app"
-            BlueprintName = "nikoneko"
+            BuildableName = "nikoneko-run.app"
+            BlueprintName = "nikoneko-run"
             ReferencedContainer = "container:nikoneko-run.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -43,8 +43,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "77C2074F5C5F1717DAA22D52"
-               BuildableName = "nikonekoTests.xctest"
-               BlueprintName = "nikonekoTests"
+               BuildableName = "nikoneko-runTests.xctest"
+               BlueprintName = "nikoneko-runTests"
                ReferencedContainer = "container:nikoneko-run.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -65,8 +65,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "153FBF27F168F014C2265E0F"
-            BuildableName = "nikoneko.app"
-            BlueprintName = "nikoneko"
+            BuildableName = "nikoneko-run.app"
+            BlueprintName = "nikoneko-run"
             ReferencedContainer = "container:nikoneko-run.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -82,8 +82,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "153FBF27F168F014C2265E0F"
-            BuildableName = "nikoneko.app"
-            BlueprintName = "nikoneko"
+            BuildableName = "nikoneko-run.app"
+            BlueprintName = "nikoneko-run"
             ReferencedContainer = "container:nikoneko-run.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
