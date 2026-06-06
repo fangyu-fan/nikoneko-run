@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>NIKO NEKO — Character Picker</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}
+body{background:#111;font-family:-apple-system,'SF Pro Display',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px}
+.phone{width:320px;background:#0a0a0a;border-radius:50px;padding:16px 13px 24px;border:1.5px solid #1a1a1a;flex-shrink:0}
+.pill{width:60px;height:5px;background:#1c1c1c;border-radius:3px;margin:0 auto 16px}
+.screen{background:#0a0a0a;border-radius:36px;overflow:hidden;display:flex;flex-direction:column;align-items:center;height:660px}
+.sets{height:660px;padding:0;flex-direction:column}
+.nb{display:flex;align-items:center;padding:16px 20px 10px;flex-shrink:0;width:100%}
+.nbk{font-size:22px;color:#333;margin-right:10px}
+.nbt{font-size:16px;color:#3a3a3a;letter-spacing:.04em}
+.sbody{flex:1;overflow:hidden;padding:0 18px 14px;display:flex;flex-direction:column}
+.slb2{font-size:10px;color:#1a1a1a;letter-spacing:.1em;text-transform:uppercase;padding:10px 2px 5px}
+.scard2{background:#111;border-radius:14px;overflow:hidden;margin-bottom:5px}
+.srow{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:.5px solid #161616;min-height:50px}
+.srow:last-child{border-bottom:none}
+.srl{display:flex;align-items:center;gap:10px}
+.sico2{font-size:16px;color:#1e1e1e;width:20px;text-align:center}
+.snm{font-size:14px;color:#444}
+.svl{font-size:13px;color:#1e1e1e}
+.schev{font-size:13px;color:#1a1a1a;margin-left:5px}
+.tog{width:44px;height:26px;background:#1e1e1e;border-radius:13px;position:relative;flex-shrink:0}
+.tog.on{background:#1e3a1e}
+.togth{width:20px;height:20px;background:#2a2a2a;border-radius:50%;position:absolute;top:3px;left:3px}
+.tog.on .togth{left:21px;background:#6dba6d}
+</style>
+</head>
+<body>
+<div class="phone"><div class="pill"></div>
+<div class="screen sets">
+  <div class="nb"><span class="nbk">‹</span><span class="nbt">Characters</span></div>
+  <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+    <div style="font-size:10px;color:#1e1e1e;letter-spacing:.1em;text-transform:uppercase;padding:8px 18px 4px">Free</div>
+    <div style="display:flex;align-items:center;padding:12px 18px;border-bottom:.5px solid #111;gap:14px;background:#141414">
+      <div style="width:56px;height:32px;display:flex;align-items:center;justify-content:center" id="pk1"></div>
+      <span style="font-size:14px;color:#aaa;flex:1">Cat α</span>
+      <div style="width:8px;height:8px;border-radius:50%;background:#6dba6d"></div>
+    </div>
+    <div style="display:flex;align-items:center;padding:12px 18px;border-bottom:.5px solid #111;gap:14px">
+      <div style="width:56px;height:32px;display:flex;align-items:center;justify-content:center" id="pk2"></div>
+      <span style="font-size:14px;color:#444;flex:1">Cat β</span>
+    </div>
+    <div style="display:flex;align-items:center;padding:12px 18px;border-bottom:.5px solid #111;gap:14px">
+      <div style="width:56px;height:32px;display:flex;align-items:center;justify-content:center" id="pk3"></div>
+      <span style="font-size:14px;color:#444;flex:1">Human</span>
+    </div>
+    <div style="display:flex;align-items:center;padding:12px 18px;border-bottom:.5px solid #111;gap:14px">
+      <div style="width:56px;height:32px;display:flex;align-items:center;justify-content:center" id="pk4"></div>
+      <span style="font-size:14px;color:#444;flex:1">Push-Up</span>
+    </div>
+    <div style="font-size:10px;color:#1e1e1e;letter-spacing:.1em;text-transform:uppercase;padding:8px 18px 4px">Achievements</div>
+    <div style="display:flex;align-items:center;padding:12px 18px;border-bottom:.5px solid #111;gap:14px">
+      <div style="width:56px;height:32px;opacity:.2;display:flex;align-items:center;justify-content:center" id="pk5"></div>
+      <div style="flex:1"><span style="font-size:14px;color:#2a2a2a;display:block">Sit-Up</span><span style="font-size:10px;color:#1e3a1e">7-day streak</span></div>
+      <span style="font-size:14px;color:#1e1e1e">⚿</span>
+    </div>
+    <div style="display:flex;align-items:center;padding:12px 18px;border-bottom:.5px solid #111;gap:14px">
+      <div style="width:56px;height:32px;opacity:.2;display:flex;align-items:center;justify-content:center" id="pk6"></div>
+      <div style="flex:1"><span style="font-size:14px;color:#2a2a2a;display:block">Jump Rope</span><span style="font-size:10px;color:#1e3a1e">14-day streak</span></div>
+      <span style="font-size:14px;color:#1e1e1e">⚿</span>
+    </div>
+    <div style="display:flex;align-items:center;padding:12px 18px;gap:14px">
+      <div style="width:56px;height:32px;opacity:.2;display:flex;align-items:center;justify-content:center" id="pk7"></div>
+      <div style="flex:1"><span style="font-size:14px;color:#2a2a2a;display:block">Parrot</span><span style="font-size:10px;color:#1e3a1e">30-day streak</span></div>
+      <span style="font-size:14px;color:#1e1e1e">⚿</span>
+    </div>
+  </div>
+</div></div>
+<script>let f=false;
+const ids=['pk1','pk2','pk3','pk4','pk5','pk6','pk7'];
+function render(){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=`<svg width="56" height="32" viewBox="0 0 40 22" fill="#555" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><circle cx="28" cy="7" r="5.5"/><polygon points="23,2 25.5,-3 29,2"/><line x1="5" y1="16" x2="1.7999999999999998" y2="21" stroke="#555" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="12" y1="16" x2="15.04" y2="21" stroke="#555" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="18" y1="16" x2="21.36" y2="21" stroke="#555" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="25" y1="16" x2="21.96" y2="21" stroke="#555" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`;})}
+render();setInterval(()=>{f=!f;const el=document.getElementById('pk1');if(el)el.innerHTML=`<svg width="56" height="32" viewBox="0 0 40 22" fill="#888" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><circle cx="28" cy="7" r="5.5"/><polygon points="23,2 25.5,-3 29,2"/><line x1="5" y1="16" x2="1.7999999999999998" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="12" y1="16" x2="15.04" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="18" y1="16" x2="21.36" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="25" y1="16" x2="21.96" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`;},190);</script>
+</body>
+</html>

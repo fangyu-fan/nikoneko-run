@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>NIKO NEKO — Summary</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}
+body{background:#111;font-family:-apple-system,'SF Pro Display',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px}
+.phone{width:320px;background:#0a0a0a;border-radius:50px;padding:16px 13px 24px;border:1.5px solid #1a1a1a;flex-shrink:0}
+.pill{width:60px;height:5px;background:#1c1c1c;border-radius:3px;margin:0 auto 16px}
+.screen{background:#0a0a0a;border-radius:36px;overflow:hidden;display:flex;flex-direction:column;align-items:center;height:660px}
+.ss{height:660px;padding:22px 20px 22px;justify-content:space-between}
+.sa{height:52px;display:flex;align-items:center;justify-content:center;opacity:.65}
+.stime{font-size:78px;font-weight:200;color:#f0ede8;letter-spacing:-3.5px;line-height:1}
+.stimelbl{font-size:11px;color:#1a1a1a;letter-spacing:.1em;text-transform:uppercase;margin-top:5px}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;width:100%}
+.scard{background:#111;border-radius:12px;padding:12px 14px}
+.scico{font-size:12px;color:#1e1e1e;margin-bottom:3px}
+.scnum{font-size:20px;font-weight:200;color:#666;letter-spacing:-.5px}
+.sclbl{font-size:9px;color:#181818}
+.sstreak{width:100%;background:#0e1a0e;border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+.ssnum{font-size:32px;font-weight:200;color:#4a8c4a;letter-spacing:-1.5px}
+.sslbl{font-size:11px;color:#1e3a1e;margin-top:2px}
+.ssdots{display:flex;gap:5px}
+.sdot{width:10px;height:10px;border-radius:3px;background:#1a2e1a}
+.sdot.on{background:#2e5c2e}.sdot.today{background:#4a8c4a}
+.done-btn{width:100%;padding:15px 0;border-radius:18px;background:#f0ede8;color:#0a0a0a;font-size:15px;font-weight:500;text-align:center;letter-spacing:.04em}
+.share-lbl{font-size:12px;color:#1a1a1a;letter-spacing:.04em;text-align:center}
+</style>
+</head>
+<body>
+<div class="phone"><div class="pill"></div>
+<div class="screen ss">
+  <div class="sa" id="cat"></div>
+  <div style="display:flex;flex-direction:column;align-items:center">
+    <div class="stime">21</div>
+    <div class="stimelbl">min · completed</div>
+  </div>
+  <div class="sgrid">
+    <div class="scard"><div class="scico">♥</div><div class="scnum">122</div><div class="sclbl">Avg HR</div></div>
+    <div class="scard"><div class="scico">♩</div><div class="scnum">180</div><div class="sclbl">BPM</div></div>
+    <div class="scard"><div class="scico">◎</div><div class="scnum">100%</div><div class="sclbl">Goal</div></div>
+    <div class="scard"><div class="scico">◷</div><div class="scnum">48.4h</div><div class="sclbl">Total</div></div>
+  </div>
+  <div class="sstreak">
+    <div><div class="ssnum">13</div><div class="sslbl">day streak</div></div>
+    <div class="ssdots">
+      <div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div>
+      <div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div>
+      <div class="sdot today"></div>
+    </div>
+  </div>
+  <div class="done-btn">Done</div>
+  <div class="share-lbl">Share</div>
+</div></div>
+<script>let f=false;const c=document.getElementById('cat');
+setInterval(()=>{f=!f;c.innerHTML=`<svg width="56" height="30" viewBox="0 0 40 22" fill="#888" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><circle cx="28" cy="7" r="5.5"/><polygon points="23,2 25.5,-3 29,2"/><line x1="5" y1="16" x2="1.7999999999999998" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="12" y1="16" x2="15.04" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="18" y1="16" x2="21.36" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="25" y1="16" x2="21.96" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`;},140);
+c.innerHTML=`<svg width="56" height="30" viewBox="0 0 40 22" fill="#888" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><circle cx="28" cy="7" r="5.5"/><polygon points="23,2 25.5,-3 29,2"/><line x1="5" y1="16" x2="1.7999999999999998" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="12" y1="16" x2="15.04" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="18" y1="16" x2="21.36" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="25" y1="16" x2="21.96" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`;</script>
+</body>
+</html>

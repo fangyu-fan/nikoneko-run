@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>NIKO NEKO — Lock Screen — Live Activity</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}
+body{background:#111;font-family:-apple-system,'SF Pro Display',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px}.phone{width:320px;background:#080c08;border-radius:50px;padding:16px 13px 24px;border:1.5px solid #1a1a1a}
+.pill{width:60px;height:5px;background:#1c1c1c;border-radius:3px;margin:0 auto 12px}</style>
+</head>
+<body>
+<div class="phone">
+  <div class="pill"></div>
+  <div style="display:flex;justify-content:space-between;padding:0 14px;height:40px;align-items:center;position:relative">
+    <span style="font-size:14px;color:#666">9:41</span>
+    <div style="width:110px;height:32px;background:#000;border-radius:16px;position:absolute;left:50%;transform:translateX(-50%);top:5px"></div>
+    <span style="font-size:11px;color:#555">▮▮</span>
+  </div>
+  <div style="font-size:72px;font-weight:200;color:#f0ede8;letter-spacing:-3px;line-height:1;text-align:center;padding:16px 0 4px">9:41</div>
+  <div style="font-size:14px;color:#4a4a4a;text-align:center;letter-spacing:.04em;margin-bottom:20px">Saturday, May 18</div>
+  <div style="background:rgba(14,14,14,.9);border:.5px solid #1e1e1e;border-radius:20px;padding:16px 18px;margin:0 10px;display:flex;align-items:center;gap:14px">
+    <div style="display:flex;flex-direction:column;gap:4px;flex:1">
+      <div style="font-size:10px;color:#282828;letter-spacing:.1em;text-transform:uppercase">NIKO NEKO</div>
+      <div style="font-size:42px;font-weight:200;color:#f0ede8;letter-spacing:-2px;line-height:1">14:32</div>
+      <div style="font-size:13px;color:#282828">♩ 180 bpm</div>
+    </div>
+    <div id="lac" style="width:52px;height:36px;display:flex;align-items:center;justify-content:center;opacity:.7"></div>
+  </div>
+  <div style="height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+    <div style="width:200px;height:4px;background:#1a1a1a;border-radius:2px"></div>
+    <div style="font-size:10px;color:#1e1e1e;letter-spacing:.06em">NIKO NEKO</div>
+    <div style="width:200px;height:4px;background:#1a1a1a;border-radius:2px"></div>
+  </div>
+</div>
+<script>let f=false;const c=document.getElementById('lac');
+setInterval(()=>{f=!f;c.innerHTML=`<svg width="52" height="28" viewBox="0 0 40 22" fill="#888"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><circle cx="28" cy="7" r="5.5"/><polygon points="23,2 25.5,-3 29,2"/><line x1="5" y1="16" x2="1.7999999999999998" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="12" y1="16" x2="15.04" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="18" y1="16" x2="21.36" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="25" y1="16" x2="21.96" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`;},190);
+c.innerHTML=`<svg width="52" height="28" viewBox="0 0 40 22" fill="#888"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><circle cx="28" cy="7" r="5.5"/><polygon points="23,2 25.5,-3 29,2"/><line x1="5" y1="16" x2="1.7999999999999998" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="12" y1="16" x2="15.04" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="18" y1="16" x2="21.36" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="25" y1="16" x2="21.96" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`;</script>
+</body>
+</html>

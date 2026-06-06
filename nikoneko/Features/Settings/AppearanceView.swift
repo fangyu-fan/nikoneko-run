@@ -32,6 +32,7 @@ struct AppearanceView: View {
             .padding(.bottom, 24)
         }
         .background(theme.bg.ignoresSafeArea())
+        .id(lm.version)
         .navigationTitle(lm.L("theme.title"))
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -124,6 +125,7 @@ struct LanguageView: View {
             .padding(.top, 8)
         }
         .background(theme.bg.ignoresSafeArea())
+        .id(languageManager.version)
         .navigationTitle(languageManager.L("language.title"))
         .navigationBarTitleDisplayMode(.inline)
     }

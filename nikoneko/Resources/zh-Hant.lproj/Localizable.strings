@@ -191,3 +191,6 @@
 "dataSync.row.importCSV"      = "匯入 CSV";
 "dataSync.icloud.note"        = "iCloud 設定變更後需重啟 app 才生效。";
 "dataSync.import.error"       = "匯入失敗，請確認檔案格式。";
+"defaults.row.volume" = "音量";
+"timer.tip.longPress" = "長按結束";
+"timer.alert.tooShort" = "不足 1 分鐘的訓練不會納入記錄。";

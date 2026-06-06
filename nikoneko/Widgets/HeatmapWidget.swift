@@ -1,62 +1,116 @@
 import WidgetKit
 import SwiftUI
+import AppIntents
+
+// MARK: - HeatmapWidgetIntent
+
+struct HeatmapWidgetIntent: AppIntent, WidgetConfigurationIntent {
+    static let title: LocalizedStringResource = "Heatmap"
+
+    @Parameter(title: "Metric", default: .duration)
+    var metric: StatMetric
+}
+
+// MARK: - HeatmapEntry
 
 struct HeatmapEntry: TimelineEntry {
     let date: Date
     let summaries: [DaySessionSummary]
+    let metric: StatMetric   // not .streak
     let theme: ThemeTokens
-    let t1: Int; let t2: Int; let t3: Int
 }
 
-struct HeatmapProvider: TimelineProvider {
+// MARK: - HeatmapProvider
+
+struct HeatmapProvider: AppIntentTimelineProvider {
+    typealias Entry = HeatmapEntry
+    typealias Intent = HeatmapWidgetIntent
+
     func placeholder(in context: Context) -> HeatmapEntry {
-        HeatmapEntry(date: Date(), summaries: [], theme: ThemeLibrary.obsidian, t1: 10, t2: 50, t3: 90)
+        HeatmapEntry(date: Date(), summaries: [], metric: .duration, theme: ThemeLibrary.obsidian)
     }
-    func getSnapshot(in context: Context, completion: @escaping (HeatmapEntry) -> Void) {
-        completion(entry())
+
+    func snapshot(for configuration: HeatmapWidgetIntent, in context: Context) async -> HeatmapEntry {
+        makeEntry(for: configuration)
     }
-    func getTimeline(in context: Context, completion: @escaping (Timeline<HeatmapEntry>) -> Void) {
-        let next = Calendar.current.date(byAdding: .hour, value: 1, to: Date())!
-        completion(Timeline(entries: [entry()], policy: .after(next)))
+
+    func timeline(for configuration: HeatmapWidgetIntent, in context: Context) async -> Timeline<HeatmapEntry> {
+        let entry = makeEntry(for: configuration)
+        let next = Calendar.current.date(byAdding: .hour, value: 1, to: Date()) ?? Date()
+        return Timeline(entries: [entry], policy: .after(next))
     }
-    private func entry() -> HeatmapEntry {
+
+    private func makeEntry(for configuration: HeatmapWidgetIntent) -> HeatmapEntry {
         let theme = WidgetTheme.load(for: "widget.heatmap.themeId")
         return HeatmapEntry(
             date: Date(),
             summaries: AppGroupDefaults.loadSummaries(),
-            theme: theme,
-            t1: 10, t2: 50, t3: 90
+            metric: configuration.metric,
+            theme: theme
         )
     }
 }
 
-// MARK: - Year Heatmap: 3 rows × 4 months each, GitHub-style grid
+// MARK: - HeatmapWidgetView
 
 struct HeatmapWidgetView: View {
     let entry: HeatmapEntry
 
-    // The calendar year split into three bands of 4 months.
-    // Row 0: Jan–Apr, Row 1: May–Aug, Row 2: Sep–Dec
-    private let monthBands: [[Int]] = [[1,2,3,4], [5,6,7,8], [9,10,11,12]]
-    private let dayLabels = ["M","T","W","T","F","S","S"]
-    private let monthAbbr = ["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+    private let dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    private let monthAbbr = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+    private let labelWidth: CGFloat = 22
+    private let gap: CGFloat = 1.5
+    private let numCols = 18
 
     var body: some View {
-        let year = Calendar.current.component(.year, from: entry.date)
-        let ratioMap = buildRatioMap(year: year)
+        let (columns, monthHeaders) = buildColumns()
+        let dailyValues = buildDailyValues()
+        let maxValue = columns
+            .flatMap { $0 }
+            .compactMap { $0 }
+            .map { dailyValues[$0] ?? 0.0 }
+            .max() ?? 1.0
 
-        VStack(alignment: .leading, spacing: 5) {
-            Text("THIS YEAR")
-                .font(.system(size: 7)).tracking(1)
-                .foregroundColor(entry.theme.textDim)
+        VStack(alignment: .leading, spacing: 3) {
+            // Title row
+            Text("HEATMAP · \(entry.metric.rawValue.uppercased())")
+                .font(.system(size: 9))
+                .tracking(0.7)
+                .foregroundColor(Color(white: 0.733))
 
-            VStack(alignment: .leading, spacing: 5) {
-                ForEach(monthBands.indices, id: \.self) { bandIdx in
-                    monthBandView(
-                        months: monthBands[bandIdx],
-                        year: year,
-                        ratioMap: ratioMap
-                    )
+            // Month abbreviation row
+            HStack(spacing: gap) {
+                // Placeholder for day label column
+                Spacer().frame(width: labelWidth)
+                ForEach(0..<numCols, id: \.self) { col in
+                    Text(monthHeaders[col])
+                        .font(.system(size: 7))
+                        .foregroundColor(Color(white: 0.733))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            }
+
+            // Day rows: Mon–Sun
+            VStack(spacing: gap) {
+                ForEach(0..<7, id: \.self) { row in
+                    HStack(spacing: gap) {
+                        // Day label
+                        Text(dayLabels[row])
+                            .font(.system(size: 7))
+                            .foregroundColor(Color(white: 0.8))
+                            .frame(width: labelWidth, alignment: .trailing)
+
+                        // 18 cells
+                        ForEach(0..<numCols, id: \.self) { col in
+                            let dateKey = columns[col][row]
+                            let value = dateKey.flatMap { dailyValues[$0] } ?? 0.0
+                            let ratio = maxValue > 0 ? value / maxValue : 0.0
+                            Rectangle()
+                                .fill(cellColor(ratio: ratio))
+                                .aspectRatio(1, contentMode: .fit)
+                                .cornerRadius(2)
+                        }
+                    }
                 }
             }
         }
@@ -65,102 +119,117 @@ struct HeatmapWidgetView: View {
         .containerBackground(entry.theme.bg, for: .widget)
     }
 
-    // One horizontal strip of 4 months side by side.
-    private func monthBandView(months: [Int], year: Int, ratioMap: [String: Double]) -> some View {
-        HStack(alignment: .top, spacing: 4) {
-            ForEach(months, id: \.self) { month in
-                monthColumnView(month: month, year: year, ratioMap: ratioMap)
-            }
-        }
-    }
-
-    // One month rendered as a column of weeks (max 5-6 cols × 7 rows).
-    private func monthColumnView(month: Int, year: Int, ratioMap: [String: Double]) -> some View {
+    // Returns:
+    //   columns[col][row] = "YYYY-MM-DD" string or nil if the date is in the future
+    //   monthHeaders[col] = "Jan" etc. if this column starts a new month, else ""
+    private func buildColumns() -> (columns: [[String?]], monthHeaders: [String]) {
         let cal = Calendar.current
-        let comps = DateComponents(year: year, month: month, day: 1)
-        guard let firstDay = cal.date(from: comps) else { return AnyView(EmptyView()) }
-        let daysInMonth = cal.range(of: .day, in: .month, for: firstDay)!.count
-        // ISO weekday: 1=Mon ... 7=Sun
-        let firstWeekdayISO = isoWeekday(of: firstDay)
-        let totalCells = firstWeekdayISO - 1 + daysInMonth
-        let weeksNeeded = (totalCells + 6) / 7
+        let today = cal.startOfDay(for: entry.date)
 
-        return AnyView(
-            VStack(alignment: .leading, spacing: 1) {
-                // Month label
-                Text(monthAbbr[month])
-                    .font(.system(size: 5.5))
-                    .foregroundColor(entry.theme.textMid)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+        // Find the Monday of the week that is (numCols - 1) weeks ago
+        // "This week's Monday" = start of the week containing today (ISO: Mon=1)
+        let todayWeekday = isoWeekday(of: today) // 1=Mon..7=Sun
+        let daysToMonday = todayWeekday - 1
+        let thisMonday = cal.date(byAdding: .day, value: -daysToMonday, to: today)!
+        let oldestMonday = cal.date(byAdding: .weekOfYear, value: -(numCols - 1), to: thisMonday)!
 
-                // Grid: weeks across, days down
-                HStack(alignment: .top, spacing: 1) {
-                    ForEach(0..<weeksNeeded, id: \.self) { week in
-                        VStack(spacing: 1) {
-                            ForEach(0..<7, id: \.self) { dow in
-                                let cellIndex = week * 7 + dow
-                                let dayNumber = cellIndex - (firstWeekdayISO - 1) + 1
-                                if dayNumber >= 1 && dayNumber <= daysInMonth {
-                                    let key = dateKey(year: year, month: month, day: dayNumber)
-                                    let ratio = ratioMap[key] ?? 0.0
-                                    RoundedRectangle(cornerRadius: 1)
-                                        .fill(WidgetSharedData.barColor(
-                                            ratio: ratio, theme: entry.theme,
-                                            t1: entry.t1, t2: entry.t2, t3: entry.t3))
-                                        .frame(width: 4, height: 4)
-                                } else {
-                                    Color.clear.frame(width: 4, height: 4)
-                                }
-                            }
-                        }
-                    }
+        var columns = [[String?]](repeating: [String?](repeating: nil, count: 7), count: numCols)
+        var monthHeaders = [String](repeating: "", count: numCols)
+        var prevMonth: Int? = nil
+
+        for col in 0..<numCols {
+            let colMonday = cal.date(byAdding: .weekOfYear, value: col, to: oldestMonday)!
+            let comps = cal.dateComponents([.month], from: colMonday)
+            let month = comps.month!
+
+            // Show month label when month changes
+            if month != prevMonth {
+                monthHeaders[col] = monthAbbr[month - 1]
+                prevMonth = month
+            }
+
+            for row in 0..<7 {
+                let day = cal.date(byAdding: .day, value: row, to: colMonday)!
+                // Skip future dates
+                if day <= today {
+                    let dc = cal.dateComponents([.year, .month, .day], from: day)
+                    columns[col][row] = String(format: "%04d-%02d-%02d", dc.year!, dc.month!, dc.day!)
                 }
             }
-        )
-    }
-
-    // Build a dictionary keyed by "YYYY-MM-DD" → completion ratio for the given year.
-    private func buildRatioMap(year: Int) -> [String: Double] {
-        var map: [String: Double] = [:]
-        let cal = Calendar.current
-        for summary in entry.summaries {
-            let comps = cal.dateComponents([.year, .month, .day], from: summary.date)
-            guard comps.year == year,
-                  let m = comps.month, let d = comps.day else { continue }
-            let key = dateKey(year: year, month: m, day: d)
-            map[key, default: 0] += summary.completionRatio
         }
-        // Cap at 1.0
-        return map.mapValues { min(1.0, $0) }
+
+        return (columns, monthHeaders)
     }
 
-    private func dateKey(year: Int, month: Int, day: Int) -> String {
-        String(format: "%04d-%02d-%02d", year, month, day)
-    }
-
-    // ISO weekday where Monday=1, Sunday=7.
-    private func isoWeekday(of date: Date) -> Int {
+    // Returns a dict keyed by "YYYY-MM-DD" with the metric value for that day.
+    private func buildDailyValues() -> [String: Double] {
         let cal = Calendar.current
-        // Calendar.current.weekday: 1=Sun, 2=Mon... 7=Sat
-        let wd = cal.component(.weekday, from: date)
+        var map: [String: (duration: Double, steps: Int, count: Int)] = [:]
+
+        for summary in entry.summaries {
+            let dc = cal.dateComponents([.year, .month, .day], from: summary.date)
+            guard let y = dc.year, let m = dc.month, let d = dc.day else { continue }
+            let key = String(format: "%04d-%02d-%02d", y, m, d)
+            let existing = map[key] ?? (duration: 0, steps: 0, count: 0)
+            map[key] = (
+                duration: existing.duration + summary.duration,
+                steps: existing.steps + summary.steps,
+                count: existing.count + 1
+            )
+        }
+
+        var result: [String: Double] = [:]
+        for (key, agg) in map {
+            let value: Double
+            switch entry.metric {
+            case .duration:
+                value = agg.duration / 60.0   // minutes
+            case .calories:
+                let durationMin = agg.duration / 60.0
+                value = durationMin * 7.0
+            case .steps:
+                value = Double(agg.steps)
+            case .runs:
+                value = Double(agg.count)
+            case .distance:
+                // DaySessionSummary has no distance field; estimate from steps
+                value = Double(agg.steps) / 1500.0
+            case .streak:
+                // Streak is not a per-day metric; treat as completionRatio present/absent
+                value = agg.count > 0 ? 1.0 : 0.0
+            }
+            result[key] = value
+        }
+        return result
+    }
+
+    // Maps a ratio (0–1 relative to daily max) to the bar color ramp.
+    private func cellColor(ratio: Double) -> Color {
+        if ratio == 0           { return entry.theme.bar[0] }
+        else if ratio <= 0.25   { return entry.theme.bar[1] }
+        else if ratio <= 0.50   { return entry.theme.bar[2] }
+        else if ratio <= 0.75   { return entry.theme.bar[3] }
+        else                    { return entry.theme.bar[4] }
+    }
+
+    // ISO weekday: Mon=1, Sun=7
+    private func isoWeekday(of date: Date) -> Int {
+        let wd = Calendar.current.component(.weekday, from: date) // 1=Sun..7=Sat
         return wd == 1 ? 7 : wd - 1
     }
 }
 
+// MARK: - HeatmapWidget
+
 struct HeatmapWidget: Widget {
     let kind = "HeatmapWidget"
+
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: HeatmapProvider()) { entry in
+        AppIntentConfiguration(kind: kind, intent: HeatmapWidgetIntent.self, provider: HeatmapProvider()) { entry in
             HeatmapWidgetView(entry: entry)
         }
-        .configurationDisplayName("Year Heatmap")
-        .description("GitHub-style activity grid for the full year.")
+        .configurationDisplayName("Heatmap")
+        .description("18-week activity heatmap.")
         .supportedFamilies([.systemMedium])
-    }
-}
-
-extension Array {
-    subscript(safe index: Int) -> Element? {
-        indices.contains(index) ? self[index] : nil
     }
 }

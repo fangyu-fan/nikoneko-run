@@ -164,8 +164,9 @@ final class ReportViewModel {
             let s = inRange.reduce(0) { $0 + $1.steps }
             return s >= 1000 ? String(format: "%.1fk", Double(s) / 1000) : "\(s)"
         case .hrAvg:
-            guard !inRange.isEmpty else { return "—" }
-            let avg = Double(inRange.reduce(0) { $0 + $1.avgHR }) / Double(inRange.count)
+            let withHR = inRange.filter { $0.avgHR > 0 }
+            guard !withHR.isEmpty else { return "—" }
+            let avg = Double(withHR.reduce(0) { $0 + $1.avgHR }) / Double(withHR.count)
             return "\(Int(avg.rounded()))"
         case .hrMax:
             let mx = inRange.map(\.maxHR).max() ?? 0

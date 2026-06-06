@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>NIKO NEKO — Timer — Idle Countdown</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#111;font-family:-apple-system,'SF Pro Display',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px}
+.phone{width:320px;background:#0a0a0a;border-radius:50px;padding:16px 13px 24px;border:1.5px solid #1a1a1a;flex-shrink:0}
+.pill{width:60px;height:5px;background:#1c1c1c;border-radius:3px;margin:0 auto 16px}
+.screen{background:#0a0a0a;border-radius:36px;overflow:hidden;display:flex;flex-direction:column;align-items:center;height:660px}
+
+.ts{padding:24px 20px 24px;justify-content:space-between;height:660px}
+.char-zone{height:44px;display:flex;align-items:center;justify-content:center;opacity:.65}
+.drum-ghost{font-size:58px;font-weight:200;color:#141414;letter-spacing:-3px;line-height:1;text-align:center}
+.drum-sel{font-size:88px;font-weight:200;color:#f0ede8;letter-spacing:-4px;line-height:1;text-align:center}
+.metrics-row{display:flex;gap:20px;justify-content:center;align-items:center;width:100%}
+.m-item{display:flex;align-items:center;gap:5px}
+.m-ico{font-size:13px;color:#2a2a2a}
+.m-val{font-size:16px;font-weight:300;color:#444}
+.m-unit{font-size:11px;color:#222;margin-left:2px}
+.bottom{width:100%;display:flex;flex-direction:column;align-items:center;gap:14px}
+.ctrl-row{display:flex;align-items:center;justify-content:space-between;width:100%}
+.bpm-tap{display:flex;align-items:center;gap:4px}
+.bico{font-size:14px;color:#1e1e1e}
+.bnum{font-size:14px;color:#1e1e1e}
+.bunit{font-size:11px;color:#161616}
+.vol{display:flex;align-items:center;gap:5px}
+.vico{font-size:12px;color:#161616}
+.vtk{width:72px;height:2px;background:#181818;border-radius:1px;position:relative}
+.vfill{height:2px;width:60%;background:#242424;border-radius:1px}
+.vthumb{width:11px;height:11px;border-radius:50%;background:#2c2c2c;position:absolute;top:50%;left:60%;transform:translate(-50%,-50%)}
+.play-btn{width:80px;height:80px;border-radius:50%;border:1px solid #1c1c1c;display:flex;align-items:center;justify-content:center;position:relative;background:#0a0a0a}
+.play-ico{font-size:26px;color:#f0ede8}
+.stop-ico{font-size:20px;color:#2e2e2e}
+.bhint{font-size:10px;color:#181818;letter-spacing:.06em;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="phone"><div class="pill"></div>
+<div class="screen ts">
+  <div class="char-zone" id="cat"></div>
+  <div style="display:flex;flex-direction:column;align-items:center">
+    <div class="drum-ghost">20</div>
+    <div class="drum-sel">15</div>
+    <div class="drum-ghost">10</div>
+  </div>
+  <div class="metrics-row">
+    <div class="m-item"><span class="m-ico">♥</span><span class="m-val">—</span></div>
+  </div>
+  <div class="bottom">
+    <div class="ctrl-row">
+      <div class="bpm-tap"><span class="bico">♩</span><span class="bnum">180</span><span class="bunit"> bpm</span></div>
+      <div class="vol"><span class="vico">♪</span><div class="vtk"><div class="vfill"></div><div class="vthumb"></div></div><span class="vico">♫</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center">
+      <div class="play-btn"><span class="play-ico">▶</span></div>
+      <div class="bhint">tap to start</div>
+    </div>
+  </div>
+</div></div>
+<script>let f=false;const c=document.getElementById('cat');
+setInterval(()=>{f=!f;c.innerHTML=`<svg width="40" height="22" viewBox="0 0 40 22" fill="#888" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="12" cy="12" rx="9" ry="5.5"/>
+    <circle cx="28" cy="7" r="5.5"/>
+    <polygon points="23,2 25.5,-3 29,2"/>
+    <line x1="5" y1="16" x2="1.7999999999999998" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <line x1="12" y1="16" x2="15.04" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <line x1="18" y1="16" x2="21.36" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <line x1="25" y1="16" x2="21.96" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/>
+  </svg>`;},190);
+c.innerHTML=`<svg width="40" height="22" viewBox="0 0 40 22" fill="#888" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="12" cy="12" rx="9" ry="5.5"/>
+    <circle cx="28" cy="7" r="5.5"/>
+    <polygon points="23,2 25.5,-3 29,2"/>
+    <line x1="5" y1="16" x2="1.7999999999999998" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <line x1="12" y1="16" x2="15.04" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <line x1="18" y1="16" x2="21.36" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <line x1="25" y1="16" x2="21.96" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/>
+  </svg>`;</script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct TimerView: View {
     @Environment(ThemeManager.self) private var themeManager
@@ -13,9 +14,17 @@ struct TimerView: View {
     @State private var hrService = HeartRateService()
     @State private var motionService = MotionService()
     @State private var longPressProgress: CGFloat = 0
+    @State private var isLongPressing: Bool = false
+    @State private var isLongPressingPending: Bool = false
+    @State private var stopWorkItem: DispatchWorkItem? = nil
+    @State private var didCompleteStop: Bool = false
     @State private var showBPMPanel = false
+    @State private var showCharacterPicker = false
+    @State private var savedSession: RunSession? = nil
+    @State private var showTooShortAlert = false
     @State private var bpm: Int = 180
     @State private var volume: Double = 0.6
+    @Environment(\.modelContext) private var ctx
 
     private var theme: ThemeTokens { themeManager.current }
     private let numeralHeight: CGFloat = 360
@@ -71,6 +80,7 @@ struct TimerView: View {
             VStack(spacing: 0) {
                 // Character strip
                 LottieCharacterView(
+                    characterId: profile?.activeCharacterId ?? "loader_cat",
                     color: theme.accentMid,
                     bpm: bpm,
                     isAnimating: vm.state == .running
@@ -78,6 +88,10 @@ struct TimerView: View {
                 .frame(width: 72, height: 52)
                 .frame(maxWidth: .infinity)
                 .padding(.top, 116)
+                .onTapGesture {
+                    guard vm.state == .idle else { return }
+                    showCharacterPicker = true
+                }
 
                 Spacer(minLength: 0)
 
@@ -128,9 +142,6 @@ struct TimerView: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                         .opacity(vm.state != .idle ? 1 : 0)
                         .allowsHitTesting(vm.state != .idle)
-                        .onTapGesture(count: 2) {
-                            vm.state == .running ? vm.pause() : vm.resume()
-                        }
                     }
 
                     // HH:MM mode — HH:MM:SS three equal slots, same size idle and running
@@ -140,34 +151,35 @@ struct TimerView: View {
 
                             HStack(alignment: .center, spacing: 0) {
                                 Spacer(minLength: 0)
-                                // HH — single digit max 9, narrower slot
-                                slot(idle: DrumPickerView(value: $selectedHours, range: 0...9,
-                                                          hapticEnabled: profile?.hapticEnabled ?? true),
-                                     running: Text(hhText), width: 72)
+                                // HH
+                                hhmmSlot(
+                                    countdown: DrumPickerView(value: $selectedHours, range: 0...9,
+                                                              hapticEnabled: profile?.hapticEnabled ?? true),
+                                    stopwatchText: "0",
+                                    runningText: Text(hhText),
+                                    width: 72
+                                )
 
                                 colon
 
-                                // MM — always two digits
-                                slot(idle: DrumPickerView(value: $vm.selectedMinutes, range: 0...59,
-                                                          hapticEnabled: profile?.hapticEnabled ?? true,
-                                                          zeroPadded: true),
-                                     running: Text(mmText), width: 100)
+                                // MM
+                                hhmmSlot(
+                                    countdown: DrumPickerView(value: $vm.selectedMinutes, range: 0...59,
+                                                              hapticEnabled: profile?.hapticEnabled ?? true,
+                                                              zeroPadded: true),
+                                    stopwatchText: "00",
+                                    runningText: Text(mmText),
+                                    width: 100
+                                )
 
                                 colon
 
-                                // SS — picker fixed at 0 in idle; running shows live seconds
-                                slot(idle: DrumPickerView(value: $selectedSeconds, range: 0...0,
-                                                          hapticEnabled: false,
-                                                          zeroPadded: true),
-                                     running: Text(ssText), width: 100)
+                                // SS — stopwatch: static 00; countdown: locked at 0
+                                ssSlot(running: Text(ssText))
                                 Spacer(minLength: 0)
                             }
                         }
                         .contentShape(Rectangle())
-                        .onTapGesture(count: 2) {
-                            guard vm.state != .idle else { return }
-                            vm.state == .running ? vm.pause() : vm.resume()
-                        }
                         .allowsHitTesting(true)
                     }
                 }
@@ -191,24 +203,46 @@ struct TimerView: View {
             }
         }
         .onAppear {
+            vm.onSessionSaved = { session in
+                guard session.duration >= 60 else {
+                    showTooShortAlert = true
+                    return
+                }
+                ctx.insert(session)
+                try? ctx.save()
+                WidgetCenter.shared.reloadAllTimelines()
+                savedSession = session
+            }
             bpm = profile?.defaultBPM ?? 180
-            let defMins = profile?.defaultDuration ?? 15
-            selectedHours = defMins / 60
-            vm.selectedMinutes = defMins % 60
+            volume = UserDefaults.standard.object(forKey: "defaultVolume") as? Double ?? 0.6
+            metronome.volume = Float(volume)
+            let defMins = profile?.dailyGoalMinutes ?? 20
             vm.isCountdown = (profile?.timerMode ?? .countdown) == .countdown
+            if timeDisplayFormat == .hhMM {
+                selectedHours = defMins / 60
+                vm.selectedMinutes = defMins % 60
+            } else {
+                selectedHours = 0
+                vm.selectedMinutes = defMins
+            }
             volume = 0.6
             metronome.soundType = profile?.soundType ?? .tap
             metronome.volume = Float(volume)
             Task { await HealthKitService.shared.requestPermissions() }
         }
-        .onChange(of: vm.state) { _, newState in
+        .onChange(of: vm.state) { oldState, newState in
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
             switch newState {
             case .running:
-                metronome.start()
-                motionService.weightKg = profile?.weightKg ?? 65
-                motionService.heightCm = profile?.heightCm ?? 170
-                hrService.startMonitoring()
-                motionService.startTracking()
+                if oldState == .paused {
+                    metronome.resume()
+                } else {
+                    metronome.start()
+                    motionService.weightKg = profile?.weightKg ?? 65
+                    motionService.heightCm = profile?.heightCm ?? 170
+                    hrService.startMonitoring()
+                    motionService.startTracking()
+                }
             case .paused:
                 metronome.pause()
             case .idle:
@@ -217,6 +251,9 @@ struct TimerView: View {
                 motionService.stopTracking()
                 withAnimation(.easeOut(duration: 0.2)) { longPressProgress = 0 }
             }
+        }
+        .onChange(of: isLongPressing) { _, pressing in
+            if pressing { UIImpactFeedbackGenerator(style: .medium).impactOccurred() }
         }
         .onChange(of: bpm) { _, newBPM in
             metronome.updateBPM(newBPM)
@@ -228,15 +265,38 @@ struct TimerView: View {
                 selectedHours = 0
             } else {
                 // Restore default duration when switching back
-                let defMins = profile?.defaultDuration ?? 15
-                selectedHours = defMins / 60
-                vm.selectedMinutes = defMins % 60
+                let defMins = profile?.dailyGoalMinutes ?? 20
+                if timeDisplayFormat == .hhMM {
+                    selectedHours = defMins / 60
+                    vm.selectedMinutes = defMins % 60
+                } else {
+                    selectedHours = 0
+                    vm.selectedMinutes = defMins
+                }
             }
         }
         .sheet(isPresented: $showBPMPanel) {
             BPMPanelView(bpm: $bpm)
                 .presentationBackground(theme.bg)
                 .presentationDragIndicator(.hidden)
+        }
+        .sheet(isPresented: $showCharacterPicker) {
+            CharacterPickerView(selectedId: Binding(
+                get: { profile?.activeCharacterId ?? "loader_cat" },
+                set: { v in
+                    profile?.activeCharacterId = v
+                    try? ctx.save()
+                }
+            ))
+            .presentationBackground(theme.bg)
+            .presentationDetents([.medium])
+        }
+        .sheet(item: $savedSession) { session in
+            SummaryView(session: session)
+                .presentationBackground(theme.bg)
+        }
+        .alert(lm.L("timer.alert.tooShort"), isPresented: $showTooShortAlert) {
+            Button("OK", role: .cancel) {}
         }
     }
 
@@ -252,18 +312,18 @@ struct TimerView: View {
                         set: { vm.isCountdown = $0 == 0 }
                     ),
                     segments: ["Countdown", "Stopwatch"],
-                    selectedTint: UIColor(theme.accent),
-                    background: UIColor(theme.surface),
-                    selectedTextColor: UIColor(theme.bg),
-                    normalTextColor: UIColor(theme.textMid)
+                    selectedTint: theme.accent,
+                    background: theme.surface,
+                    selectedTextColor: theme.bg,
+                    normalTextColor: theme.textMid
                 )
-                .frame(width: 220, height: 32)
+                .fixedSize()
                 .frame(maxWidth: .infinity, alignment: .center)
             }
 
-            // Live metrics — centered when running
+            // Live metrics — shown when running or paused
             HStack(spacing: 28) {
-                if vm.state == .running {
+                if vm.state == .running || vm.state == .paused {
                     if profile?.showHR ?? true {
                         metricItem(icon: "heart",
                                    value: hrService.currentHR > 0 ? "\(hrService.currentHR)" : "—",
@@ -335,6 +395,62 @@ struct TimerView: View {
             .padding(.horizontal, 8)
     }
 
+    @ViewBuilder
+    private func hhmmSlot<I: View>(countdown: I, stopwatchText: String, runningText: Text, width: CGFloat) -> some View {
+        Group {
+            if vm.state == .idle {
+                if vm.isCountdown {
+                    countdown
+                } else {
+                    Text(stopwatchText)
+                        .font(.system(size: 108, weight: .ultraLight))
+                        .foregroundColor(theme.text)
+                        .monospacedDigit()
+                        .kerning(-5)
+                        .fixedSize()
+                }
+            } else {
+                runningText
+                    .font(.system(size: 108, weight: .ultraLight))
+                    .foregroundColor(theme.text)
+                    .monospacedDigit()
+                    .kerning(-5)
+                    .fixedSize()
+            }
+        }
+        .frame(width: width)
+    }
+
+    @ViewBuilder
+    private func ssSlot(running: Text) -> some View {
+        Group {
+            if vm.state == .idle {
+                if vm.isCountdown {
+                    // Countdown: picker locked at 0 (range 0...0, no interaction)
+                    DrumPickerView(value: $selectedSeconds, range: 0...0,
+                                   hapticEnabled: false, zeroPadded: true)
+                        .allowsHitTesting(false)
+                } else {
+                    // Stopwatch: pure static text, no gesture layer
+                    Text("00")
+                        .font(.system(size: 108, weight: .ultraLight))
+                        .foregroundColor(theme.text)
+                        .monospacedDigit()
+                        .kerning(-5)
+                        .fixedSize()
+                }
+            } else {
+                running
+                    .font(.system(size: 108, weight: .ultraLight))
+                    .foregroundColor(theme.text)
+                    .monospacedDigit()
+                    .kerning(-5)
+                    .fixedSize()
+            }
+        }
+        .frame(width: 100)
+    }
+
     // MARK: - Ctrl row (BPM + volume)
 
     private var ctrlRow: some View {
@@ -394,6 +510,26 @@ struct TimerView: View {
         .frame(width: 88, height: 14)
     }
 
+    // MARK: - Stop helper
+
+    private func doStop() {
+        isLongPressing = false
+        isLongPressingPending = false
+        didCompleteStop = true
+        withAnimation(.easeOut(duration: 0.15)) { longPressProgress = 0 }
+        hrService.stopMonitoring()
+        motionService.stopTracking()
+        vm.stopAndSave(
+            bpm: bpm, characterId: profile?.activeCharacterId ?? "loader_cat", themeId: themeManager.current.id,
+            distance: motionService.distance,
+            calories: motionService.calories,
+            steps: motionService.steps,
+            avgHR: hrService.avgHR,
+            maxHR: hrService.maxHR,
+            avgCadence: motionService.avgCadence
+        )
+    }
+
     // MARK: - Action button
 
     private var actionButtonArea: some View {
@@ -403,7 +539,7 @@ struct TimerView: View {
                     .strokeBorder(theme.surface, lineWidth: 2)
                     .frame(width: 128, height: 128)
 
-                if vm.state == .running {
+                if vm.state != .idle {
                     Circle()
                         .trim(from: 0, to: longPressProgress)
                         .stroke(theme.accentMid,
@@ -412,41 +548,65 @@ struct TimerView: View {
                         .rotationEffect(.degrees(-90))
                 }
 
-                Image(systemName: vm.state == .idle ? "play.fill" : "stop.fill")
-                    .font(.system(size: vm.state == .idle ? 44 : 32, weight: .medium))
-                    .foregroundColor(vm.state == .idle ? theme.text : theme.accentMid)
+                // play (idle) / pause (running) / play (paused) / stop (long-pressing)
+                Image(systemName: vm.state == .idle
+                      ? "play.fill"
+                      : isLongPressing
+                        ? "stop.fill"
+                        : vm.state == .running ? "pause.fill" : "play.fill")
+                    .font(.system(size: 32, weight: .medium))
+                    .foregroundColor(theme.accentMid)
+                    .animation(.none, value: isLongPressing)
             }
-            .simultaneousGesture(TapGesture().onEnded {
-                guard vm.state == .idle else { return }
-                vm.targetDuration = timeDisplayFormat == .hhMM
-                    ? Double(selectedHours * 3600 + vm.selectedMinutes * 60)
-                    : Double(vm.selectedMinutes) * 60
-                vm.start(bpm: bpm, characterId: "loader_cat", themeId: themeManager.current.id)
-            })
-            .onLongPressGesture(minimumDuration: 1.0, pressing: { pressing in
-                if pressing && vm.state != .idle {
-                    withAnimation(.linear(duration: 1.0)) { longPressProgress = 1.0 }
-                } else {
-                    withAnimation(.easeOut(duration: 0.2)) { longPressProgress = 0 }
-                }
-            }, perform: {
-                guard vm.state != .idle else { return }
-                hrService.stopMonitoring()
-                motionService.stopTracking()
-                vm.stopAndSave(
-                    bpm: bpm, characterId: "loader_cat", themeId: themeManager.current.id,
-                    distance: motionService.distance,
-                    calories: motionService.calories,
-                    steps: motionService.steps,
-                    avgHR: hrService.avgHR,
-                    maxHR: hrService.maxHR,
-                    avgCadence: motionService.avgCadence
-                )
-                withAnimation(.easeOut(duration: 0.2)) { longPressProgress = 0 }
-            })
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { _ in
+                        guard vm.state != .idle, !isLongPressingPending else { return }
+                        isLongPressingPending = true
+                        // After 0.2s: show stop icon + start arc
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            guard self.isLongPressingPending else { return }
+                            self.isLongPressing = true
+                            withAnimation(.linear(duration: 0.8)) { self.longPressProgress = 1.0 }
+                            // Schedule stop after arc completes
+                            let work = DispatchWorkItem { self.doStop() }
+                            self.stopWorkItem = work
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8, execute: work)
+                        }
+                    }
+                    .onEnded { _ in
+                        isLongPressingPending = false
+                        if didCompleteStop {
+                            // Arc already filled and stop was fired — ignore this release
+                            didCompleteStop = false
+                            return
+                        }
+                        if isLongPressing {
+                            // Hand lifted before arc finished — cancel
+                            stopWorkItem?.cancel()
+                            stopWorkItem = nil
+                            isLongPressing = false
+                            withAnimation(.easeOut(duration: 0.15)) { longPressProgress = 0 }
+                        } else {
+                            // Quick tap
+                            switch vm.state {
+                            case .idle:
+                                vm.targetDuration = timeDisplayFormat == .hhMM
+                                    ? Double(selectedHours * 3600 + vm.selectedMinutes * 60)
+                                    : Double(vm.selectedMinutes) * 60
+                                vm.start(bpm: bpm, characterId: profile?.activeCharacterId ?? "loader_cat", themeId: themeManager.current.id)
+                            case .running:
+                                vm.pause()
+                            case .paused:
+                                vm.resume()
+                            }
+                        }
+                    }
+            )
 
-            Text(" ")
-                .font(.system(size: 14))
+            Text(vm.state == .idle ? " " : lm.L("timer.tip.longPress"))
+                .font(.system(size: 11))
+                .foregroundColor(theme.textDim)
         }
         .frame(height: 169)
     }

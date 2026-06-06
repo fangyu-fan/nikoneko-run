@@ -56,6 +56,7 @@ struct SettingsView: View {
             .padding(.bottom, 24)
         }
         .background(theme.bg.ignoresSafeArea())
+        .id(lm.version)
         .navigationTitle(lm.L("settings.title"))
         .navigationBarTitleDisplayMode(.inline)
     }

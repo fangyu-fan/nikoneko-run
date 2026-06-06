@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>NIKO NEKO — Dynamic Island — Expanded</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}
+body{background:#111;font-family:-apple-system,'SF Pro Display',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px}
+.phone{width:320px;background:#0a0a0a;border-radius:50px;padding:16px 13px 0;border:1.5px solid #1a1a1a}
+.pill{width:60px;height:5px;background:#1c1c1c;border-radius:3px;margin:0 auto 12px}</style>
+</head>
+<body>
+<div class="phone">
+  <div class="pill"></div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:10px 14px 0;height:86px;position:relative">
+    <span style="font-size:16px;font-weight:600;color:#f0ede8">9:41</span>
+    <div style="position:absolute;left:50%;transform:translateX(-50%);top:4px">
+      <div style="background:#000;border-radius:28px;height:78px;width:276px;display:flex;align-items:center;padding:0 18px;gap:14px">
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <div style="font-size:10px;color:#2a2a2a;letter-spacing:.1em;text-transform:uppercase">NIKO NEKO</div>
+          <div style="font-size:36px;font-weight:200;color:#f0ede8;letter-spacing:-1.5px;line-height:1">14:32</div>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:flex-end;gap:8px">
+          <div id="die" style="width:44px;height:28px;display:flex;align-items:center;justify-content:center;opacity:.7"></div>
+          <div style="font-size:11px;color:#2a2a2a">180 bpm</div>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:rgba(240,237,232,.7);display:flex;gap:5px"><span>▲</span><span>▮▮</span><span>⬛</span></div>
+  </div>
+  <div style="height:386px;background:#0a0a0a;display:flex;align-items:center;justify-content:center">
+    <div style="font-size:11px;color:#161616;letter-spacing:.1em;text-transform:uppercase">home screen</div>
+  </div>
+</div>
+<script>let f=false;const c=document.getElementById('die');
+setInterval(()=>{f=!f;c.innerHTML=`<svg width="44" height="24" viewBox="0 0 40 22" fill="#888"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><circle cx="28" cy="7" r="5.5"/><polygon points="23,2 25.5,-3 29,2"/><line x1="5" y1="16" x2="1.7999999999999998" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="12" y1="16" x2="15.04" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="18" y1="16" x2="21.36" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="25" y1="16" x2="21.96" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`;},190);
+c.innerHTML=`<svg width="44" height="24" viewBox="0 0 40 22" fill="#888"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><circle cx="28" cy="7" r="5.5"/><polygon points="23,2 25.5,-3 29,2"/><line x1="5" y1="16" x2="1.7999999999999998" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="12" y1="16" x2="15.04" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="18" y1="16" x2="21.36" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="25" y1="16" x2="21.96" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`;</script>
+</body>
+</html>

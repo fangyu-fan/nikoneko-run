@@ -58,14 +58,14 @@ struct DataSyncView: View {
 
                 sectionLabel(lm.L("dataSync.section.data"))
                 VStack(spacing: 0) {
-                    actionRow(icon: "square.and.arrow.up", label: lm.L("dataSync.row.exportCSV"), color: theme.text) {
+                    actionRow(icon: "arrow.up.doc", label: lm.L("dataSync.row.exportCSV"), color: theme.text) {
                         if let url = HealthKitService.shared.exportCSV(sessions: sessions) {
                             exportURL = url
                             showShareSheet = true
                         }
                     }
                     Rectangle().fill(theme.accentDim).frame(height: 0.5)
-                    actionRow(icon: "square.and.arrow.down", label: lm.L("dataSync.row.importCSV"), color: theme.text) {
+                    actionRow(icon: "arrow.down.doc", label: lm.L("dataSync.row.importCSV"), color: theme.text) {
                         showImportPicker = true
                     }
                     Rectangle().fill(theme.accentDim).frame(height: 0.5)
@@ -81,6 +81,7 @@ struct DataSyncView: View {
             .padding(.top, 8)
         }
         .background(theme.bg.ignoresSafeArea())
+        .id(lm.version)
         .navigationTitle(lm.L("dataSync.title"))
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showShareSheet) {

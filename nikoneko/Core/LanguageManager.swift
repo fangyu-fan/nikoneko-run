@@ -14,20 +14,19 @@ final class LanguageBundle: Bundle, @unchecked Sendable {
 
 @Observable
 final class LanguageManager {
-    var language: AppLanguage = .english {
-        didSet {
-            LanguageBundle.languageCode = language.code
-            object_setClass(Bundle.main, LanguageBundle.self)
-        }
-    }
+    var language: AppLanguage = .english
+    // Views use .id(lm.version) on their content to force re-render on language change
+    // without rebuilding the NavigationStack
+    private(set) var version: Int = 0
 
     init() {
         object_setClass(Bundle.main, LanguageBundle.self)
     }
 
     func apply(_ lang: AppLanguage) {
-        language = lang
         LanguageBundle.languageCode = lang.code
+        language = lang
+        version += 1
     }
 
     func L(_ key: String) -> String {

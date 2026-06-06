@@ -82,6 +82,7 @@ struct ReportView: View {
             .padding(.bottom, 20)
         }
         .background(theme.bg.ignoresSafeArea())
+        .id(lm.version)
         .navigationTitle(lm.L("report.title"))
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $selectedSession) { session in
@@ -481,8 +482,12 @@ struct HeatmapView: View {
     var yearStartWeekday: Int = 0  // Mon=0 … Sun=6
     @Environment(ThemeManager.self) private var themeManager
     @Environment(LanguageManager.self) private var lm
+    @Query private var configs: [ThresholdConfig]
     private var theme: ThemeTokens { themeManager.current }
     private var maxValue: Double { bars.map(\.value).max() ?? 1 }
+    private var t1: Int { configs.first?.threshold1 ?? 25 }
+    private var t2: Int { configs.first?.threshold2 ?? 60 }
+    private var t3: Int { configs.first?.threshold3 ?? 90 }
 
     var body: some View {
         if period == .month { monthGrid } else { yearGrid }
@@ -625,7 +630,7 @@ struct HeatmapView: View {
         let ratio = maxValue > 0 ? bar.value / maxValue : 0
         let bgColor = bar.value == 0
             ? theme.bar[0]
-            : BarChartView.barColor(ratio: ratio, theme: theme, t1: 10, t2: 50, t3: 90)
+            : BarChartView.barColor(ratio: ratio, theme: theme, t1: t1, t2: t2, t3: t3)
         return RoundedRectangle(cornerRadius: 2)
             .fill(bgColor)
             .frame(width: size, height: size)
@@ -636,7 +641,7 @@ struct HeatmapView: View {
         let ratio = maxValue > 0 ? bar.value / maxValue : 0
         let bgColor = bar.value == 0
             ? theme.bar[0]
-            : BarChartView.barColor(ratio: ratio, theme: theme, t1: 10, t2: 50, t3: 90)
+            : BarChartView.barColor(ratio: ratio, theme: theme, t1: t1, t2: t2, t3: t3)
         let isDark = bar.value / max(maxValue, 1) > 0.4
         let textColor = isDark ? Color.white.opacity(0.9) : theme.textMid
 

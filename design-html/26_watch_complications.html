@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>NIKO NEKO — Watch — Complications</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}
+body{background:#111;font-family:-apple-system,'SF Pro Display',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px}
+.wface{width:200px;background:#111;border-radius:46px;padding:14px 12px 20px;border:1.5px solid #1c1c1c;position:relative}
+.wface::after{content:'';position:absolute;right:-5px;top:28%;width:5px;height:42px;background:#1c1c1c;border-radius:0 4px 4px 0}
+.wpill{width:32px;height:4px;background:#2a2a2a;border-radius:2px;margin:0 auto 12px}
+.wfscr{background:#000;border-radius:26px;height:220px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px}
+.compl{position:absolute;background:#1a1a1a;border-radius:8px;padding:4px 8px}
+</style>
+</head>
+<body>
+<div class="wface"><div class="wpill"></div>
+<div class="wfscr">
+  <div style="font-size:44px;font-weight:300;color:#fff;letter-spacing:-2px">9:41</div>
+  <div style="font-size:12px;color:#444;margin-top:3px">MON 18 MAY</div>
+  <!-- TL: cat animation -->
+  <div class="compl" style="top:12px;left:12px">
+    <div id="wcc" style="width:28px;height:16px;display:flex;align-items:center;justify-content:center;opacity:.8"></div>
+  </div>
+  <!-- TR: streak -->
+  <div class="compl" style="top:12px;right:12px">
+    <div style="font-size:16px;font-weight:200;color:#6dba6d;line-height:1">12</div>
+    <div style="font-size:8px;color:#2a2a2a;margin-top:1px">days</div>
+  </div>
+  <!-- BL: today duration -->
+  <div class="compl" style="bottom:12px;left:12px">
+    <div style="font-size:16px;font-weight:200;color:#acc2ef;line-height:1">21</div>
+    <div style="font-size:8px;color:#2a2a2a;margin-top:1px">min</div>
+  </div>
+  <!-- BR: total -->
+  <div class="compl" style="bottom:12px;right:12px">
+    <div style="font-size:16px;font-weight:200;color:#c8b4c0;line-height:1">48h</div>
+    <div style="font-size:8px;color:#2a2a2a;margin-top:1px">total</div>
+  </div>
+</div></div>
+<script>let f=false;const c=document.getElementById('wcc');
+setInterval(()=>{f=!f;c.innerHTML=`<svg width="28" height="16" viewBox="0 0 40 22" fill="#6dba6d"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><circle cx="28" cy="7" r="5.5"/><polygon points="23,2 25.5,-3 29,2"/><line x1="5" y1="16" x2="1.7999999999999998" y2="21" stroke="#6dba6d" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="12" y1="16" x2="15.04" y2="21" stroke="#6dba6d" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="18" y1="16" x2="21.36" y2="21" stroke="#6dba6d" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="25" y1="16" x2="21.96" y2="21" stroke="#6dba6d" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`;},190);
+c.innerHTML=`<svg width="28" height="16" viewBox="0 0 40 22" fill="#6dba6d"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><circle cx="28" cy="7" r="5.5"/><polygon points="23,2 25.5,-3 29,2"/><line x1="5" y1="16" x2="1.7999999999999998" y2="21" stroke="#6dba6d" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="12" y1="16" x2="15.04" y2="21" stroke="#6dba6d" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="18" y1="16" x2="21.36" y2="21" stroke="#6dba6d" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="25" y1="16" x2="21.96" y2="21" stroke="#6dba6d" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`;</script>
+</body>
+</html>

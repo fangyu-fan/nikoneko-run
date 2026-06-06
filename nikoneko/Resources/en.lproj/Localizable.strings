@@ -191,3 +191,6 @@
 "dataSync.row.importCSV"      = "Import CSV";
 "dataSync.icloud.note"        = "Restart app to apply iCloud changes.";
 "dataSync.import.error"       = "Couldn't import. Check the file format.";
+"defaults.row.volume" = "Volume";
+"timer.tip.longPress" = "hold to finish";
+"timer.alert.tooShort" = "Sessions under 1 minute are not recorded.";

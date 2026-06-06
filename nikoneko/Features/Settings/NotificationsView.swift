@@ -98,6 +98,7 @@ struct NotificationsView: View {
             .padding(.top, 8)
         }
         .background(theme.bg.ignoresSafeArea())
+        .id(lm.version)
         .navigationTitle(lm.L("notif.title.screen"))
         .navigationBarTitleDisplayMode(.inline)
     }

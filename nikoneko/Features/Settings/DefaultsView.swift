@@ -17,22 +17,19 @@ struct DefaultsView: View {
     @State private var t1: Double = 25
     @State private var t2: Double = 60
     @State private var t3: Double = 90
+    @State private var volume: Double = 0.7
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 sectionLabel(lm.L("defaults.section.time"))
                 VStack(spacing: 0) {
-                    stepperRow(icon: "timer", name: lm.L("defaults.row.duration"),
-                               value: profile?.defaultDuration ?? 15,
-                               step: 5, range: 5...999) { v in
-                        profile?.defaultDuration = v; try? ctx.save()
-                    }
-                    Rectangle().fill(theme.accentDim).frame(height: 0.5)
                     stepperRow(icon: "flag", name: lm.L("defaults.row.dailyGoal"),
                                value: profile?.dailyGoalMinutes ?? 15,
                                step: 5, range: 5...999) { v in
-                        profile?.dailyGoalMinutes = v; try? ctx.save()
+                        profile?.dailyGoalMinutes = v
+                        profile?.defaultDuration = v
+                        try? ctx.save()
                     }
                     Rectangle().fill(theme.accentDim).frame(height: 0.5)
                     thresholdSlider
@@ -52,9 +49,7 @@ struct DefaultsView: View {
                     Rectangle().fill(theme.accentDim).frame(height: 0.5)
                     soundRow
                     Rectangle().fill(theme.accentDim).frame(height: 0.5)
-                    lockVolumeRow
-                    Rectangle().fill(theme.accentDim).frame(height: 0.5)
-                    hapticRow
+                    volumeRow
                 }
                 .background(theme.surface)
                 .cornerRadius(14)
@@ -64,6 +59,7 @@ struct DefaultsView: View {
             .padding(.top, 8)
         }
         .background(theme.bg.ignoresSafeArea())
+        .id(lm.version)
         .navigationTitle(lm.L("defaults.title"))
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
@@ -71,6 +67,7 @@ struct DefaultsView: View {
             t1 = Double(config?.threshold1 ?? 25)
             t2 = Double(config?.threshold2 ?? 60)
             t3 = Double(config?.threshold3 ?? 90)
+            volume = UserDefaults.standard.object(forKey: "defaultVolume") as? Double ?? 0.7
         }
         .onChange(of: config?.threshold1) { _, v in if let v { t1 = Double(v) } }
         .onChange(of: config?.threshold2) { _, v in if let v { t2 = Double(v) } }
@@ -334,6 +331,35 @@ struct DefaultsView: View {
             Toggle("", isOn: bindBool(\.hapticEnabled))
                 .tint(theme.accent)
                 .labelsHidden()
+        }
+        .padding(.vertical, 13)
+        .padding(.horizontal, 16)
+        .frame(minHeight: 50)
+    }
+
+    private var volumeRow: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "speaker.wave.2")
+                .font(.system(size: 16))
+                .foregroundColor(theme.text)
+                .frame(width: 20)
+            Text(lm.L("defaults.row.volume"))
+                .font(.system(size: 16))
+                .foregroundColor(theme.text)
+            Spacer()
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(theme.accentDim).frame(height: 3)
+                    Capsule().fill(theme.textMid).frame(width: geo.size.width * volume, height: 3)
+                    Circle().fill(theme.text).frame(width: 14, height: 14)
+                        .offset(x: geo.size.width * volume - 7)
+                }
+                .gesture(DragGesture(minimumDistance: 0).onChanged { v in
+                    volume = min(1, max(0, v.location.x / geo.size.width))
+                    UserDefaults.standard.set(volume, forKey: "defaultVolume")
+                })
+            }
+            .frame(width: 100, height: 14)
         }
         .padding(.vertical, 13)
         .padding(.horizontal, 16)

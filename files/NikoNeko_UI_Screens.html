@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>NIKO NEKO — UI Screens v2</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0e0e0e;font-family:-apple-system,'SF Pro Display',sans-serif;color:#f0ede8;padding:20px 12px 40px}
+.page-title{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#333;margin-bottom:28px;text-align:center}
+.section{margin-bottom:44px}
+.slbl{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#2a2a2a;margin-bottom:12px;padding-left:2px}
+.row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.col{display:flex;flex-direction:column;align-items:center;gap:5px}
+
+/* Phone frame */
+.phone{width:186px;background:#0a0a0a;border-radius:32px;padding:10px 8px 16px;border:1.5px solid #1a1a1a;flex-shrink:0}
+.pill{width:38px;height:4px;background:#1c1c1c;border-radius:2px;margin:0 auto 12px}
+.screen{background:#0a0a0a;border-radius:22px;overflow:hidden;display:flex;flex-direction:column;align-items:center}
+.plbl{font-size:7.5px;color:#2a2a2a;text-align:center;letter-spacing:.06em;text-transform:uppercase}
+
+/* Timer */
+.ts{padding:16px 14px 16px;justify-content:space-between;height:360px}
+.char-zone{height:28px;display:flex;align-items:center;justify-content:center;opacity:.6}
+.drum-ghost{font-size:36px;font-weight:200;color:#161616;letter-spacing:-2px;line-height:1;text-align:center}
+.drum-sel{font-size:52px;font-weight:200;color:#f0ede8;letter-spacing:-2.5px;line-height:1;text-align:center}
+.metrics-row{display:flex;gap:12px;justify-content:center;align-items:center;width:100%}
+.m-item{display:flex;align-items:center;gap:3px}
+.m-ico{font-size:9px;color:#303030}
+.m-val{font-size:11px;font-weight:300;color:#484848}
+.m-unit{font-size:8px;color:#252525;margin-left:1px}
+.bottom{width:100%;display:flex;flex-direction:column;align-items:center;gap:9px}
+.ctrl-row{display:flex;align-items:center;justify-content:space-between;width:100%}
+.bpm-tap{display:flex;align-items:center;gap:3px}
+.bico{font-size:10px;color:#1e1e1e}
+.bnum{font-size:10px;color:#1e1e1e}
+.bunit{font-size:8px;color:#161616}
+.vol{display:flex;align-items:center;gap:3px}
+.vico{font-size:9px;color:#161616}
+.vtk{width:48px;height:1.5px;background:#181818;border-radius:1px;position:relative}
+.vfill{height:1.5px;width:60%;background:#242424;border-radius:1px}
+.vthumb{width:8px;height:8px;border-radius:50%;background:#2c2c2c;position:absolute;top:50%;left:60%;transform:translate(-50%,-50%)}
+.play-btn{width:52px;height:52px;border-radius:50%;border:1px solid #1c1c1c;display:flex;align-items:center;justify-content:center;position:relative;background:#0a0a0a}
+.play-ico{font-size:16px;color:#f0ede8}
+.stop-ico{font-size:12px;color:#323232}
+.bhint{font-size:6.5px;color:#181818;letter-spacing:.05em;margin-top:2px}
+
+/* Report */
+.rs{height:360px;flex-direction:column;padding:0}
+.ptabs{display:flex;border-bottom:.5px solid #141414;flex-shrink:0;width:100%}
+.ptab{flex:1;padding:7px 0;font-size:8.5px;color:#1e1e1e;text-align:center;border-bottom:1.5px solid transparent}
+.ptab.act{color:#666;border-bottom-color:#3a3a3a}
+.rb{flex:1;overflow:hidden;padding:7px 11px 8px;display:flex;flex-direction:column;gap:5px}
+.drow{display:flex;justify-content:space-between;align-items:center}
+.dnav{font-size:13px;color:#1e1e1e}
+.dstr{font-size:8.5px;color:#222}
+.hnum{font-size:32px;font-weight:200;color:#f0ede8;letter-spacing:-1.5px;line-height:1}
+.hunit{font-size:9px;color:#222}
+.hlbl{font-size:7px;color:#181818;letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+.cg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px}
+.sc{background:#111;border-radius:6px;padding:6px 7px;border:.5px solid transparent}
+.sc.act{border-color:#1e3a1e;background:#141a14}
+.sico{font-size:8px;color:#1e1e1e;margin-bottom:2px}
+.snum{font-size:11px;font-weight:200;color:#555;letter-spacing:-.3px;line-height:1}
+.snum.hi{color:#4a8c4a}
+.slb{font-size:5.5px;color:#161616;margin-top:1px}
+.bars{display:flex;align-items:flex-end;gap:2px;height:44px}
+.bar{flex:1;border-radius:1.5px 1.5px 0 0;background:#1a2e1a;min-height:1.5px}
+.bar.m{background:#2e5c2e}
+.bar.h{background:#4a8c4a}
+.bxrow{display:flex;gap:2px}
+.bx{flex:1;font-size:5px;color:#181818;text-align:center}
+.log-item{display:flex;align-items:center;padding:4px 0;border-bottom:.5px solid #0f0f0f;gap:5px}
+.ldot{width:4px;height:4px;border-radius:1px;flex-shrink:0;background:#2e5c2e}
+.ldot.lo{background:#1e3a1e}
+.ldate{font-size:8.5px;color:#2e2e2e;min-width:26px;flex-shrink:0}
+.lmain{font-size:9.5px;color:#404040;flex:1}
+.lsub{font-size:7.5px;color:#222;margin-top:.5px}
+.lchev{font-size:8px;color:#181818}
+
+/* Summary */
+.ss{height:360px;padding:14px 13px 14px;justify-content:space-between}
+.sa{height:34px;display:flex;align-items:center;justify-content:center;opacity:.65}
+.stime{font-size:48px;font-weight:200;color:#f0ede8;letter-spacing:-2px;line-height:1}
+.stimelbl{font-size:7px;color:#1a1a1a;letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:100%}
+.scard{background:#111;border-radius:7px;padding:7px 8px}
+.scico{font-size:8px;color:#1e1e1e;margin-bottom:2px}
+.scnum{font-size:13px;font-weight:200;color:#666;letter-spacing:-.3px}
+.sclbl{font-size:6px;color:#181818}
+.sstreak{width:100%;background:#0e1a0e;border-radius:9px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between}
+.ssnum{font-size:20px;font-weight:200;color:#4a8c4a;letter-spacing:-1px}
+.sslbl{font-size:7px;color:#1e3a1e;margin-top:1px}
+.ssdots{display:flex;gap:3px}
+.sdot{width:7px;height:7px;border-radius:2px;background:#1a2e1a}
+.sdot.on{background:#2e5c2e}
+.sdot.today{background:#4a8c4a}
+.done-btn{width:100%;padding:10px 0;border-radius:12px;background:#f0ede8;color:#0a0a0a;font-size:11px;font-weight:500;text-align:center}
+.share-lbl{font-size:8px;color:#1a1a1a}
+
+/* Settings */
+.sets{height:360px;padding:0;flex-direction:column}
+.nb{display:flex;align-items:center;padding:10px 13px 6px;flex-shrink:0;width:100%}
+.nbk{font-size:15px;color:#333;margin-right:6px}
+.nbt{font-size:10px;color:#3a3a3a;letter-spacing:.04em}
+.sbody{flex:1;overflow:hidden;padding:0 11px 8px;display:flex;flex-direction:column}
+.slb2{font-size:7px;color:#1a1a1a;letter-spacing:.1em;text-transform:uppercase;padding:6px 1px 3px}
+.scard2{background:#111;border-radius:9px;overflow:hidden;margin-bottom:3px}
+.srow{display:flex;align-items:center;justify-content:space-between;padding:8px 11px;border-bottom:.5px solid #161616;min-height:32px}
+.srow:last-child{border-bottom:none}
+.srl{display:flex;align-items:center;gap:7px}
+.sico2{font-size:11px;color:#1e1e1e;width:14px;text-align:center}
+.snm{font-size:10px;color:#444}
+.svl{font-size:9px;color:#1e1e1e}
+.schev{font-size:9px;color:#1a1a1a;margin-left:3px}
+.tog{width:32px;height:19px;background:#1e1e1e;border-radius:10px;position:relative;flex-shrink:0}
+.tog.on{background:#1e3a1e}
+.togth{width:15px;height:15px;background:#2a2a2a;border-radius:50%;position:absolute;top:2px;left:2px}
+.tog.on .togth{left:15px;background:#6dba6d}
+
+/* Widget */
+.wgt{background:#0a0a0a;border-radius:14px;padding:10px 11px;border:1px solid #161616}
+.wlbl{font-size:6.5px;color:#1a1a1a;letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px}
+.wnum{font-size:26px;font-weight:200;color:#f0ede8;letter-spacing:-1px;line-height:1}
+.wsub{font-size:7px;color:#1a1a1a;margin-top:1px}
+.gh{display:grid;grid-template-columns:repeat(18,1fr);gap:1.5px}
+.calg{display:grid;grid-template-columns:repeat(7,1fr);gap:1.5px}
+.stchip{flex:1;background:#111;border-radius:5px;padding:4px 3px;text-align:center}
+.stnum{font-size:11px;font-weight:200;color:#f0ede8}
+.stlbl{font-size:5.5px;color:#1a1a1a;margin-top:1px}
+
+/* Watch (square) */
+.watch{width:110px;background:#0a0a0a;border-radius:26px;padding:9px 7px 13px;border:1.5px solid #1a1a1a;position:relative;flex-shrink:0}
+.watch::after{content:'';position:absolute;right:-4px;top:28%;width:4px;height:24px;background:#1a1a1a;border-radius:0 3px 3px 0}
+.watch::before{content:'';position:absolute;right:-4px;top:48%;width:4px;height:14px;background:#1a1a1a;border-radius:0 2px 2px 0}
+.wpill{width:22px;height:3px;background:#1c1c1c;border-radius:2px;margin:0 auto 9px}
+.wscr{background:#0a0a0a;border-radius:16px;height:130px;display:flex;flex-direction:column;align-items:center;padding:10px 9px;justify-content:space-between}
+.wtime{font-size:32px;font-weight:200;color:#f0ede8;letter-spacing:-1.5px;line-height:1;text-align:center}
+.wmet{display:flex;gap:6px;justify-content:center}
+.wm{font-size:8px;color:#282828}
+.wbtn{width:32px;height:32px;border-radius:50%;border:1px solid #1c1c1c;display:flex;align-items:center;justify-content:center;font-size:11px;color:#2a2a2a}
+.wanim{height:16px;display:flex;align-items:center;justify-content:center;opacity:.6}
+.wface{width:110px;background:#111;border-radius:26px;padding:9px 7px 13px;border:1.5px solid #1c1c1c;position:relative;flex-shrink:0}
+.wface::after{content:'';position:absolute;right:-4px;top:28%;width:4px;height:24px;background:#1c1c1c;border-radius:0 3px 3px 0}
+.wfscr{background:#000;border-radius:16px;height:130px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px}
+.wft{font-size:26px;font-weight:300;color:#fff;letter-spacing:-1px}
+.wfd{font-size:8px;color:#444;margin-top:1px}
+.compl{position:absolute;background:#1a1a1a;border-radius:5px;padding:2px 5px}
+.ctop-l{top:8px;left:8px}.ctop-r{top:8px;right:8px}
+.cbot-l{bottom:8px;left:8px}.cbot-r{bottom:8px;right:8px}
+.cnum2{font-size:10px;font-weight:200;color:#6dba6d;line-height:1}
+.clbl2{font-size:5.5px;color:#282828;margin-top:1px}
+
+/* Dynamic Island */
+.di{width:186px;background:#0a0a0a;border-radius:32px;padding:10px 8px 0;border:1.5px solid #1a1a1a}
+.distat{display:flex;justify-content:space-between;align-items:center;padding:0 8px;height:32px;position:relative}
+.ditm{font-size:10px;font-weight:500;color:#f0ede8}
+.dipw{position:absolute;left:50%;transform:translateX(-50%);top:3px}
+.dip{background:#000;border-radius:14px;height:27px;display:flex;align-items:center;padding:0 7px;gap:5px}
+.dipw2{background:#000;border-radius:18px;height:56px;display:flex;align-items:center;padding:0 11px;gap:8px;width:164px}
+.dct{font-size:12px;font-weight:300;color:#f0ede8;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.dleft{display:flex;flex-direction:column;gap:1px}
+.dlbl{font-size:6.5px;color:#2a2a2a;letter-spacing:.08em;text-transform:uppercase}
+.dtime{font-size:22px;font-weight:200;color:#f0ede8;letter-spacing:-1px;line-height:1}
+.drest{height:240px;background:#0a0a0a;display:flex;align-items:center;justify-content:center}
+.dhint{font-size:7px;color:#181818;text-align:center;letter-spacing:.06em}
+.diico{font-size:8px;color:rgba(240,237,232,.6);display:flex;gap:3px}
+
+/* Lock Screen */
+.laphone{width:186px;background:#080c08;border-radius:32px;padding:10px 8px 16px;border:1.5px solid #1a1a1a}
+.lastatus{display:flex;justify-content:space-between;padding:0 8px;height:32px;align-items:center;position:relative}
+.lapstub{width:80px;height:24px;background:#000;border-radius:12px;position:absolute;left:50%;transform:translateX(-50%);top:4px}
+.laclock{font-size:38px;font-weight:200;color:#f0ede8;letter-spacing:-2px;line-height:1;text-align:center;padding:10px 0 2px}
+.ladate{font-size:8px;color:#383838;text-align:center;margin-bottom:10px}
+.lacard{background:rgba(14,14,14,.88);border:.5px solid #1c1c1c;border-radius:12px;padding:9px 11px;margin:0 6px;display:flex;align-items:center;gap:9px}
+.laleft{display:flex;flex-direction:column;gap:2px;flex:1}
+.laapp{font-size:6.5px;color:#252525;letter-spacing:.08em;text-transform:uppercase}
+.latime{font-size:26px;font-weight:200;color:#f0ede8;letter-spacing:-1.5px;line-height:1}
+.labpm{font-size:8.5px;color:#252525}
+.laright{width:36px;height:28px;display:flex;align-items:center;justify-content:center}
+
+/* Theme grid */
+.tg{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:700px;margin:0 auto}
+.tcard{display:flex;flex-direction:column;align-items:center;gap:3px}
+.tprev{border-radius:12px;padding:7px 6px 9px;width:68px}
+.tppill{width:16px;height:2px;border-radius:1px;margin:0 auto 5px;opacity:.2}
+.tptime{font-size:18px;font-weight:200;letter-spacing:-1px;line-height:1;text-align:center}
+.tpunit{font-size:5.5px;text-align:center;opacity:.3;margin-top:1px}
+.tpbtn{width:18px;height:18px;border-radius:50%;margin:4px auto 0;display:flex;align-items:center;justify-content:center;font-size:8px}
+.tnm{font-size:7px;text-align:center;color:#333;max-width:70px;line-height:1.4}
+</style>
+</head>
+<body>
+
+<div class="page-title">NIKO NEKO · UI Screens v2 · Obsidian Default</div>
+
+<!-- ═══ 01 TIMER ═══ -->
+<div class="section">
+<div class="slbl">01 · Timer Screen</div>
+<div class="row">
+
+<div class="col">
+<div class="phone"><div class="pill"></div>
+<div class="screen ts">
+  <div class="char-zone" id="c1"></div>
+  <div style="display:flex;flex-direction:column;align-items:center">
+    <div class="drum-ghost">20</div><div class="drum-sel">15</div><div class="drum-ghost">10</div>
+  </div>
+  <div class="metrics-row"><div class="m-item"><span class="m-ico">♥</span><span class="m-val">—</span></div></div>
+  <div class="bottom">
+    <div class="ctrl-row">
+      <div class="bpm-tap"><span class="bico">♩</span><span class="bnum">180</span><span class="bunit"> bpm</span></div>
+      <div class="vol"><span class="vico">♪</span><div class="vtk"><div class="vfill"></div><div class="vthumb"></div></div><span class="vico">♫</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center">
+      <div class="play-btn"><span class="play-ico">▶</span></div>
+      <div class="bhint">tap to start</div>
+    </div>
+  </div>
+</div></div>
+<div class="plbl">Idle · Countdown</div>
+</div>
+
+<div class="col">
+<div class="phone"><div class="pill"></div>
+<div class="screen ts">
+  <div class="char-zone" id="c2"></div>
+  <div style="display:flex;flex-direction:column;align-items:center">
+    <div style="font-size:52px;font-weight:200;color:#f0ede8;letter-spacing:-2.5px;line-height:1">12</div>
+    <div style="font-size:9px;color:#1e1e1e;margin-top:2px">: 47</div>
+  </div>
+  <div class="metrics-row">
+    <div class="m-item"><span class="m-ico">♥</span><span class="m-val">124</span></div>
+    <div class="m-item"><span class="m-ico">⊙</span><span class="m-val">1.8</span><span class="m-unit">km</span></div>
+    <div class="m-item"><span class="m-ico">⊞</span><span class="m-val">1,540</span></div>
+  </div>
+  <div class="bottom">
+    <div class="ctrl-row">
+      <div class="bpm-tap"><span class="bico">♩</span><span class="bnum">180</span><span class="bunit"> bpm</span></div>
+      <div class="vol"><span class="vico">♪</span><div class="vtk"><div class="vfill"></div><div class="vthumb"></div></div><span class="vico">♫</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center">
+      <div class="play-btn" style="position:relative">
+        <svg style="position:absolute;inset:-3px;width:calc(100% + 6px);height:calc(100% + 6px);transform:rotate(-90deg);pointer-events:none" viewBox="0 0 58 58"><circle cx="29" cy="29" r="27" fill="none" stroke="#555" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="170" stroke-dashoffset="170"/></svg>
+        <span class="stop-ico">■</span>
+      </div>
+      <div class="bhint">hold 2s to stop</div>
+    </div>
+  </div>
+</div></div>
+<div class="plbl">Running · plain min</div>
+</div>
+
+<div class="col">
+<div class="phone"><div class="pill"></div>
+<div class="screen ts">
+  <div class="char-zone" id="c3"></div>
+  <div style="display:flex;align-items:center;gap:4px">
+    <div style="display:flex;flex-direction:column;align-items:center">
+      <div class="drum-ghost" style="font-size:28px">01</div><div class="drum-sel" style="font-size:44px">00</div><div class="drum-ghost" style="font-size:28px">02</div>
+    </div>
+    <div style="font-size:38px;font-weight:200;color:#1e1e1e;line-height:1;margin-bottom:4px">:</div>
+    <div style="display:flex;flex-direction:column;align-items:center">
+      <div class="drum-ghost" style="font-size:28px">20</div><div class="drum-sel" style="font-size:44px">15</div><div class="drum-ghost" style="font-size:28px">10</div>
+    </div>
+  </div>
+  <div class="metrics-row"><div class="m-item"><span class="m-ico">♥</span><span class="m-val">—</span></div></div>
+  <div class="bottom">
+    <div class="ctrl-row">
+      <div class="bpm-tap"><span class="bico">♩</span><span class="bnum">180</span><span class="bunit"> bpm</span></div>
+      <div class="vol"><span class="vico">♪</span><div class="vtk"><div class="vfill"></div><div class="vthumb"></div></div><span class="vico">♫</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center">
+      <div class="play-btn"><span class="play-ico">▶</span></div>
+      <div class="bhint">tap to start</div>
+    </div>
+  </div>
+</div></div>
+<div class="plbl">Idle · HH:MM</div>
+</div>
+
+<div class="col">
+<div class="phone"><div class="pill"></div>
+<div class="screen ts">
+  <div class="char-zone" id="c4"></div>
+  <div style="display:flex;flex-direction:column;align-items:center">
+    <div style="font-size:44px;font-weight:200;color:#f0ede8;letter-spacing:-2px;line-height:1">00:47</div>
+    <div style="font-size:9px;color:#1e1e1e;margin-top:2px">: 33</div>
+  </div>
+  <div class="metrics-row">
+    <div class="m-item"><span class="m-ico">♥</span><span class="m-val">122</span></div>
+    <div class="m-item"><span class="m-ico">△</span><span class="m-val">148</span><span class="m-unit">cal</span></div>
+  </div>
+  <div class="bottom">
+    <div class="ctrl-row">
+      <div class="bpm-tap"><span class="bico">♩</span><span class="bnum">180</span><span class="bunit"> bpm</span></div>
+      <div class="vol"><span class="vico">♪</span><div class="vtk"><div class="vfill"></div><div class="vthumb"></div></div><span class="vico">♫</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center">
+      <div class="play-btn" style="position:relative">
+        <svg style="position:absolute;inset:-3px;width:calc(100% + 6px);height:calc(100% + 6px);transform:rotate(-90deg);pointer-events:none" viewBox="0 0 58 58"><circle cx="29" cy="29" r="27" fill="none" stroke="#555" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="170" stroke-dashoffset="60"/></svg>
+        <span class="stop-ico">■</span>
+      </div>
+      <div class="bhint">hold 2s to stop</div>
+    </div>
+  </div>
+</div></div>
+<div class="plbl">Running · HH:MM</div>
+</div>
+
+</div></div>
+
+<!-- ═══ 02 CHARACTER PICKER ═══ -->
+<div class="section">
+<div class="slbl">02 · Character Picker</div>
+<div class="row">
+<div class="col">
+<div class="phone"><div class="pill"></div>
+<div class="screen sets">
+  <div class="nb"><span class="nbk">‹</span><span class="nbt">Characters</span></div>
+  <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+    <div style="font-size:7.5px;color:#1e1e1e;letter-spacing:.1em;text-transform:uppercase;padding:6px 13px 3px">Free</div>
+    <div style="display:flex;align-items:center;padding:7px 13px;border-bottom:.5px solid #111;gap:9px;background:#141414">
+      <div style="width:38px;height:26px;display:flex;align-items:center;justify-content:center" id="pk1"></div>
+      <span style="font-size:11px;color:#888;flex:1">Cat α</span>
+      <div style="width:6px;height:6px;border-radius:50%;background:#6dba6d"></div>
+    </div>
+    <div style="display:flex;align-items:center;padding:7px 13px;border-bottom:.5px solid #111;gap:9px">
+      <div style="width:38px;height:26px;display:flex;align-items:center;justify-content:center" id="pk2"></div>
+      <span style="font-size:11px;color:#444;flex:1">Cat β</span>
+    </div>
+    <div style="display:flex;align-items:center;padding:7px 13px;border-bottom:.5px solid #111;gap:9px">
+      <div style="width:38px;height:26px;display:flex;align-items:center;justify-content:center" id="pk3"></div>
+      <span style="font-size:11px;color:#444;flex:1">Human</span>
+    </div>
+    <div style="display:flex;align-items:center;padding:7px 13px;border-bottom:.5px solid #111;gap:9px">
+      <div style="width:38px;height:26px;display:flex;align-items:center;justify-content:center" id="pk4"></div>
+      <span style="font-size:11px;color:#444;flex:1">Push-Up</span>
+    </div>
+    <div style="font-size:7.5px;color:#1e1e1e;letter-spacing:.1em;text-transform:uppercase;padding:6px 13px 3px">Achievements</div>
+    <div style="display:flex;align-items:center;padding:7px 13px;border-bottom:.5px solid #111;gap:9px">
+      <div style="width:38px;height:26px;opacity:.2;display:flex;align-items:center;justify-content:center" id="pk5"></div>
+      <div style="flex:1"><span style="font-size:11px;color:#2a2a2a;display:block">Sit-Up</span><span style="font-size:7px;color:#1e3a1e">7-day streak</span></div>
+      <span style="font-size:9px;color:#1e1e1e">⚿</span>
+    </div>
+    <div style="display:flex;align-items:center;padding:7px 13px;gap:9px">
+      <div style="width:38px;height:26px;opacity:.2;display:flex;align-items:center;justify-content:center" id="pk6"></div>
+      <div style="flex:1"><span style="font-size:11px;color:#2a2a2a;display:block">Jump Rope</span><span style="font-size:7px;color:#1e3a1e">14-day streak</span></div>
+      <span style="font-size:9px;color:#1e1e1e">⚿</span>
+    </div>
+  </div>
+</div></div>
+<div class="plbl">Character Picker</div>
+</div>
+</div></div>
+
+<!-- ═══ 03 REPORT ═══ -->
+<div class="section">
+<div class="slbl">03 · Report Screen</div>
+<div class="row">
+
+<div class="col">
+<div class="phone"><div class="pill"></div>
+<div class="screen rs">
+  <div class="ptabs"><div class="ptab act">Day</div><div class="ptab">Week</div><div class="ptab">Month</div><div class="ptab">Year</div></div>
+  <div class="rb">
+    <div class="drow"><span class="dnav">‹</span><span style="font-size:8.5px;color:#222">2026/05/18</span><span class="dnav">›</span></div>
+    <div><div style="display:flex;align-items:baseline;gap:4px"><span class="hnum">21</span><span class="hunit">min</span></div><div class="hlbl">Duration</div></div>
+    <div class="cg3">
+      <div class="sc act"><div class="sico">⊙</div><div class="snum hi">2.1</div><div class="slb">Distance</div></div>
+      <div class="sc"><div class="sico">△</div><div class="snum">148</div><div class="slb">Calories</div></div>
+      <div class="sc"><div class="sico">⊞</div><div class="snum">3.7k</div><div class="slb">Steps</div></div>
+      <div class="sc"><div class="sico">♥</div><div class="snum">124</div><div class="slb">Avg HR</div></div>
+      <div class="sc"><div class="sico">♥</div><div class="snum">131</div><div class="slb">Max HR</div></div>
+      <div class="sc"><div class="sico">♩</div><div class="snum">180</div><div class="slb">Cadence</div></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end">
+      <div class="bars">${Array(12).fill(0).map((_,i)=>i===6?'<div class="bar h" style="height:100%"></div>':'<div class="bar" style="height:2px"></div>').join('')}</div>
+      <div class="bxrow">${['','','','','','6','','','','','12',''].map(v=>`<div class="bx">${v}</div>`).join('')}</div>
+    </div>
+    <div class="log-item"><div class="ldot"></div><span class="ldate">15:30</span><div style="flex:1"><div class="lmain">21 min</div><div class="lsub">2.1 km · HR 124/131</div></div><span class="lchev">›</span></div>
+  </div>
+</div></div>
+<div class="plbl">Day</div></div>
+
+<div class="col">
+<div class="phone"><div class="pill"></div>
+<div class="screen rs">
+  <div class="ptabs"><div class="ptab">Day</div><div class="ptab act">Week</div><div class="ptab">Month</div><div class="ptab">Year</div></div>
+  <div class="rb">
+    <div class="drow"><span class="dnav">‹</span><span style="font-size:8.5px;color:#222">05/12 ~ 05/18</span><span class="dnav">›</span></div>
+    <div><div style="display:flex;align-items:baseline;gap:4px"><span class="hnum">3.5</span><span class="hunit">hrs</span></div><div class="hlbl">Duration</div></div>
+    <div class="cg3">
+      <div class="sc act"><div class="sico">⊙</div><div class="snum hi">14.4</div><div class="slb">Distance</div></div>
+      <div class="sc"><div class="sico">△</div><div class="snum">912</div><div class="slb">Calories</div></div>
+      <div class="sc"><div class="sico">⊞</div><div class="snum">23.6k</div><div class="slb">Steps</div></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end">
+      <div class="bars">${[4,53,72,38,86,60,100].map((v,i)=>{const c=i===6?'h':v>60?'m':'';return`<div class="bar ${c}" style="height:${Math.max(2,v)}%"></div>`}).join('')}</div>
+      <div class="bxrow">${['M','T','W','T','F','S','N'].map(v=>`<div class="bx">${v}</div>`).join('')}</div>
+    </div>
+    <div class="log-item"><div class="ldot"></div><span class="ldate">Today</span><div style="flex:1"><div class="lmain">21 min</div><div class="lsub">2.1 km · 148 cal</div></div><span class="lchev">›</span></div>
+    <div class="log-item"><div class="ldot lo"></div><span class="ldate">Yest.</span><div style="flex:1"><div class="lmain">15 min</div><div class="lsub">1.8 km</div></div><span class="lchev">›</span></div>
+    <div class="log-item" style="border:none"><div class="ldot"></div><span class="ldate">5/16</span><div style="flex:1"><div class="lmain">30 min</div><div class="lsub">3.0 km</div></div><span class="lchev">›</span></div>
+  </div>
+</div></div>
+<div class="plbl">Week</div></div>
+
+<div class="col">
+<div class="phone"><div class="pill"></div>
+<div class="screen rs">
+  <div class="ptabs"><div class="ptab">Day</div><div class="ptab">Week</div><div class="ptab act">Month</div><div class="ptab">Year</div></div>
+  <div class="rb">
+    <div class="drow"><span class="dnav">‹</span><span style="font-size:8.5px;color:#222">2026/05</span><span class="dnav">›</span></div>
+    <div><div style="display:flex;align-items:baseline;gap:4px"><span class="hnum">26.5</span><span class="hunit">hrs</span></div><div class="hlbl">Duration</div></div>
+    <div class="cg3">
+      <div class="sc act"><div class="sico">⊙</div><div class="snum hi">72.3</div><div class="slb">Distance</div></div>
+      <div class="sc"><div class="sico">△</div><div class="snum">4.8k</div><div class="slb">Calories</div></div>
+      <div class="sc"><div class="sico">⊞</div><div class="snum">123k</div><div class="slb">Steps</div></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end">
+      <div class="bars">${[45,0,65,30,80,50,0,70,45,85,60,0,75,40].map((v,i)=>{const c=v>65?'h':v>35?'m':'';return`<div class="bar ${c}" style="height:${Math.max(v===0?1:4,Math.round(v/90*100))}%"></div>`}).join('')}</div>
+      <div class="bxrow">${['1','','','','','','7','','','','','','13',''].map(v=>`<div class="bx">${v}</div>`).join('')}</div>
+    </div>
+    <div class="log-item"><div class="ldot"></div><span class="ldate">Today</span><div style="flex:1"><div class="lmain">21 min</div><div class="lsub">72.3 km total</div></div><span class="lchev">›</span></div>
+  </div>
+</div></div>
+<div class="plbl">Month</div></div>
+
+<div class="col">
+<div class="phone"><div class="pill"></div>
+<div class="screen rs">
+  <div class="ptabs"><div class="ptab">Day</div><div class="ptab">Week</div><div class="ptab">Month</div><div class="ptab act">Year</div></div>
+  <div class="rb">
+    <div class="drow"><span class="dnav">‹</span><span style="font-size:8.5px;color:#222">2026</span><span class="dnav">›</span></div>
+    <div><div style="display:flex;align-items:baseline;gap:4px"><span class="hnum">130</span><span class="hunit">hrs</span></div><div class="hlbl">Duration</div></div>
+    <div class="cg3">
+      <div class="sc act"><div class="sico">⊙</div><div class="snum hi">559</div><div class="slb">Distance</div></div>
+      <div class="sc"><div class="sico">△</div><div class="snum">35k</div><div class="slb">Calories</div></div>
+      <div class="sc"><div class="sico">⊞</div><div class="snum">210k</div><div class="slb">Steps</div></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end">
+      <div class="bars">${[28,32,38,30,42,35,33,45,36,40,38,11].map((v,i)=>{const c=i===7?'h':v>38?'m':'';return`<div class="bar ${c}" style="height:${Math.round(v/45*100)}%"></div>`}).join('')}</div>
+      <div class="bxrow">${['1','2','3','4','5','6','7','8','9','10','11','12'].map(v=>`<div class="bx">${v}</div>`).join('')}</div>
+    </div>
+    <div class="log-item"><div class="ldot"></div><span class="ldate">May</span><div style="flex:1"><div class="lmain">26.5 hrs</div><div class="lsub">72 km · 4,830 cal</div></div><span class="lchev">›</span></div>
+    <div class="log-item" style="border:none"><div class="ldot lo"></div><span class="ldate">Apr</span><div style="flex:1"><div class="lmain">24 hrs</div><div class="lsub">65 km</div></div><span class="lchev">›</span></div>
+  </div>
+</div></div>
+<div class="plbl">Year</div></div>
+
+</div></div>
+
+<!-- ═══ 04 SUMMARY ═══ -->
+<div class="section">
+<div class="slbl">04 · Summary Screen</div>
+<div class="row">
+<div class="col">
+<div class="phone"><div class="pill"></div>
+<div class="screen ss">
+  <div class="sa" id="sc"></div>
+  <div style="display:flex;flex-direction:column;align-items:center"><div class="stime">21</div><div class="stimelbl">min · completed</div></div>
+  <div class="sgrid">
+    <div class="scard"><div class="scico">♥</div><div class="scnum">122</div><div class="sclbl">Avg HR</div></div>
+    <div class="scard"><div class="scico">♩</div><div class="scnum">180</div><div class="sclbl">BPM</div></div>
+    <div class="scard"><div class="scico">◎</div><div class="scnum">100%</div><div class="sclbl">Goal</div></div>
+    <div class="scard"><div class="scico">◷</div><div class="scnum">48.4h</div><div class="sclbl">Total</div></div>
+  </div>
+  <div class="sstreak">
+    <div><div class="ssnum">13</div><div class="sslbl">day streak</div></div>
+    <div class="ssdots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot today"></div></div>
+  </div>
+  <div class="done-btn">Done</div>
+  <div class="share-lbl">Share</div>
+</div></div>
+<div class="plbl">Summary</div>
+</div>
+</div></div>
+
+<!-- ═══ 05 SETTINGS ═══ -->
+<div class="section">
+<div class="slbl">05 · Settings</div>
+<div class="row">
+
+<div class="col">
+<div class="phone"><div class="pill"></div>
+<div class="screen sets">
+  <div class="nb" style="justify-content:center"><span class="nbt" style="font-size:11px;color:#444">Settings</span></div>
+  <div class="sbody">
+    <div class="slb2">Appearance</div>
+    <div class="scard2">
+      <div class="srow"><div class="srl"><span class="sico2">◑</span><span class="snm">Theme</span></div><div style="display:flex;align-items:center"><span class="svl">Obsidian</span><span class="schev">›</span></div></div>
+      <div class="srow"><div class="srl"><span class="sico2">1</span><span class="snm">Language</span></div><div style="display:flex;align-items:center"><span class="svl">EN</span><span class="schev">›</span></div></div>
+    </div>
+    <div class="slb2">Display</div>
+    <div class="scard2"><div class="srow"><div class="srl"><span class="sico2">◷</span><span class="snm">Display</span></div><div style="display:flex;align-items:center"><span class="svl">plain min</span><span class="schev">›</span></div></div></div>
+    <div class="slb2">Defaults</div>
+    <div class="scard2"><div class="srow"><div class="srl"><span class="sico2">◎</span><span class="snm">Training</span></div><div style="display:flex;align-items:center"><span class="svl">15 min · 180 bpm</span><span class="schev">›</span></div></div></div>
+    <div class="slb2">Widget</div>
+    <div class="scard2"><div class="srow"><div class="srl"><span class="sico2">▦</span><span class="snm">Widget</span></div><div style="display:flex;align-items:center"><span class="svl">10·50·90</span><span class="schev">›</span></div></div></div>
+    <div class="slb2">System</div>
+    <div class="scard2">
+      <div class="srow"><div class="srl"><span class="sico2">◷</span><span class="snm">Notifications</span></div><div style="display:flex;align-items:center"><span class="svl">Off</span><span class="schev">›</span></div></div>
+      <div class="srow"><div class="srl"><span class="sico2">☁</span><span class="snm">Data & Sync</span></div><span class="schev">›</span></div>
+    </div>
+  </div>
+</div></div>
+<div class="plbl">Root</div></div>
+
+<div class="col">
+<div class="phone"><div class="pill"></div>
+<div class="screen sets">
+  <div class="nb"><span class="nbk">‹</span><span class="nbt">Display</span></div>
+  <div class="sbody">
+    <div class="slb2">Timer Mode</div>
+    <div class="scard2">
+      <div class="srow"><div class="srl"><span class="sico2">◷</span><span class="snm">Countdown</span></div><span style="font-size:10px;color:#6dba6d">✓</span></div>
+      <div class="srow"><div class="srl"><span class="sico2">◷</span><span class="snm">Stopwatch</span></div></div>
+    </div>
+    <div class="slb2">Time Format</div>
+    <div class="scard2">
+      <div class="srow"><div class="srl"><span class="sico2">1</span><span class="snm">Plain min</span></div><span style="font-size:10px;color:#6dba6d">✓</span></div>
+      <div class="srow"><div class="srl"><span class="sico2">∶</span><span class="snm">HH:MM</span></div></div>
+    </div>
+    <div class="slb2">During Run</div>
+    <div class="scard2">
+      <div class="srow"><div class="srl"><span class="sico2">♥</span><span class="snm">Heart Rate</span></div><div class="tog on"><div class="togth"></div></div></div>
+      <div class="srow"><div class="srl"><span class="sico2">⊙</span><span class="snm">Distance</span></div><div class="tog on"><div class="togth"></div></div></div>
+      <div class="srow"><div class="srl"><span class="sico2">△</span><span class="snm">Calories</span></div><div class="tog"><div class="togth"></div></div></div>
+      <div class="srow"><div class="srl"><span class="sico2">⊞</span><span class="snm">Steps</span></div><div class="tog on"><div class="togth"></div></div></div>
+      <div class="srow"><div class="srl"><span class="sico2">〜</span><span class="snm">Haptic</span></div><div class="tog on"><div class="togth"></div></div></div>
+    </div>
+  </div>
+</div></div>
+<div class="plbl">Display</div></div>
+
+<div class="col">
+<div class="phone"><div class="pill"></div>
+<div class="screen sets">
+  <div class="nb"><span class="nbk">‹</span><span class="nbt">Training Defaults</span></div>
+  <div class="sbody">
+    <div class="slb2">Time</div>
+    <div class="scard2">
+      <div class="srow"><div class="srl"><span class="sico2">◷</span><span class="snm">Duration</span></div><div style="display:flex;align-items:center;gap:5px"><div style="width:18px;height:18px;border-radius:50%;border:.5px solid #1e1e1e;background:#161616;color:#444;font-size:11px;display:flex;align-items:center;justify-content:center">−</div><span style="font-size:11px;font-weight:200;color:#666;min-width:24px;text-align:center">15</span><div style="width:18px;height:18px;border-radius:50%;border:.5px solid #1e1e1e;background:#161616;color:#444;font-size:11px;display:flex;align-items:center;justify-content:center">+</div></div></div>
+      <div class="srow"><div class="srl"><span class="sico2">◎</span><span class="snm">Daily Goal</span></div><div style="display:flex;align-items:center;gap:5px"><div style="width:18px;height:18px;border-radius:50%;border:.5px solid #1e1e1e;background:#161616;color:#444;font-size:11px;display:flex;align-items:center;justify-content:center">−</div><span style="font-size:11px;font-weight:200;color:#666;min-width:24px;text-align:center">15</span><div style="width:18px;height:18px;border-radius:50%;border:.5px solid #1e1e1e;background:#161616;color:#444;font-size:11px;display:flex;align-items:center;justify-content:center">+</div></div></div>
+    </div>
+    <div class="slb2">Beat</div>
+    <div class="scard2">
+      <div class="srow"><div class="srl"><span class="sico2">♩</span><span class="snm">BPM</span></div><div style="display:flex;align-items:center;gap:5px"><div style="width:18px;height:18px;border-radius:50%;border:.5px solid #1e1e1e;background:#161616;color:#444;font-size:11px;display:flex;align-items:center;justify-content:center">−</div><span style="font-size:11px;font-weight:200;color:#666;min-width:28px;text-align:center">180</span><div style="width:18px;height:18px;border-radius:50%;border:.5px solid #1e1e1e;background:#161616;color:#444;font-size:11px;display:flex;align-items:center;justify-content:center">+</div></div></div>
+      <div class="srow"><div class="srl"><span class="sico2">♪</span><span class="snm">Sound</span></div><div style="display:flex;background:#191919;border-radius:7px;padding:2px;gap:1px"><span style="padding:3px 6px;border-radius:5px;background:#1c1c1c;color:#666;font-size:9px">叩</span><span style="padding:3px 6px;font-size:9px;color:#222">鈴</span><span style="padding:3px 6px;font-size:9px;color:#222">鼓</span><span style="padding:3px 6px;font-size:9px;color:#222">木</span></div></div>
+    </div>
+  </div>
+</div></div>
+<div class="plbl">Defaults</div></div>
+
+</div></div>
+
+<!-- ═══ 06 WIDGETS ═══ -->
+<div class="section">
+<div class="slbl">06 · Widgets</div>
+<div class="row">
+
+<div style="display:flex;flex-direction:column;gap:8px;align-items:center">
+  <div style="display:flex;gap:8px">
+    <div class="col">
+      <div class="wgt" style="width:76px"><div class="wlbl">streak</div><div class="wnum">12</div><div class="wsub">day streak</div></div>
+      <div class="plbl">Small · Streak</div>
+    </div>
+    <div class="col">
+      <div class="wgt" style="width:76px"><div class="wlbl">total</div><div class="wnum">48</div><div class="wsub">hours</div></div>
+      <div class="plbl">Small · Total</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="wgt" style="width:160px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <div class="wlbl">2026</div>
+        <div style="display:flex;gap:2px">${['#1a1a1a','#1e3a1e','#2e5c2e','#4a8c4a','#6dba6d'].map(c=>`<div style="width:6px;height:6px;border-radius:1px;background:${c}"></div>`).join('')}</div>
+      </div>
+      <div class="gh" id="ghw"></div>
+      <div style="display:flex;gap:3px;margin-top:5px">
+        <div class="stchip"><div class="stnum">12</div><div class="stlbl">streak</div></div>
+        <div class="stchip"><div class="stnum">48h</div><div class="stlbl">total</div></div>
+        <div class="stchip"><div class="stnum">87%</div><div class="stlbl">this mo</div></div>
+      </div>
+    </div>
+    <div class="plbl">Medium · Year Heatmap</div>
+  </div>
+</div>
+
+<div class="col">
+  <div class="wgt" style="width:160px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+      <span style="font-size:10px;font-weight:500;color:#f0ede8">May 2026</span>
+      <span style="font-size:7px;color:#1e1e1e">🔥 12</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:1.5px;margin-bottom:2px">
+      ${['S','M','T','W','T','F','S'].map(d=>`<div style="font-size:5.5px;color:#1a1a1a;text-align:center">${d}</div>`).join('')}
+    </div>
+    <div class="calg" id="calw"></div>
+  </div>
+  <div class="plbl">Large · Month Calendar</div>
+</div>
+
+</div></div>
+
+<!-- ═══ 07 DYNAMIC ISLAND & LOCK SCREEN ═══ -->
+<div class="section">
+<div class="slbl">07 · Dynamic Island & Lock Screen</div>
+<div class="row">
+
+<div class="col">
+<div class="di">
+  <div class="distat">
+    <span class="ditm">9:41</span>
+    <div class="dipw"><div class="dip" style="width:104px"><div id="dic" style="width:18px;height:18px;display:flex;align-items:center;justify-content:center;opacity:.65"></div><div style="flex:1;display:flex;justify-content:flex-end"><span class="dct">14:32</span></div></div></div>
+    <div class="diico"><span>▲</span><span>▮▮</span><span>⬛</span></div>
+  </div>
+  <div class="drest"><div class="dhint">compact</div></div>
+</div>
+<div class="plbl">DI Compact</div></div>
+
+<div class="col">
+<div class="di">
+  <div class="distat" style="height:70px;align-items:flex-start;padding-top:8px">
+    <span class="ditm">9:41</span>
+    <div class="dipw" style="top:6px"><div class="dipw2"><div class="dleft"><div class="dlbl">NIKO NEKO</div><div class="dtime">14:32</div></div><div style="flex:1;display:flex;align-items:center;justify-content:flex-end;gap:5px"><div id="die" style="width:36px;height:26px;display:flex;align-items:center;justify-content:center;opacity:.65"></div><div style="font-size:7px;color:#252525">180 bpm</div></div></div></div>
+    <div class="diico"><span>▲</span><span>▮▮</span><span>⬛</span></div>
+  </div>
+  <div class="drest" style="height:210px"><div class="dhint">expanded</div></div>
+</div>
+<div class="plbl">DI Expanded</div></div>
+
+<div class="col">
+<div class="laphone">
+  <div class="lastatus"><span style="font-size:10px;color:#555">9:41</span><div class="lapstub"></div><span style="font-size:8px;color:#444">▮▮</span></div>
+  <div class="laclock">9:41</div>
+  <div class="ladate">Saturday, May 18</div>
+  <div class="lacard">
+    <div class="laleft"><div class="laapp">NIKO NEKO</div><div class="latime">14:32</div><div class="labpm">♩ 180 bpm</div></div>
+    <div class="laright" id="lac"></div>
+  </div>
+</div>
+<div class="plbl">Lock Screen</div></div>
+
+</div></div>
+
+<!-- ═══ 08 APPLE WATCH ═══ -->
+<div class="section">
+<div class="slbl">08 · Apple Watch</div>
+<div class="row">
+
+<div class="col">
+<div class="watch"><div class="wpill"></div>
+<div class="wscr">
+  <div class="wanim" id="w1"></div>
+  <div class="wtime">15</div>
+  <div style="font-size:7px;color:#1e1e1e">min · ♩ 180 bpm</div>
+  <div class="wbtn">▶</div>
+</div></div>
+<div class="plbl">Idle</div></div>
+
+<div class="col">
+<div class="watch"><div class="wpill"></div>
+<div class="wscr">
+  <div class="wanim" id="w2"></div>
+  <div class="wtime">12:47</div>
+  <div class="wmet"><span class="wm">♥ 124</span><span class="wm">♩ 180 bpm</span></div>
+  <div class="wbtn" style="position:relative">
+    <svg style="position:absolute;inset:-3px;width:calc(100% + 6px);height:calc(100% + 6px);transform:rotate(-90deg);pointer-events:none" viewBox="0 0 38 38"><circle cx="19" cy="19" r="17" fill="none" stroke="#555" stroke-width="1" stroke-linecap="round" stroke-dasharray="107" stroke-dashoffset="80"/></svg>■
+  </div>
+</div></div>
+<div class="plbl">Running</div></div>
+
+<div class="col">
+<div class="watch"><div class="wpill"></div>
+<div class="wscr">
+  <div class="wanim" id="w3"></div>
+  <div class="wtime">21</div>
+  <div style="font-size:7px;color:#1e1e1e">min · completed</div>
+  <div style="font-size:9px;font-weight:500;color:#f0ede8;background:#1a1a1a;border-radius:6px;padding:4px 10px">Done</div>
+</div></div>
+<div class="plbl">Summary</div></div>
+
+<div class="col">
+<div class="wface"><div class="wpill" style="background:#2a2a2a"></div>
+<div class="wfscr">
+  <div class="wft">9:41</div>
+  <div class="wfd">MON 18</div>
+  <div class="compl ctop-l"><div id="wcc" style="width:20px;height:14px;display:flex;align-items:center;justify-content:center;opacity:.7"></div></div>
+  <div class="compl ctop-r"><div class="cnum2">12</div><div class="clbl2">days</div></div>
+  <div class="compl cbot-l"><div class="cnum2" style="color:#acc2ef">21</div><div class="clbl2">min</div></div>
+  <div class="compl cbot-r"><div class="cnum2" style="color:#c8b4c0">48h</div><div class="clbl2">total</div></div>
+</div></div>
+<div class="plbl">Complications</div></div>
+
+</div></div>
+
+<!-- ═══ 09 ALL THEMES ═══ -->
+<div class="section">
+<div class="slbl">09 · All Themes</div>
+<div class="tg">
+${[
+  {bg:'#0a0a0a',txt:'#f0ede8',dim:'#2e2e2e',mid:'#888',btn:'#1c1c1c',name:'Obsidian',zh:'黑曜'},
+  {bg:'#ffffff',txt:'#111',dim:'#aaa',mid:'#555',btn:'#ddd',name:'Paper',zh:'白紙'},
+  {bg:'#f4f0ea',txt:'#1c1a16',dim:'#b8b0a0',mid:'#908070',btn:'#d0c8b8',name:'Limestone',zh:'石灰岩'},
+  {bg:'#0d1117',txt:'#e6edf3',dim:'#30363d',mid:'#79c0ff',btn:'#161b22',name:'Zinc',zh:'鋅'},
+  {bg:'#F5ECD7',txt:'#353535',dim:'#5f5f5f',mid:'#24613b',btn:'#c8ddd0',name:'Grove',zh:'林間'},
+  {bg:'#DDDDDD',txt:'#292524',dim:'#78716c',mid:'#4a6848',btn:'#ccc',name:'Moss & Amber',zh:'苔蘚琥珀'},
+  {bg:'#1a1210',txt:'#e8d5c0',dim:'#4a3020',mid:'#a07048',btn:'#241a14',name:'Mocha',zh:'摩卡慕斯'},
+  {bg:'#567189',txt:'#F9F9F9',dim:'#DCDCDC',mid:'#e8a050',btn:'#3E5975',name:'Seafloor',zh:'海床'},
+  {bg:'#0F1C2E',txt:'#fff',dim:'#e0e0e0',mid:'#3D5A80',btn:'#1f2b3e',name:'Deep Navy',zh:'深海藍'},
+  {bg:'#F5F3F7',txt:'#4A4A4A',dim:'#878787',mid:'#61398F',btn:'#E9E4ED',name:'Lavender',zh:'薰衣草霧'},
+  {bg:'#151931',txt:'#E7D1BB',dim:'#847a86',mid:'#c8b4c0',btn:'#252841',name:'Midnight',zh:'午夜藕色'},
+  {bg:'#F2EFE9',txt:'#333',dim:'#5c5c5c',mid:'#006b60',btn:'#e8e5df',name:'Teal',zh:'青與珊瑚'},
+  {bg:'#FCEEF5',txt:'#292524',dim:'#78716c',mid:'#3a9898',btn:'#FAD9E6',name:'Blush',zh:'胭脂花園'},
+].map(t=>`
+  <div class="tcard">
+    <div class="tprev" style="background:${t.bg};border:1px solid ${t.btn}">
+      <div class="tppill" style="background:${t.mid}"></div>
+      <div style="height:10px;display:flex;align-items:center;justify-content:center;opacity:.6;margin-bottom:2px;font-size:9px;color:${t.mid}">◎</div>
+      <div class="tptime" style="color:${t.txt}">15</div>
+      <div class="tpunit" style="color:${t.dim}">min</div>
+      <div class="tpbtn" style="border:1px solid ${t.btn};color:${t.txt}">▶</div>
+    </div>
+    <div class="tnm">${t.name}<br><span style="color:#1e1e1e">${t.zh}</span></div>
+  </div>
+`).join('')}
+</div>
+</div>
+
+<script>
+const cat=(f,c,w=24,h=13)=>{
+  const by=f?1:0,la=f?5:-5,lb=f?-5:5;
+  return `<svg width="${w}" height="${h}" viewBox="0 0 24 13" fill="${c}">
+    <ellipse cx="7" cy="${7+by}" rx="5.5" ry="3"/>
+    <circle cx="16" cy="${4+by}" r="3"/>
+    <polygon points="13,${1+by} 14.5,${-1+by} 17,${1+by}"/>
+    <line x1="3" y1="${9+by}" x2="${3+la*.4}" y2="${12+by}" stroke="${c}" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+    <line x1="7" y1="${9+by}" x2="${7+lb*.35}" y2="${12+by}" stroke="${c}" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+    <line x1="11" y1="${9+by}" x2="${11+lb*.38}" y2="${12+by}" stroke="${c}" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+    <line x1="15" y1="${9+by}" x2="${15+la*.35}" y2="${12+by}" stroke="${c}" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+  </svg>`;
+};
+
+let frame = false;
+const nodes = [
+  {id:'c1',w:24,h:13},{id:'c2',w:24,h:13},{id:'c3',w:24,h:13},{id:'c4',w:24,h:13},
+  {id:'sc',w:36,h:20},{id:'pk1',w:36,h:20},{id:'pk2',w:36,h:20},
+  {id:'pk3',w:36,h:20},{id:'pk4',w:36,h:20},{id:'pk5',w:36,h:20},{id:'pk6',w:36,h:20},
+  {id:'dic',w:18,h:10},{id:'die',w:32,h:18},{id:'lac',w:38,h:21},
+  {id:'w1',w:24,h:13},{id:'w2',w:24,h:13},{id:'w3',w:24,h:13},{id:'wcc',w:18,h:10,c:'#6dba6d'},
+];
+
+function render() {
+  nodes.forEach(n => {
+    const el = document.getElementById(n.id);
+    if (el) el.innerHTML = cat(frame, n.c || '#888', n.w, n.h);
+  });
+}
+
+// Heatmap
+const ghEl = document.getElementById('ghw');
+if (ghEl) {
+  let h = '';
+  for (let i = 0; i < 18*7; i++) {
+    const r = Math.random();
+    const c = r<.28?'#1a1a1a':r<.5?'#1e3a1e':r<.72?'#2e5c2e':r<.88?'#4a8c4a':'#6dba6d';
+    h += `<div style="aspect-ratio:1;border-radius:1px;background:${c}"></div>`;
+  }
+  ghEl.innerHTML = h;
+}
+
+// Calendar
+const calEl = document.getElementById('calw');
+if (calEl) {
+  const data = {2:45,3:82,4:100,6:65,7:100,8:30,9:100,10:78,12:100,13:55,14:90,15:100,16:100,17:62};
+  const bars = ['#1a1a1a','#1e3a1e','#2e5c2e','#4a8c4a','#6dba6d'];
+  let h = '';
+  for (let i = 0; i < 4; i++) h += `<div style="aspect-ratio:1"></div>`;
+  for (let d = 1; d <= 31; d++) {
+    const p = data[d] || 0;
+    const b = p===0?bars[0]:p>=100?bars[4]:p>=70?bars[3]:p>=40?bars[2]:bars[1];
+    const ring = d===17 ? 'outline:1px solid #f0ede8;outline-offset:-1px;' : '';
+    h += `<div style="aspect-ratio:1;border-radius:2px;background:${b};position:relative;${ring}">
+      <span style="position:absolute;top:1px;left:1.5px;font-size:5px;color:#f0ede8;opacity:${p>0?.65:.28}">${d}</span>
+      ${p>0?`<span style="position:absolute;bottom:1px;font-size:4.5px;color:#f0ede8;opacity:.55;width:100%;text-align:center">${p===100?'✓':p}</span>`:''}
+    </div>`;
+  }
+  calEl.innerHTML = h;
+}
+
+setInterval(() => { frame = !frame; render(); }, 190);
+render();
+</script>
+</body>
+</html>

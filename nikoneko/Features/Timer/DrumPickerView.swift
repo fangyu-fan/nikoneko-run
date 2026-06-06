@@ -10,7 +10,7 @@ struct DrumPickerView: View {
     private var theme: ThemeTokens { themeManager.current }
 
     private let rowHeight: CGFloat = 90
-    private let stepDistance: CGFloat = 8
+    private let stepDistance: CGFloat = 16
 
     @State private var startValue: Int = 0
     @State private var isDragging: Bool = false

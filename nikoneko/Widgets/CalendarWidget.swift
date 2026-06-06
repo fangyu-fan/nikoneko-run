@@ -1,103 +1,184 @@
 import WidgetKit
 import SwiftUI
+import AppIntents
+
+// MARK: - Intent
+
+struct CalendarWidgetIntent: AppIntent, WidgetConfigurationIntent {
+    static let title: LocalizedStringResource = "Calendar Heatmap"
+    @Parameter(title: "Metric", default: .duration) var metric: StatMetric
+}
+
+// MARK: - Entry
 
 struct CalendarEntry: TimelineEntry {
     let date: Date
     let summaries: [DaySessionSummary]
+    let metric: StatMetric
     let theme: ThemeTokens
-    let t1: Int; let t2: Int; let t3: Int
 }
 
-struct CalendarProvider: TimelineProvider {
+// MARK: - Provider
+
+struct CalendarProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> CalendarEntry {
-        CalendarEntry(date: Date(), summaries: [], theme: ThemeLibrary.obsidian, t1: 10, t2: 50, t3: 90)
+        CalendarEntry(date: Date(), summaries: [], metric: .duration, theme: ThemeLibrary.obsidian)
     }
-    func getSnapshot(in context: Context, completion: @escaping (CalendarEntry) -> Void) {
-        completion(entry())
+    func snapshot(for configuration: CalendarWidgetIntent, in context: Context) async -> CalendarEntry {
+        entry(for: configuration)
     }
-    func getTimeline(in context: Context, completion: @escaping (Timeline<CalendarEntry>) -> Void) {
+    func timeline(for configuration: CalendarWidgetIntent, in context: Context) async -> Timeline<CalendarEntry> {
         let next = Calendar.current.date(byAdding: .hour, value: 1, to: Date())!
-        completion(Timeline(entries: [entry()], policy: .after(next)))
+        return Timeline(entries: [entry(for: configuration)], policy: .after(next))
     }
-    private func entry() -> CalendarEntry {
-        let themeId = AppGroupDefaults.shared.string(forKey: "widget.calendar.themeId")
-            ?? AppGroupDefaults.shared.string(forKey: "activeThemeId") ?? "obsidian"
+    private func entry(for config: CalendarWidgetIntent) -> CalendarEntry {
+        let themeId = AppGroupDefaults.shared.string(forKey: "activeThemeId") ?? "obsidian"
         let theme = ThemeLibrary.all.first { $0.id == themeId } ?? ThemeLibrary.obsidian
-        return CalendarEntry(
-            date: Date(), summaries: AppGroupDefaults.loadSummaries(),
-            theme: theme, t1: 10, t2: 50, t3: 90
-        )
+        return CalendarEntry(date: Date(), summaries: AppGroupDefaults.loadSummaries(),
+                             metric: config.metric, theme: theme)
     }
 }
+
+// MARK: - View
 
 struct CalendarWidgetView: View {
     let entry: CalendarEntry
     private let cal = Calendar.current
-    private let dayHeaders = ["S","M","T","W","T","F","S"]
+    // Mon-first headers
+    private let dayHeaders = ["M","T","W","T","F","S","S"]
 
     var body: some View {
         let monthStart = cal.dateInterval(of: .month, for: entry.date)!.start
-        let firstWeekday = cal.component(.weekday, from: monthStart) - 1
+        // weekday offset Mon=0: cal.component(.weekday) Sun=1..Sat=7 → Mon-based offset
+        let rawWeekday = cal.component(.weekday, from: monthStart) // 1=Sun..7=Sat
+        let firstOffset = (rawWeekday + 5) % 7  // Sun→6, Mon→0, Tue→1…
         let daysInMonth = cal.range(of: .day, in: .month, for: entry.date)!.count
+        let today = cal.startOfDay(for: entry.date)
+        let dailyMax = maxDailyValue()
 
-        VStack(alignment: .leading, spacing: 3) {
-            HStack {
-                Text(entry.date, format: .dateTime.month(.wide).year())
-                    .font(.system(size: 11, weight: .medium)).foregroundColor(entry.theme.text)
-                Spacer()
-            }
+        VStack(alignment: .leading, spacing: 0) {
+            // Title
+            Text("CHART · \(entry.metric.localizedStringResource.key.uppercased())")
+                .font(.system(size: 9)).tracking(0.8)
+                .foregroundColor(Color(white: 0.733))
+                .padding(.bottom, 6)
 
-            HStack(spacing: 2) {
+            // Day headers
+            HStack(spacing: 5) {
                 ForEach(dayHeaders, id: \.self) { d in
-                    Text(d).font(.system(size: 7)).foregroundColor(entry.theme.textDim)
+                    Text(d).font(.system(size: 9)).foregroundColor(Color(white: 0.8))
                         .frame(maxWidth: .infinity)
                 }
             }
+            .padding(.bottom, 2)
 
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 2), count: 7),
-                      spacing: 2) {
-                ForEach(0..<firstWeekday, id: \.self) { _ in Color.clear.aspectRatio(1, contentMode: .fit) }
+            // Calendar grid
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 5), count: 7),
+                      spacing: 5) {
+                // Empty slots before first day
+                ForEach(0..<firstOffset, id: \.self) { _ in
+                    Color(white: 0.922).aspectRatio(1, contentMode: .fit).cornerRadius(8)
+                }
                 ForEach(1...daysInMonth, id: \.self) { day in
                     let date = cal.date(from: DateComponents(
                         year: cal.component(.year, from: entry.date),
                         month: cal.component(.month, from: entry.date),
                         day: day))!
-                    let dayTotal = entry.summaries
-                        .filter { cal.isDate($0.date, inSameDayAs: date) }
-                        .reduce(0) { $0 + $1.completionRatio }
-                    let ratio = min(1.0, dayTotal)
-                    let isToday = cal.isDateInToday(date)
+                    let isFuture = date > today
+                    let value = isFuture ? 0.0 : dayValue(for: date)
+                    let level = colorLevel(value: value, max: dailyMax, isFuture: isFuture, hasData: value > 0)
+                    let cellColor = entry.theme.cal[level]
+                    let dateColor: Color = isFuture ? Color(white: 0.816) : (level >= 3 ? Color.white.opacity(0.65) : Color(white: 0.733))
+                    let valColor: Color = level >= 3 ? Color.white.opacity(0.9) : Color(white: 0.533)
 
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 2)
-                            .fill(WidgetSharedData.barColor(
-                                ratio: ratio, theme: entry.theme,
-                                t1: entry.t1, t2: entry.t2, t3: entry.t3))
-                        if isToday {
-                            RoundedRectangle(cornerRadius: 2).stroke(entry.theme.text, lineWidth: 1)
-                        }
+                    ZStack(alignment: .topLeading) {
+                        cellColor.aspectRatio(1, contentMode: .fit).cornerRadius(8)
                         Text("\(day)")
-                            .font(.system(size: 6.5))
-                            .foregroundColor(entry.theme.text.opacity(ratio > 0 ? 0.8 : 0.4))
+                            .font(.system(size: 9)).foregroundColor(dateColor)
+                            .padding(5)
+                        if !isFuture && value > 0 {
+                            Text(formattedCellValue(value))
+                                .font(.system(size: 12, weight: .ultraLight))
+                                .foregroundColor(valColor)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                                .padding(.bottom, 5)
+                        }
                     }
                     .aspectRatio(1, contentMode: .fit)
                 }
             }
         }
-        .padding(10)
+        .padding(18)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(entry.theme.bg)
         .containerBackground(entry.theme.bg, for: .widget)
     }
+
+    private func dayValue(for date: Date) -> Double {
+        let daySummaries = entry.summaries.filter { cal.isDate($0.date, inSameDayAs: date) }
+        switch entry.metric {
+        case .duration:   return daySummaries.reduce(0) { $0 + $1.duration } / 60  // minutes
+        case .steps:      return Double(daySummaries.reduce(0) { $0 + $1.steps })
+        case .calories:   return daySummaries.reduce(0) { $0 + $1.duration } / 60 * 7
+        case .distance:   return Double(daySummaries.reduce(0) { $0 + $1.steps }) / 1500
+        case .runs:       return Double(daySummaries.count)
+        case .streak:     return 0
+        }
+    }
+
+    private func maxDailyValue() -> Double {
+        let calendar = Calendar.current
+        let year = calendar.component(.year, from: entry.date)
+        let month = calendar.component(.month, from: entry.date)
+        let days = calendar.range(of: .day, in: .month, for: entry.date)!.count
+        var max = 1.0
+        for day in 1...days {
+            if let date = calendar.date(from: DateComponents(year: year, month: month, day: day)) {
+                let v = dayValue(for: date)
+                if v > max { max = v }
+            }
+        }
+        return max
+    }
+
+    private func colorLevel(value: Double, max: Double, isFuture: Bool, hasData: Bool) -> Int {
+        if isFuture || !hasData { return 0 }
+        let ratio = value / max
+        if ratio <= 0.25 { return 1 }
+        if ratio <= 0.50 { return 2 }
+        if ratio <= 0.75 { return 3 }
+        return 4
+    }
+
+    private func formattedCellValue(_ value: Double) -> String {
+        switch entry.metric {
+        case .duration:
+            return value >= 60 ? String(format: "%.0fh", value / 60) : "\(Int(value))"
+        case .steps:
+            return value >= 1000 ? String(format: "%.1fk", value / 1000) : "\(Int(value))"
+        case .calories:
+            return "\(Int(value))"
+        case .distance:
+            return String(format: "%.1f", value)
+        case .runs:
+            return "\(Int(value))"
+        case .streak:
+            return ""
+        }
+    }
 }
+
+// MARK: - Widget
 
 struct CalendarWidget: Widget {
     let kind = "CalendarWidget"
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: CalendarProvider()) { entry in
+        AppIntentConfiguration(kind: kind, intent: CalendarWidgetIntent.self,
+                               provider: CalendarProvider()) { entry in
             CalendarWidgetView(entry: entry)
         }
-        .configurationDisplayName("Month Calendar")
-        .description("Full month activity calendar.")
+        .configurationDisplayName("Calendar Heatmap")
+        .description("Monthly activity by day.")
         .supportedFamilies([.systemLarge])
     }
 }

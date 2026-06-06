@@ -46,6 +46,7 @@ struct DisplayView: View {
             .padding(.top, 8)
         }
         .background(theme.bg.ignoresSafeArea())
+        .id(lm.version)
         .navigationTitle(lm.L("display.title"))
         .navigationBarTitleDisplayMode(.inline)
     }

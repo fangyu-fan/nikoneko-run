@@ -39,6 +39,7 @@ struct WidgetSettingsView: View {
         }
         .id(refreshToken)
         .background(theme.bg.ignoresSafeArea())
+        .id(lm.version)
         .navigationTitle(lm.L("widget.title"))
         .navigationBarTitleDisplayMode(.inline)
     }

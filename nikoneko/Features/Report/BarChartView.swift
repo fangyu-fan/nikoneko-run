@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 struct BarChartView: View {
     let bars: [ChartBar]
@@ -6,7 +7,11 @@ struct BarChartView: View {
     var xUnit: String = ""
     var onTap: ((ChartBar, CGFloat) -> Void)? = nil  // bar, bar centerX in chart coords
     @Environment(ThemeManager.self) private var themeManager
+    @Query private var configs: [ThresholdConfig]
     private var theme: ThemeTokens { themeManager.current }
+    private var t1: Int { configs.first?.threshold1 ?? 25 }
+    private var t2: Int { configs.first?.threshold2 ?? 60 }
+    private var t3: Int { configs.first?.threshold3 ?? 90 }
 
     private let barAreaHeight: CGFloat = 140
     private let xLabelHeight: CGFloat = 14
@@ -60,7 +65,7 @@ struct BarChartView: View {
                             GeometryReader { barGeo in
                                 RoundedRectangle(cornerRadius: 2)
                                     .fill(hasValue
-                                          ? Self.barColor(ratio: ratio, theme: theme, t1: 10, t2: 50, t3: 90)
+                                          ? Self.barColor(ratio: ratio, theme: theme, t1: t1, t2: t2, t3: t3)
                                           : Color.clear)
                                     .frame(width: 6, height: hasValue ? max(2, ratio * barAreaHeight) : 0)
                                     .animation(.easeInOut(duration: 0.25), value: ratio)
