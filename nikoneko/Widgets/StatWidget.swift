@@ -28,22 +28,24 @@ struct StatProvider: AppIntentTimelineProvider {
 
     func snapshot(for configuration: StatWidgetIntent, in context: Context) async -> StatEntry {
         let theme = WidgetSharedData.loadTheme()
-        let metric = AppGroupDefaults.shared.string(forKey: "widget.stat.metric")
-            .flatMap { StatMetric(rawValue: $0) } ?? configuration.metric
-        let period = AppGroupDefaults.shared.string(forKey: "widget.stat.period")
-            .flatMap { TimePeriod(rawValue: $0) } ?? configuration.period
+        let (metric, period) = resolvedConfig(configuration)
         return makeEntry(metric: metric, period: period, theme: theme)
     }
 
     func timeline(for configuration: StatWidgetIntent, in context: Context) async -> Timeline<StatEntry> {
         let theme = WidgetSharedData.loadTheme()
+        let (metric, period) = resolvedConfig(configuration)
+        let entry = makeEntry(metric: metric, period: period, theme: theme)
+        let nextRefresh = Calendar.current.date(byAdding: .hour, value: 1, to: Date())!
+        return Timeline(entries: [entry], policy: .after(nextRefresh))
+    }
+
+    private func resolvedConfig(_ configuration: StatWidgetIntent) -> (metric: StatMetric, period: TimePeriod) {
         let metric = AppGroupDefaults.shared.string(forKey: "widget.stat.metric")
             .flatMap { StatMetric(rawValue: $0) } ?? configuration.metric
         let period = AppGroupDefaults.shared.string(forKey: "widget.stat.period")
             .flatMap { TimePeriod(rawValue: $0) } ?? configuration.period
-        let entry = makeEntry(metric: metric, period: period, theme: theme)
-        let nextRefresh = Calendar.current.date(byAdding: .hour, value: 1, to: Date())!
-        return Timeline(entries: [entry], policy: .after(nextRefresh))
+        return (metric, period)
     }
 
     // MARK: Data computation
