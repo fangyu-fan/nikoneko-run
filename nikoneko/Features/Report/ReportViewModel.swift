@@ -119,7 +119,7 @@ final class ReportViewModel {
         case .steps:     return "shoeprints.fill"
         case .hrAvg:     return "heart"
         case .hrMax:     return "heart"
-        case .count:     return "number.circle"
+        case .count:     return "figure.run"
         }
     }
 

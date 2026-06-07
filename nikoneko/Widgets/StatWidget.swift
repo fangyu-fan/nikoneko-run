@@ -10,8 +10,9 @@ struct StatEntry: TimelineEntry {
     let period: TimePeriod
     let formattedValue: String  // e.g. "3.5", "23.6k", "12"
     let unit: String            // "hrs", "min", "steps", "days", "km", "cal", "runs"
-    let bottomLabel: String     // "Streak" or "Duration per week" etc.
-    let fontSize: CGFloat       // 48, 44, or 36 based on char count
+    let metricLabel: String     // "Streak", "Duration", etc.
+    let periodLabel: String?    // "per week", "today", nil for streak
+    let fontSize: CGFloat       // 72, 66, or 54 based on char count
     let theme: ThemeTokens
 }
 
@@ -22,7 +23,7 @@ struct StatProvider: AppIntentTimelineProvider {
     typealias Intent = StatWidgetIntent
 
     func placeholder(in context: Context) -> StatEntry {
-        makeEntry(metric: .streak, period: .week, theme: ThemeLibrary.obsidian)
+        makeEntry(metric: .streak, period: .week, theme: ThemeLibrary.moss)
     }
 
     func snapshot(for configuration: StatWidgetIntent, in context: Context) async -> StatEntry {
@@ -44,7 +45,7 @@ struct StatProvider: AppIntentTimelineProvider {
         let filtered = summaries.filter { inPeriod($0.date, period: period) }
 
         let (formattedValue, unit) = compute(metric: metric, period: period, summaries: summaries, filtered: filtered)
-        let bottomLabel = makeBottomLabel(metric: metric, period: period)
+        let (metricLabel, periodLabel) = makeLabels(metric: metric, period: period)
         let fontSize = fontSizeFor(formattedValue)
 
         return StatEntry(
@@ -53,7 +54,8 @@ struct StatProvider: AppIntentTimelineProvider {
             period: period,
             formattedValue: formattedValue,
             unit: unit,
-            bottomLabel: bottomLabel,
+            metricLabel: metricLabel,
+            periodLabel: periodLabel,
             fontSize: fontSize,
             theme: theme
         )
@@ -123,32 +125,31 @@ struct StatProvider: AppIntentTimelineProvider {
         }
     }
 
-    private func makeBottomLabel(metric: StatMetric, period: TimePeriod) -> String {
-        if metric == .streak { return "Streak" }
+    private func makeLabels(metric: StatMetric, period: TimePeriod) -> (metricLabel: String, periodLabel: String?) {
         let metricName: String
         switch metric {
-        case .streak:   metricName = "Streak"
+        case .streak:   return ("Streak", nil)
         case .duration: metricName = "Duration"
         case .distance: metricName = "Distance"
         case .calories: metricName = "Calories"
         case .steps:    metricName = "Steps"
         case .runs:     metricName = "Runs"
         }
-        let periodName: String
+        let periodLine: String
         switch period {
-        case .today: periodName = "today"
-        case .week:  periodName = "week"
-        case .month: periodName = "month"
-        case .year:  periodName = "year"
+        case .today: periodLine = "today"
+        case .week:  periodLine = "per week"
+        case .month: periodLine = "per month"
+        case .year:  periodLine = "per year"
         }
-        return "\(metricName) per \(periodName)"
+        return (metricName, periodLine)
     }
 
     private func fontSizeFor(_ value: String) -> CGFloat {
         switch value.count {
-        case ...3: return 48
-        case 4:    return 44
-        default:   return 36
+        case ...3: return 80
+        case 4:    return 72
+        default:   return 72
         }
     }
 }
@@ -158,10 +159,10 @@ struct StatProvider: AppIntentTimelineProvider {
 private func iconName(for metric: StatMetric) -> String {
     switch metric {
     case .streak:   return "flame"
-    case .duration: return "clock"
-    case .distance: return "location"
+    case .duration: return "timer"
+    case .distance: return "location.circle"
     case .calories: return "flame"
-    case .steps:    return "figure.walk"
+    case .steps:    return "shoeprints.fill"
     case .runs:     return "figure.run"
     }
 }
@@ -172,11 +173,11 @@ struct StatWidgetView: View {
     let entry: StatEntry
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 0) {
             // Header: app name left, metric icon right
             HStack {
                 Text("NIKONEKO RUN")
-                    .font(.system(size: 9)).tracking(0.8)
+                    .font(.system(size: 10)).tracking(0.8)
                     .foregroundColor(entry.theme.textMid)
                 Spacer()
                 Image(systemName: iconName(for: entry.metric))
@@ -192,7 +193,7 @@ struct StatWidgetView: View {
                     .font(.system(size: entry.fontSize, weight: .ultraLight))
                     .foregroundColor(entry.theme.text)
                     .monospacedDigit()
-                    .minimumScaleFactor(0.5)
+                    .minimumScaleFactor(0.4)
                     .lineLimit(1)
                 Text(entry.unit)
                     .font(.system(size: 14, weight: .light))
@@ -200,17 +201,16 @@ struct StatWidgetView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Spacer()
+            Spacer(minLength: 6)
 
-            // Bottom label
-            Text(entry.bottomLabel)
-                .font(.system(size: 10))
+            // Bottom label: "Duration per week" on one line
+            Text(entry.periodLabel.map { "\(entry.metricLabel) \($0)" } ?? entry.metricLabel)
+                .font(.system(size: 11))
                 .foregroundColor(entry.theme.textMid)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(14)
-        .background(entry.theme.bg)
+        .padding(10)
         .containerBackground(entry.theme.bg, for: .widget)
     }
 }
@@ -240,11 +240,12 @@ struct StatWidget: Widget {
         date: .now,
         metric: .streak,
         period: .week,
-        formattedValue: "7",
+        formattedValue: "12",
         unit: "days",
-        bottomLabel: "Streak",
-        fontSize: 48,
-        theme: ThemeLibrary.obsidian
+        metricLabel: "Streak",
+        periodLabel: nil,
+        fontSize: 80,
+        theme: ThemeLibrary.moss
     )
     StatEntry(
         date: .now,
@@ -252,9 +253,32 @@ struct StatWidget: Widget {
         period: .week,
         formattedValue: "3.5",
         unit: "hrs",
-        bottomLabel: "Duration per week",
-        fontSize: 48,
-        theme: ThemeLibrary.obsidian
+        metricLabel: "Duration",
+        periodLabel: "per week",
+        fontSize: 80,
+        theme: ThemeLibrary.moss
+    )
+    StatEntry(
+        date: .now,
+        metric: .steps,
+        period: .today,
+        formattedValue: "8.2k",
+        unit: "steps",
+        metricLabel: "Steps",
+        periodLabel: "today",
+        fontSize: 72,
+        theme: ThemeLibrary.moss
+    )
+    StatEntry(
+        date: .now,
+        metric: .runs,
+        period: .month,
+        formattedValue: "21",
+        unit: "runs",
+        metricLabel: "Runs",
+        periodLabel: "per month",
+        fontSize: 80,
+        theme: ThemeLibrary.moss
     )
 }
 #endif

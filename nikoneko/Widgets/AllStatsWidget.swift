@@ -36,7 +36,7 @@ struct AllStatsProvider: AppIntentTimelineProvider {
             durationFormatted: "9.3", durationUnit: "hrs",
             distanceKm: "70.2", caloriesStr: "3.9k",
             stepsStr: "70.2k", avgHR: "145", maxHR: "171",
-            runsStr: "21", theme: ThemeLibrary.obsidian
+            runsStr: "21", theme: ThemeLibrary.moss
         )
     }
 
@@ -145,73 +145,163 @@ struct AllStatsProvider: AppIntentTimelineProvider {
 struct AllStatsWidgetView: View {
     let entry: AllStatsEntry
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            // Header
-            Text("NIKONEKO RUN")
-                .font(.system(size: 9)).tracking(0.8)
-                .foregroundColor(entry.theme.textMid)
+    private var periodLabel: String {
+        switch entry.period {
+        case .today: return "TODAY"
+        case .week:  return "THIS WEEK"
+        case .month: return "THIS MONTH"
+        case .year:  return "THIS YEAR"
+        }
+    }
 
-            // Hero section
-            VStack(alignment: .leading, spacing: 2) {
-                Text("DURATION")
-                    .font(.system(size: 10)).tracking(1.2).foregroundColor(entry.theme.textMid)
-                HStack(alignment: .lastTextBaseline, spacing: 6) {
-                    Text("total")
-                        .font(.system(size: 16, weight: .light)).foregroundColor(entry.theme.textMid)
-                    Text(entry.durationFormatted)
-                        .font(.system(size: 64, weight: .light)).foregroundColor(entry.theme.text)
-                        .monospacedDigit().kerning(-3).minimumScaleFactor(0.6).lineLimit(1)
-                    Text(entry.durationUnit)
-                        .font(.system(size: 18, weight: .light)).foregroundColor(entry.theme.textMid)
-                }
+    private var rightLabel: String {
+        let cal = Calendar.current
+        let now = entry.date
+        switch entry.period {
+        case .today:
+            let f = DateFormatter()
+            f.dateFormat = "MMMM d"
+            return f.string(from: now)  // MMMM → Title Case: June 6
+        case .week:
+            let weekday = cal.component(.weekday, from: now)
+            let daysFromMon = weekday == 1 ? 6 : weekday - 2
+            guard let monday = cal.date(byAdding: .day, value: -daysFromMon, to: cal.startOfDay(for: now)),
+                  let sunday = cal.date(byAdding: .day, value: 6, to: monday) else { return "" }
+            let f = DateFormatter()
+            f.dateFormat = "MMM d"
+            let mComps = cal.dateComponents([.month], from: monday)
+            let sComps = cal.dateComponents([.month], from: sunday)
+            if mComps.month == sComps.month {
+                let dayF = DateFormatter()
+                dayF.dateFormat = "d"
+                return "\(f.string(from: monday).uppercased()) – \(dayF.string(from: sunday))"
+            } else {
+                return "\(f.string(from: monday).uppercased()) – \(f.string(from: sunday).uppercased())"
             }
+        case .month:
+            let f = DateFormatter()
+            f.dateFormat = "MMMM yyyy"
+            return f.string(from: now)  // MMMM → Title Case: June 2026
+        case .year:
+            let f = DateFormatter()
+            f.dateFormat = "yyyy"
+            return f.string(from: now)
+        }
+    }
 
-            // Summary section
-            VStack(alignment: .leading, spacing: 8) {
-                Text("SUMMARY")
-                    .font(.system(size: 10)).tracking(1.2).foregroundColor(entry.theme.textMid)
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Header
+            HStack {
+                Text("NIKONEKO RUN")
+                    .font(.system(size: 10)).tracking(0.8)
+                    .foregroundColor(entry.theme.textMid)
+                Spacer()
+                Text(rightLabel)
+                    .font(.system(size: 10)).tracking(0.8)
+                    .foregroundColor(entry.theme.textMid)
+            }
+            .padding(.bottom, 8)
+
+            // Hero: duration
+            HStack(alignment: .lastTextBaseline, spacing: 6) {
+                Text("total")
+                    .font(.system(size: 18, weight: .ultraLight)).foregroundColor(entry.theme.accent)
+                Text(entry.durationFormatted)
+                    .font(.system(size: 72, weight: .ultraLight)).foregroundColor(entry.theme.accent)
+                    .monospacedDigit().kerning(-3).minimumScaleFactor(0.5).lineLimit(1)
+                Text(entry.durationUnit)
+                    .font(.system(size: 20, weight: .ultraLight)).foregroundColor(entry.theme.accent)
+            }
+            .padding(.bottom, 8)
+
+            // Summary grid
+            VStack(alignment: .leading, spacing: 6) {
                 LazyVGrid(
-                    columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 3),
-                    spacing: 6
+                    columns: Array(repeating: GridItem(.flexible(), spacing: 5), count: 3),
+                    spacing: 5
                 ) {
-                    summaryCell(value: entry.distanceKm, unit: " km",   icon: "location",    label: "Distance")
-                    summaryCell(value: entry.caloriesStr, unit: " kcal", icon: "flame",        label: "Calories")
-                    summaryCell(value: entry.stepsStr,    unit: "",       icon: "figure.walk",  label: "Steps")
-                    summaryCell(value: entry.avgHR, unit: entry.avgHR == "—" ? "" : " bpm", icon: "heart",       label: "Avg HR")
-                    summaryCell(value: entry.maxHR, unit: entry.maxHR == "—" ? "" : " bpm", icon: "heart",       label: "Max HR")
-                    summaryCell(value: entry.runsStr,     unit: " runs",  icon: "figure.run",   label: "Runs")
+                    summaryCell(value: entry.distanceKm,  unit: "km",   icon: "location.circle",  label: "Distance")
+                    summaryCell(value: entry.caloriesStr, unit: "kcal", icon: "flame",             label: "Calories")
+                    summaryCell(value: entry.stepsStr,    unit: "",     icon: "shoeprints.fill",   label: "Steps")
+                    summaryCell(value: entry.avgHR,       unit: entry.avgHR == "—" ? "" : "bpm",  icon: "heart",     label: "Avg HR")
+                    summaryCell(value: entry.maxHR,       unit: entry.maxHR == "—" ? "" : "bpm",  icon: "heart",     label: "Max HR")
+                    summaryCell(value: entry.runsStr,     unit: "runs", icon: "figure.run",        label: "Runs")
                 }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding(18)
-        .background(entry.theme.bg)
+        .padding(10)
         .containerBackground(entry.theme.bg, for: .widget)
     }
 
     private func summaryCell(value: String, unit: String, icon: String, label: String) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(alignment: .lastTextBaseline, spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(alignment: .lastTextBaseline, spacing: 3) {
                 Text(value)
-                    .font(.system(size: 20, weight: .ultraLight)).foregroundColor(entry.theme.text)
-                    .monospacedDigit().kerning(-0.8).minimumScaleFactor(0.6).lineLimit(1)
-                Text(unit)
-                    .font(.system(size: 11, weight: .light)).foregroundColor(entry.theme.textMid)
+                    .font(.system(size: 28, weight: .ultraLight))
+                    .foregroundColor(entry.theme.text)
+                    .monospacedDigit()
+                    .minimumScaleFactor(0.4)
+                    .lineLimit(1)
+                if !unit.isEmpty {
+                    Text(unit)
+                        .font(.system(size: 12))
+                        .foregroundColor(entry.theme.text)
+                }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             HStack(spacing: 4) {
                 Image(systemName: icon)
-                    .font(.system(size: 12, weight: .light)).foregroundColor(entry.theme.textMid)
+                    .font(.system(size: 12))
+                    .foregroundColor(entry.theme.text)
                 Text(label)
-                    .font(.system(size: 9)).foregroundColor(entry.theme.textMid)
+                    .font(.system(size: 12))
+                    .foregroundColor(entry.theme.text)
             }
+            .padding(.top, 4)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(EdgeInsets(top: 10, leading: 11, bottom: 10, trailing: 11))
-        .background(entry.theme.surface)
-        .cornerRadius(12)
+        .padding(10)
+        .frame(maxWidth: .infinity)
+        .aspectRatio(1, contentMode: .fit)
+        .background(entry.theme.card)
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(entry.theme.accentDim, lineWidth: 0.5))
+        .cornerRadius(14)
     }
 }
+
+// MARK: - Preview
+
+#if DEBUG
+#Preview(as: .systemLarge) {
+    AllStatsWidget()
+} timeline: {
+    AllStatsEntry(
+        date: .now,
+        period: .week,
+        durationFormatted: "3.5", durationUnit: "hrs",
+        distanceKm: "14.2", caloriesStr: "1.4k",
+        stepsStr: "21.3k", avgHR: "142", maxHR: "168",
+        runsStr: "5", theme: ThemeLibrary.moss
+    )
+    AllStatsEntry(
+        date: .now,
+        period: .month,
+        durationFormatted: "9.3", durationUnit: "hrs",
+        distanceKm: "52.1", caloriesStr: "3.9k",
+        stepsStr: "70.2k", avgHR: "145", maxHR: "171",
+        runsStr: "18", theme: ThemeLibrary.moss
+    )
+    AllStatsEntry(
+        date: .now,
+        period: .today,
+        durationFormatted: "24", durationUnit: "min",
+        distanceKm: "2.8", caloriesStr: "168",
+        stepsStr: "3.2k", avgHR: "—", maxHR: "—",
+        runsStr: "1", theme: ThemeLibrary.moss
+    )
+}
+#endif
 
 // MARK: - Widget
 

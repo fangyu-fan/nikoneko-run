@@ -20,6 +20,20 @@
                ReferencedContainer = "container:nikoneko-run.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "552EDB75EC9C1D7554D6E648"
+               BuildableName = "NikoNekoWidgets.appex"
+               BlueprintName = "NikoNekoWidgets"
+               ReferencedContainer = "container:nikoneko-run.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
