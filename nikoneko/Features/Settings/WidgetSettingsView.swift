@@ -37,7 +37,7 @@ struct WidgetSettingsView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Gallery
+            // Gallery — fixed height = Large widget full size, all previews centred vertically
             TabView(selection: $selectedIndex) {
                 ForEach(widgetDefs.indices, id: \.self) { i in
                     galleryCard(widgetDefs[i])
@@ -53,16 +53,25 @@ struct WidgetSettingsView: View {
             Divider()
                 .padding(.top, 8)
 
-            // Settings area
-            VStack(alignment: .leading, spacing: 16) {
-                parameterSection
-                addToHomeButton
+            // Settings area — scrollable middle section
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    parameterSection
+                }
+                .padding(.horizontal, 18)
+                .padding(.top, 16)
+                .padding(.bottom, 12)
             }
-            .padding(.horizontal, 18)
-            .padding(.top, 16)
-            .padding(.bottom, 24)
 
-            Spacer()
+            // Add to Home pinned at bottom
+            VStack(spacing: 0) {
+                Divider()
+                addToHomeButton
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 12)
+                    .padding(.bottom, 4)
+            }
+            .background(theme.bg)
         }
         .background(theme.bg.ignoresSafeArea())
         .id(lm.version)
@@ -88,30 +97,38 @@ struct WidgetSettingsView: View {
                     .background(theme.card).cornerRadius(6)
                 Spacer()
             }
-            if w.size == "Small" {
-                // Small widget: fixed 50% of native size (79×79), centred
-                widgetPreview(kind: w.kind, widgetTheme: theme)
-                    .frame(width: 79, height: 79)
-                    .cornerRadius(12)
-                    .clipped()
-                    .frame(maxWidth: .infinity, alignment: .center)
-            } else {
-                widgetPreview(kind: w.kind, widgetTheme: theme)
-                    .aspectRatio(w.size == "Medium" ? 338.0/158.0 : 338.0/354.0, contentMode: .fit)
-                    .cornerRadius(12)
-                    .clipped()
+            // All previews centred within the available vertical space
+            Group {
+                switch w.size {
+                case "Small":
+                    widgetPreview(kind: w.kind, widgetTheme: theme)
+                        .frame(width: 100, height: 100)
+                        .cornerRadius(16)
+                        .clipped()
+                case "Medium":
+                    widgetPreview(kind: w.kind, widgetTheme: theme)
+                        .aspectRatio(338.0 / 158.0, contentMode: .fit)
+                        .cornerRadius(16)
+                        .clipped()
+                default: // Large
+                    widgetPreview(kind: w.kind, widgetTheme: theme)
+                        .aspectRatio(338.0 / 354.0, contentMode: .fit)
+                        .cornerRadius(16)
+                        .clipped()
+                }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         }
         .padding(14)
+        .frame(maxHeight: .infinity)
         .background(theme.surface)
         .cornerRadius(14)
     }
 
-    // Gallery height is fixed so it doesn't jump when swiping between widget sizes.
-    // Sized for Medium widgets (widest cards) + label row + card padding + page dots.
-    // card width ≈ 375 - 36 (outer) - 28 (card padding) = 311pt
-    // Medium preview height = 311 / (338/158) ≈ 145pt
-    private var galleryFrameHeight: CGFloat { 145 + 36 + 28 + 28 }
+    // Gallery height = Large widget full-width preview + label row + card padding + page dots
+    // card width ≈ 375 - 36 (outer padding) - 28 (card padding) = 311pt
+    // Large preview height = 311 × (354/338) ≈ 325pt
+    private var galleryFrameHeight: CGFloat { 325 + 36 + 28 + 28 }
 
     // MARK: - Parameter Section
 
