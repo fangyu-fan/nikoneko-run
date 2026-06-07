@@ -4,61 +4,81 @@ import WidgetKit
 struct WidgetSettingsView: View {
     @Environment(ThemeManager.self) private var themeManager
     @Environment(LanguageManager.self) private var lm
-    @Environment(\.dismiss) private var dismiss
     private var theme: ThemeTokens { themeManager.current }
 
-    // All 7 widgets with their App Group themeId key, display name, and size badge.
-    private let widgets: [(id: String, name: String, nameZh: String, size: String, kind: String)] = [
-        ("widget.streak.themeId",        "Streak",          "連勝天數",  "Small",  "StreakWidget"),
-        ("widget.todayDuration.themeId", "Today Duration",  "當天時長",  "Small",  "TodayDurationWidget"),
-        ("widget.todayDistance.themeId", "Today Distance",  "當天距離",  "Small",  "TodayDistanceWidget"),
-        ("widget.todaySteps.themeId",    "Today Steps",     "當天步數",  "Small",  "TodayStepsWidget"),
-        ("widget.heatmap.themeId",       "Year Heatmap",    "年熱力圖",  "Medium", "HeatmapWidget"),
-        ("widget.calendar.themeId",      "Month Calendar",  "月曆",      "Large",  "CalendarWidget"),
-        ("widget.allStats.themeId",      "All Stats",       "所有數據",  "Large",  "AllStatsWidget"),
+    @State private var selectedIndex: Int = 0
+
+    @State private var statMetric: StatMetric = {
+        AppGroupDefaults.shared.string(forKey: "widget.stat.metric")
+            .flatMap { StatMetric(rawValue: $0) } ?? .streak
+    }()
+    @State private var statPeriod: TimePeriod = {
+        AppGroupDefaults.shared.string(forKey: "widget.stat.period")
+            .flatMap { TimePeriod(rawValue: $0) } ?? .week
+    }()
+    @State private var calendarMetric: StatMetric = {
+        AppGroupDefaults.shared.string(forKey: "widget.calendar.metric")
+            .flatMap { StatMetric(rawValue: $0) } ?? .duration
+    }()
+    @State private var allStatsPeriod: TimePeriod = {
+        AppGroupDefaults.shared.string(forKey: "widget.allStats.period")
+            .flatMap { TimePeriod(rawValue: $0) } ?? .week
+    }()
+
+    @State private var showAddInstructions: Bool = false
+
+    private let widgetDefs: [(name: String, nameZh: String, size: String, kind: String)] = [
+        ("Stat",        "數據",     "Small",  "StatWidget"),
+        ("Heatmap",     "熱力圖",   "Medium", "HeatmapWidget"),
+        ("Bar Chart",   "長條圖",   "Medium", "BarChartWidget"),
+        ("Calendar",    "月曆",     "Large",  "CalendarWidget"),
+        ("All Stats",   "所有數據", "Large",  "AllStatsWidget"),
     ]
 
-    // Bumping this causes SwiftUI to re-render all cards when any widget theme changes.
-    @State private var refreshToken: Int = 0
-
     var body: some View {
-        ScrollView {
-            VStack(spacing: 12) {
-                Text(lm.L("widget.hint"))
-                    .font(.system(size: 12))
-                    .foregroundColor(theme.textDim)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 18)
-                    .padding(.top, 8)
-
-                ForEach(widgets, id: \.id) { w in
-                    widgetCard(w)
+        VStack(spacing: 0) {
+            // Gallery
+            TabView(selection: $selectedIndex) {
+                ForEach(widgetDefs.indices, id: \.self) { i in
+                    galleryCard(widgetDefs[i])
+                        .tag(i)
+                        .padding(.horizontal, 18)
                 }
             }
+            .tabViewStyle(.page(indexDisplayMode: .always))
+            .frame(height: 270)
+            .animation(.easeInOut, value: selectedIndex)
+
+            Divider()
+                .padding(.top, 8)
+
+            // Settings area
+            VStack(alignment: .leading, spacing: 16) {
+                parameterSection
+                addToHomeButton
+            }
+            .padding(.horizontal, 18)
+            .padding(.top, 16)
             .padding(.bottom, 24)
+
+            Spacer()
         }
-        .id(refreshToken)
         .background(theme.bg.ignoresSafeArea())
         .id(lm.version)
         .navigationTitle(lm.L("widget.title"))
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showAddInstructions) {
+            addInstructionsSheet
+        }
     }
 
-    // MARK: - Widget Card
+    // MARK: - Gallery Card
 
-    private func widgetCard(
-        _ w: (id: String, name: String, nameZh: String, size: String, kind: String)
-    ) -> some View {
-        let widgetThemeId = AppGroupDefaults.shared.string(forKey: w.id)
-            ?? AppGroupDefaults.shared.string(forKey: "activeThemeId")
-            ?? "obsidian"
-        let widgetTheme = ThemeLibrary.all.first { $0.id == widgetThemeId } ?? ThemeLibrary.obsidian
-
-        return VStack(alignment: .leading, spacing: 10) {
-            // Header: name + size badge
+    private func galleryCard(_ w: (name: String, nameZh: String, size: String, kind: String)) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(lm.language == .traditionalChinese ? w.nameZh : w.name)
-                    .font(.system(size: 16))
+                    .font(.system(size: 15))
                     .foregroundColor(theme.text)
                 Text(w.size)
                     .font(.system(size: 11))
@@ -67,70 +87,212 @@ struct WidgetSettingsView: View {
                     .background(theme.card).cornerRadius(6)
                 Spacer()
             }
-
-            // Miniature widget preview
-            widgetPreview(kind: w.kind, widgetTheme: widgetTheme)
-                .frame(height: w.size == "Large" ? 160 : w.size == "Medium" ? 90 : 80)
+            widgetPreview(kind: w.kind, widgetTheme: theme)
+                .frame(height: previewHeight(size: w.size))
                 .cornerRadius(12)
                 .clipped()
-
-            // Theme selector — same appearance as AppearanceView.themeRow
-            ScrollView(.horizontal, showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 0) {
-                    ForEach(ThemeLibrary.all, id: \.id) { t in
-                        themeRow(t, selectedId: widgetThemeId, widgetKey: w.id)
-                            .background(t.bg)
-                            .cornerRadius(10)
-                            .padding(.bottom, 4)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                AppGroupDefaults.shared.set(t.id, forKey: w.id)
-                                WidgetCenter.shared.reloadAllTimelines()
-                                refreshToken += 1
-                            }
-                    }
-                }
-                .padding(.vertical, 2)
-            }
         }
         .padding(14)
         .background(theme.surface)
         .cornerRadius(14)
-        .padding(.horizontal, 18)
     }
 
-    // MARK: - Theme Row (mirrors AppearanceView.themeRow)
+    private func previewHeight(size: String) -> CGFloat {
+        switch size {
+        case "Large":  return 180
+        case "Medium": return 110
+        default:       return 140
+        }
+    }
 
-    private func themeRow(_ t: ThemeTokens, selectedId: String, widgetKey: String) -> some View {
-        HStack(spacing: 10) {
-            HStack(spacing: 3) {
-                ForEach(t.bar.indices, id: \.self) { i in
-                    Rectangle()
-                        .fill(t.bar[i])
-                        .frame(width: 20, height: 28)
-                        .cornerRadius(3)
+    // MARK: - Parameter Section
+
+    @ViewBuilder
+    private var parameterSection: some View {
+        switch selectedIndex {
+        case 0: // StatWidget
+            VStack(alignment: .leading, spacing: 10) {
+                pickerRow(
+                    label: lm.language == .traditionalChinese ? "指標" : "Metric",
+                    options: StatMetric.allCases,
+                    selected: $statMetric,
+                    display: { metricLabel($0) }
+                ) { value in
+                    AppGroupDefaults.shared.set(value.rawValue, forKey: "widget.stat.metric")
+                    WidgetCenter.shared.reloadAllTimelines()
+                }
+                pickerRow(
+                    label: lm.language == .traditionalChinese ? "時間範圍" : "Period",
+                    options: TimePeriod.allCases,
+                    selected: $statPeriod,
+                    display: { periodLabel($0) }
+                ) { value in
+                    AppGroupDefaults.shared.set(value.rawValue, forKey: "widget.stat.period")
+                    WidgetCenter.shared.reloadAllTimelines()
                 }
             }
-            .padding(.leading, 14)
+        case 1: // HeatmapWidget
+            infoText(lm.language == .traditionalChinese
+                ? "顯示近 18 週每日活動熱力圖"
+                : "Shows 18-week daily activity heatmap")
+        case 2: // BarChartWidget
+            infoText(lm.language == .traditionalChinese
+                ? "顯示本週每日活動長條圖"
+                : "Shows this week's daily activity bar chart")
+        case 3: // CalendarWidget
+            pickerRow(
+                label: lm.language == .traditionalChinese ? "指標" : "Metric",
+                options: StatMetric.allCases,
+                selected: $calendarMetric,
+                display: { metricLabel($0) }
+            ) { value in
+                AppGroupDefaults.shared.set(value.rawValue, forKey: "widget.calendar.metric")
+                WidgetCenter.shared.reloadAllTimelines()
+            }
+        case 4: // AllStatsWidget
+            pickerRow(
+                label: lm.language == .traditionalChinese ? "時間範圍" : "Period",
+                options: TimePeriod.allCases,
+                selected: $allStatsPeriod,
+                display: { periodLabel($0) }
+            ) { value in
+                AppGroupDefaults.shared.set(value.rawValue, forKey: "widget.allStats.period")
+                WidgetCenter.shared.reloadAllTimelines()
+            }
+        default:
+            EmptyView()
+        }
+    }
 
-            Text(lm.language == .traditionalChinese ? themeZhName(t.id) : themeEnName(t.id))
-                .font(.system(size: 14, weight: .regular))
-                .foregroundColor(t.text)
+    private func infoText(_ text: String) -> some View {
+        Text(text)
+            .font(.system(size: 13))
+            .foregroundColor(theme.textMid)
+    }
 
+    // MARK: - Picker Row
+
+    private func pickerRow<T: Hashable>(
+        label: String,
+        options: [T],
+        selected: Binding<T>,
+        display: @escaping (T) -> String,
+        onChange: @escaping (T) -> Void
+    ) -> some View {
+        HStack {
+            Text(label)
+                .font(.system(size: 14))
+                .foregroundColor(theme.textMid)
             Spacer()
-
-            if selectedId == t.id {
-                Circle()
-                    .fill(t.accent)
-                    .frame(width: 7, height: 7)
-                    .padding(.trailing, 14)
-            } else {
-                Color.clear
-                    .frame(width: 7, height: 7)
-                    .padding(.trailing, 14)
+            Menu {
+                ForEach(options, id: \.self) { opt in
+                    Button(display(opt)) {
+                        selected.wrappedValue = opt
+                        onChange(opt)
+                    }
+                }
+            } label: {
+                HStack(spacing: 4) {
+                    Text(display(selected.wrappedValue))
+                        .font(.system(size: 14))
+                        .foregroundColor(theme.text)
+                    Image(systemName: "chevron.up.chevron.down")
+                        .font(.system(size: 10))
+                        .foregroundColor(theme.textMid)
+                }
+                .padding(.horizontal, 10).padding(.vertical, 6)
+                .background(theme.card)
+                .cornerRadius(8)
             }
         }
-        .padding(.vertical, 10)
+    }
+
+    // MARK: - Add to Home Button
+
+    private var addToHomeButton: some View {
+        Button {
+            if let url = URL(string: "widgetkit://") {
+                UIApplication.shared.open(url) { success in
+                    if !success { showAddInstructions = true }
+                }
+            } else {
+                showAddInstructions = true
+            }
+        } label: {
+            HStack {
+                Image(systemName: "plus.circle")
+                Text(lm.language == .traditionalChinese ? "加入主畫面" : "Add to Home Screen")
+                    .font(.system(size: 15))
+            }
+            .foregroundColor(theme.accent)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
+            .background(theme.surface)
+            .cornerRadius(10)
+        }
+    }
+
+    // MARK: - Instructions Sheet
+
+    private var addInstructionsSheet: some View {
+        VStack(spacing: 20) {
+            Text(lm.language == .traditionalChinese ? "加入主畫面" : "Add to Home Screen")
+                .font(.system(size: 18, weight: .medium))
+                .foregroundColor(theme.text)
+
+            VStack(alignment: .leading, spacing: 12) {
+                instructionStep("1", lm.language == .traditionalChinese ? "長按主畫面空白處" : "Long-press an empty area on your Home Screen")
+                instructionStep("2", lm.language == .traditionalChinese ? "點右上角「＋」" : "Tap the + button in the top-right corner")
+                instructionStep("3", lm.language == .traditionalChinese ? "搜尋「Nikoneko Run」" : "Search for \"Nikoneko Run\"")
+                instructionStep("4", lm.language == .traditionalChinese ? "選擇你要的 widget 尺寸" : "Choose your preferred widget size")
+            }
+            .padding(.horizontal, 24)
+
+            Button(lm.language == .traditionalChinese ? "知道了" : "Got it") {
+                showAddInstructions = false
+            }
+            .foregroundColor(theme.accent)
+            .padding(.top, 8)
+        }
+        .padding(.vertical, 32)
+        .presentationDetents([.medium])
+        .background(theme.bg)
+    }
+
+    private func instructionStep(_ number: String, _ text: String) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Text(number)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundColor(theme.accent)
+                .frame(width: 20)
+            Text(text)
+                .font(.system(size: 14))
+                .foregroundColor(theme.text)
+        }
+    }
+
+    // MARK: - Label Helpers
+
+    private func metricLabel(_ m: StatMetric) -> String {
+        let zh = lm.language == .traditionalChinese
+        switch m {
+        case .streak:   return zh ? "連勝天數" : "Streak"
+        case .duration: return zh ? "時長" : "Duration"
+        case .distance: return zh ? "距離" : "Distance"
+        case .calories: return zh ? "卡路里" : "Calories"
+        case .steps:    return zh ? "步數" : "Steps"
+        case .runs:     return zh ? "次數" : "Runs"
+        }
+    }
+
+    private func periodLabel(_ p: TimePeriod) -> String {
+        let zh = lm.language == .traditionalChinese
+        switch p {
+        case .today: return zh ? "今天" : "Today"
+        case .week:  return zh ? "本週" : "This Week"
+        case .month: return zh ? "本月" : "This Month"
+        case .year:  return zh ? "本年" : "This Year"
+        }
     }
 
     // MARK: - Widget Previews
@@ -138,66 +300,100 @@ struct WidgetSettingsView: View {
     @ViewBuilder
     private func widgetPreview(kind: String, widgetTheme: ThemeTokens) -> some View {
         switch kind {
-        case "StreakWidget":
-            smallStatPreview(label: "STREAK", value: "12", unit: "day streak", theme: widgetTheme)
-
-        case "TodayDurationWidget":
-            smallStatPreview(label: "TODAY", value: "24", unit: "min today", theme: widgetTheme)
-
-        case "TodayDistanceWidget":
-            smallStatPreview(label: "TODAY", value: "—", unit: "km today", theme: widgetTheme)
-
-        case "TodayStepsWidget":
-            smallStatPreview(label: "TODAY", value: "3.2k", unit: "steps today", theme: widgetTheme)
-
-        case "HeatmapWidget":
-            heatmapPreview(widgetTheme: widgetTheme)
-
-        case "AllStatsWidget":
-            allStatsPreview(widgetTheme: widgetTheme)
-
-        default: // CalendarWidget
-            calendarPreview(widgetTheme: widgetTheme)
+        case "StatWidget":       statPreview(widgetTheme: widgetTheme)
+        case "HeatmapWidget":    heatmapPreview(widgetTheme: widgetTheme)
+        case "BarChartWidget":   barChartPreview(widgetTheme: widgetTheme)
+        case "CalendarWidget":   calendarPreview(widgetTheme: widgetTheme)
+        default:                 allStatsPreview(widgetTheme: widgetTheme)
         }
     }
 
-    private func smallStatPreview(label: String, value: String, unit: String, theme: ThemeTokens) -> some View {
+    private func statPreview(widgetTheme: ThemeTokens) -> some View {
         HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(label)
-                    .font(.system(size: 7)).tracking(1)
-                    .foregroundColor(theme.textDim)
-                Text(value)
-                    .font(.system(size: 32, weight: .ultraLight))
-                    .foregroundColor(theme.accent)
-                Text(unit)
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    Text("NIKONEKO RUN")
+                        .font(.system(size: 7)).tracking(0.8)
+                        .foregroundColor(widgetTheme.textMid)
+                    Spacer()
+                    Image(systemName: "flame")
+                        .font(.system(size: 11, weight: .light))
+                        .foregroundColor(widgetTheme.textMid)
+                }
+                Spacer()
+                HStack(alignment: .lastTextBaseline, spacing: 3) {
+                    Text("12")
+                        .font(.system(size: 44, weight: .ultraLight))
+                        .foregroundColor(widgetTheme.text)
+                    Text("days")
+                        .font(.system(size: 9, weight: .light))
+                        .foregroundColor(widgetTheme.textMid)
+                }
+                Text("Streak")
                     .font(.system(size: 9))
-                    .foregroundColor(theme.textDim)
+                    .foregroundColor(widgetTheme.textMid)
             }
             Spacer()
         }
         .padding(12)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(theme.bg)
+        .background(widgetTheme.bg)
     }
 
     private func heatmapPreview(widgetTheme: ThemeTokens) -> some View {
         ZStack(alignment: .topLeading) {
             widgetTheme.bg
             VStack(alignment: .leading, spacing: 3) {
-                Text("THIS YEAR")
-                    .font(.system(size: 6)).tracking(1)
-                    .foregroundColor(widgetTheme.textDim)
+                HStack {
+                    Text("NIKONEKO RUN")
+                        .font(.system(size: 6)).tracking(0.8)
+                        .foregroundColor(widgetTheme.textMid)
+                    Spacer()
+                    Text("2026")
+                        .font(.system(size: 6)).tracking(0.8)
+                        .foregroundColor(widgetTheme.textMid)
+                }
                 let cols = 18, rows = 7
                 LazyVGrid(
                     columns: Array(repeating: GridItem(.flexible(), spacing: 2), count: cols),
                     spacing: 2
                 ) {
                     ForEach(0..<cols * rows, id: \.self) { i in
-                        let tier = previewTier(index: i, total: cols * rows)
                         RoundedRectangle(cornerRadius: 1)
-                            .fill(widgetTheme.bar[tier])
+                            .fill(widgetTheme.bar[previewTier(index: i, total: cols * rows)])
                             .aspectRatio(1, contentMode: .fit)
+                    }
+                }
+            }
+            .padding(10)
+        }
+    }
+
+    private func barChartPreview(widgetTheme: ThemeTokens) -> some View {
+        ZStack(alignment: .topLeading) {
+            widgetTheme.bg
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    Text("NIKONEKO RUN")
+                        .font(.system(size: 6)).tracking(0.8)
+                        .foregroundColor(widgetTheme.textMid)
+                    Spacer()
+                    Text("JUN 1 – 7")
+                        .font(.system(size: 6)).tracking(0.8)
+                        .foregroundColor(widgetTheme.textMid)
+                }
+                let bars: [Double] = [0.4, 0, 0.7, 0.5, 1.0, 0, 0.6]
+                HStack(alignment: .bottom, spacing: 3) {
+                    ForEach(bars.indices, id: \.self) { i in
+                        let h = max(CGFloat(bars[i]) * 50, 3)
+                        VStack(spacing: 0) {
+                            Spacer(minLength: 0)
+                            RoundedRectangle(cornerRadius: 1)
+                                .fill(i == 4 ? widgetTheme.bar[4] : (bars[i] > 0 ? widgetTheme.bar[2] : widgetTheme.bar[0]))
+                                .frame(maxWidth: .infinity)
+                                .frame(height: h)
+                        }
+                        .frame(height: 50)
                     }
                 }
             }
@@ -208,24 +404,42 @@ struct WidgetSettingsView: View {
     private func allStatsPreview(widgetTheme: ThemeTokens) -> some View {
         ZStack(alignment: .topLeading) {
             widgetTheme.bg
-            VStack(alignment: .leading, spacing: 8) {
-                Text("TODAY")
-                    .font(.system(size: 6)).tracking(1)
-                    .foregroundColor(widgetTheme.textDim)
-                let stats = [("30","min"),("4.2k","steps"),("210","kcal"),("148","avg HR"),("—","km"),("7","day streak")]
-                ForEach(Array(stride(from: 0, to: stats.count, by: 2)), id: \.self) { i in
-                    HStack(spacing: 0) {
-                        ForEach(i..<min(i+2, stats.count), id: \.self) { j in
-                            VStack(alignment: .leading, spacing: 1) {
-                                Text(stats[j].0)
-                                    .font(.system(size: 14, weight: .ultraLight))
-                                    .foregroundColor(widgetTheme.accent)
-                                Text(stats[j].1)
-                                    .font(.system(size: 6))
-                                    .foregroundColor(widgetTheme.textDim)
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .leading, spacing: 6) {
+                HStack {
+                    Text("NIKONEKO RUN")
+                        .font(.system(size: 6)).tracking(0.8)
+                        .foregroundColor(widgetTheme.textMid)
+                    Spacer()
+                    Text("THIS WEEK")
+                        .font(.system(size: 6)).tracking(0.8)
+                        .foregroundColor(widgetTheme.textMid)
+                }
+                HStack(alignment: .lastTextBaseline, spacing: 4) {
+                    Text("total")
+                        .font(.system(size: 9, weight: .ultraLight))
+                        .foregroundColor(widgetTheme.accent)
+                    Text("3.5")
+                        .font(.system(size: 32, weight: .ultraLight))
+                        .foregroundColor(widgetTheme.accent)
+                    Text("hrs")
+                        .font(.system(size: 10, weight: .ultraLight))
+                        .foregroundColor(widgetTheme.accent)
+                }
+                let stats = [("14.2","km"),("1.4k","kcal"),("21.3k","steps"),("142","avg HR"),("168","max HR"),("5","runs")]
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 3), count: 3), spacing: 3) {
+                    ForEach(Array(stats.enumerated()), id: \.offset) { _, s in
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text(s.0)
+                                .font(.system(size: 12, weight: .ultraLight))
+                                .foregroundColor(widgetTheme.text)
+                            Text(s.1)
+                                .font(.system(size: 6))
+                                .foregroundColor(widgetTheme.textDim)
                         }
+                        .padding(5)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(widgetTheme.card)
+                        .cornerRadius(6)
                     }
                 }
             }
@@ -238,16 +452,26 @@ struct WidgetSettingsView: View {
             widgetTheme.bg
             VStack(spacing: 2) {
                 HStack {
-                    ForEach(["S","M","T","W","T","F","S"], id: \.self) { d in
+                    Text("NIKONEKO RUN")
+                        .font(.system(size: 5)).tracking(0.8)
+                        .foregroundColor(widgetTheme.textMid)
+                    Spacer()
+                    Text("June 2026")
+                        .font(.system(size: 5)).tracking(0.8)
+                        .foregroundColor(widgetTheme.textMid)
+                }
+                .padding(.bottom, 2)
+                HStack {
+                    ForEach(["M","T","W","T","F","S","S"], id: \.self) { d in
                         Text(d)
-                            .font(.system(size: 6))
+                            .font(.system(size: 5))
                             .foregroundColor(widgetTheme.textDim)
                             .frame(maxWidth: .infinity)
                     }
                 }
-                ForEach(0..<4) { row in
+                ForEach(0..<4, id: \.self) { row in
                     HStack(spacing: 2) {
-                        ForEach(0..<7) { col in
+                        ForEach(0..<7, id: \.self) { col in
                             let n = row * 7 + col + 1
                             ZStack {
                                 if n <= 30 {
@@ -255,7 +479,7 @@ struct WidgetSettingsView: View {
                                     RoundedRectangle(cornerRadius: 2)
                                         .fill(widgetTheme.cal[tier])
                                     Text("\(n)")
-                                        .font(.system(size: 5))
+                                        .font(.system(size: 4))
                                         .foregroundColor(widgetTheme.text.opacity(tier > 0 ? 0.8 : 0.4))
                                 } else {
                                     Color.clear
@@ -266,38 +490,13 @@ struct WidgetSettingsView: View {
                     }
                 }
             }
-            .padding(10)
+            .padding(8)
         }
     }
 
-    /// Deterministic wave pattern for preview cells (0–4 tier index).
     private func previewTier(index: Int, total: Int) -> Int {
         let wave = sin(Double(index) / Double(total) * .pi * 4 + 1.0)
         let mapped = (wave + 1.0) / 2.0
         return min(4, Int(mapped * 5))
-    }
-
-    // MARK: - Theme Name Maps
-
-    private func themeEnName(_ id: String) -> String {
-        let map: [String: String] = [
-            "obsidian": "Obsidian", "paper": "Paper", "limestone": "Limestone",
-            "grove": "Grove", "moss": "Moss & Amber", "mocha": "Mocha", "seafloor": "Seafloor",
-            "skyline": "Skyline", "navy": "Deep Navy", "lavender": "Lavender Fog",
-            "midnight": "Midnight Mauve", "teal": "Teal & Coral", "blush": "Blush Garden",
-            "slateRose": "Slate & Rose", "sapphireGold": "Sapphire & Gold",
-        ]
-        return map[id] ?? id.capitalized
-    }
-
-    private func themeZhName(_ id: String) -> String {
-        let map: [String: String] = [
-            "obsidian": "黑曜", "paper": "白紙", "limestone": "石灰岩",
-            "grove": "林間", "moss": "苔蘚琥珀", "mocha": "摩卡", "seafloor": "海床",
-            "skyline": "天際", "navy": "深海藍", "lavender": "薰衣草霧",
-            "midnight": "午夜藕色", "teal": "青與珊瑚", "blush": "胭脂花園",
-            "slateRose": "石板玫瑰", "sapphireGold": "藍寶石與金",
-        ]
-        return map[id] ?? ""
     }
 }
