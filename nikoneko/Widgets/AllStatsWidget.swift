@@ -50,9 +50,11 @@ struct AllStatsProvider: AppIntentTimelineProvider {
     }
 
     private func entry(for configuration: AllStatsWidgetIntent) -> AllStatsEntry {
-        let theme = WidgetTheme.load(for: "widget.allStats.themeId")
+        let theme = WidgetSharedData.loadTheme()
+        let period = AppGroupDefaults.shared.string(forKey: "widget.allStats.period")
+            .flatMap { TimePeriod(rawValue: $0) } ?? configuration.period
         let summaries = AppGroupDefaults.loadSummaries()
-        let filtered = Self.filter(summaries, for: configuration.period)
+        let filtered = Self.filter(summaries, for: period)
 
         // Duration
         let totalSeconds = filtered.reduce(0.0) { $0 + $1.duration }
@@ -106,7 +108,7 @@ struct AllStatsProvider: AppIntentTimelineProvider {
 
         return AllStatsEntry(
             date: Date(),
-            period: configuration.period,
+            period: period,
             durationFormatted: durationFormatted,
             durationUnit: durationUnit,
             distanceKm: distanceKm,
