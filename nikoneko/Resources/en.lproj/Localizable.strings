@@ -194,3 +194,7 @@
 "defaults.row.volume" = "Volume";
 "timer.tip.longPress" = "hold to finish";
 "timer.alert.tooShort" = "Sessions under 1 minute are not recorded.";
+"defaults.section.calendar"   = "CALENDAR";
+"defaults.row.weekStart"       = "Week Starts On";
+"defaults.weekStart.monday"    = "Monday";
+"defaults.weekStart.sunday"    = "Sunday";

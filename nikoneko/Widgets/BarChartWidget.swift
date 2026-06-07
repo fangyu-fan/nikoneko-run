@@ -66,13 +66,12 @@ struct BarChartProvider: AppIntentTimelineProvider {
         let cal = Calendar.current
         let today = Date()
 
-        let weekdayComponent = cal.component(.weekday, from: today)
-        let todayIndex = weekdayComponent == 1 ? 6 : weekdayComponent - 2
+        let todayIndex = AppGroupDefaults.weekdayOffset(for: today)
 
         var dailyValues: [Double] = Array(repeating: 0, count: 7)
 
-        let daysFromMonday = todayIndex
-        guard let monday = cal.date(byAdding: .day, value: -daysFromMonday, to: cal.startOfDay(for: today)) else {
+        let daysFromStart = todayIndex
+        guard let monday = cal.date(byAdding: .day, value: -daysFromStart, to: cal.startOfDay(for: today)) else {
             return BarChartEntry(date: today, bars: dailyValues, todayIndex: todayIndex,
                                  maxValue: 1, yTop: "1", yMid: "0", weekLabel: "", metric: metric, theme: theme)
         }
@@ -153,7 +152,11 @@ struct BarChartProvider: AppIntentTimelineProvider {
 struct BarChartWidgetView: View {
     let entry: BarChartEntry
 
-    private let xLabels = ["M", "T", "W", "T", "F", "S", "S"]
+    private var xLabels: [String] {
+        AppGroupDefaults.weekStartsOnMonday
+            ? ["M","T","W","T","F","S","S"]
+            : ["S","M","T","W","T","F","S"]
+    }
     private let yAxisWidth: CGFloat = 26
 
     private var metricUnit: String {

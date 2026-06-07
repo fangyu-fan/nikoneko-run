@@ -128,8 +128,9 @@ struct AllStatsProvider: AppIntentTimelineProvider {
         case .today:
             return summaries.filter { calendar.isDateInToday($0.date) }
         case .week:
-            let cutoff = calendar.date(byAdding: .day, value: -7, to: now)!
-            return summaries.filter { $0.date >= cutoff }
+            let daysFromStart = AppGroupDefaults.weekdayOffset(for: calendar.startOfDay(for: now))
+            let weekStart = calendar.date(byAdding: .day, value: -daysFromStart, to: calendar.startOfDay(for: now))!
+            return summaries.filter { $0.date >= weekStart }
         case .month:
             let comps = calendar.dateComponents([.year, .month], from: now)
             guard let startOfMonth = calendar.date(from: comps) else { return [] }
@@ -165,20 +166,19 @@ struct AllStatsWidgetView: View {
             f.dateFormat = "MMMM d"
             return f.string(from: now)  // MMMM → Title Case: June 6
         case .week:
-            let weekday = cal.component(.weekday, from: now)
-            let daysFromMon = weekday == 1 ? 6 : weekday - 2
-            guard let monday = cal.date(byAdding: .day, value: -daysFromMon, to: cal.startOfDay(for: now)),
-                  let sunday = cal.date(byAdding: .day, value: 6, to: monday) else { return "" }
+            let daysFromStart = AppGroupDefaults.weekdayOffset(for: cal.startOfDay(for: now))
+            guard let weekStart = cal.date(byAdding: .day, value: -daysFromStart, to: cal.startOfDay(for: now)),
+                  let weekEnd = cal.date(byAdding: .day, value: 6, to: weekStart) else { return "" }
             let f = DateFormatter()
             f.dateFormat = "MMM d"
-            let mComps = cal.dateComponents([.month], from: monday)
-            let sComps = cal.dateComponents([.month], from: sunday)
+            let mComps = cal.dateComponents([.month], from: weekStart)
+            let sComps = cal.dateComponents([.month], from: weekEnd)
             if mComps.month == sComps.month {
                 let dayF = DateFormatter()
                 dayF.dateFormat = "d"
-                return "\(f.string(from: monday).uppercased()) – \(dayF.string(from: sunday))"
+                return "\(f.string(from: weekStart).uppercased()) – \(dayF.string(from: weekEnd))"
             } else {
-                return "\(f.string(from: monday).uppercased()) – \(f.string(from: sunday).uppercased())"
+                return "\(f.string(from: weekStart).uppercased()) – \(f.string(from: weekEnd).uppercased())"
             }
         case .month:
             let f = DateFormatter()

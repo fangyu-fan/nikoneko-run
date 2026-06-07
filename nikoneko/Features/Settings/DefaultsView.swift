@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct DefaultsView: View {
     @Environment(ThemeManager.self) private var themeManager
@@ -18,6 +19,7 @@ struct DefaultsView: View {
     @State private var t2: Double = 60
     @State private var t3: Double = 90
     @State private var volume: Double = 0.7
+    @State private var weekStartsOnMonday: Bool = AppGroupDefaults.weekStartsOnMonday
 
     var body: some View {
         ScrollView {
@@ -33,6 +35,14 @@ struct DefaultsView: View {
                     }
                     Rectangle().fill(theme.accentDim).frame(height: 0.5)
                     thresholdSlider
+                }
+                .background(theme.surface)
+                .cornerRadius(14)
+                .padding(.bottom, 4)
+
+                sectionLabel(lm.L("defaults.section.calendar"))
+                VStack(spacing: 0) {
+                    weekStartRow
                 }
                 .background(theme.surface)
                 .cornerRadius(14)
@@ -251,6 +261,46 @@ struct DefaultsView: View {
         c.threshold3 = 90
         ctx.insert(c)
         try? ctx.save()
+    }
+
+    // MARK: - Calendar rows
+
+    private var weekStartRow: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "calendar")
+                .font(.system(size: 16))
+                .foregroundColor(theme.text)
+                .frame(width: 20)
+            Text(lm.L("defaults.row.weekStart"))
+                .font(.system(size: 16))
+                .foregroundColor(theme.text)
+            Spacer()
+            HStack(spacing: 2) {
+                ForEach([true, false], id: \.self) { isMon in
+                    Button {
+                        weekStartsOnMonday = isMon
+                        AppGroupDefaults.weekStartsOnMonday = isMon
+                        WidgetCenter.shared.reloadAllTimelines()
+                    } label: {
+                        Text(isMon ? lm.L("defaults.weekStart.monday") : lm.L("defaults.weekStart.sunday"))
+                            .font(.system(size: 13))
+                            .foregroundColor(weekStartsOnMonday == isMon ? theme.text : theme.textMid)
+                            .padding(.vertical, 5)
+                            .padding(.horizontal, 10)
+                            .background(weekStartsOnMonday == isMon ? theme.card : Color.clear)
+                            .cornerRadius(8)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(3)
+            .background(theme.surface)
+            .cornerRadius(10)
+            .overlay(RoundedRectangle(cornerRadius: 10).stroke(theme.accentDim, lineWidth: 0.5))
+        }
+        .padding(.vertical, 13)
+        .padding(.horizontal, 16)
+        .frame(minHeight: 50)
     }
 
     // MARK: - Beat rows

@@ -77,8 +77,10 @@ struct StatProvider: AppIntentTimelineProvider {
         case .today:
             return cal.isDateInToday(date)
         case .week:
-            let sevenDaysAgo = cal.date(byAdding: .day, value: -6, to: cal.startOfDay(for: Date()))!
-            return date >= sevenDaysAgo
+            let today = cal.startOfDay(for: Date())
+            let daysFromStart = AppGroupDefaults.weekdayOffset(for: today)
+            let weekStart = cal.date(byAdding: .day, value: -daysFromStart, to: today)!
+            return date >= weekStart
         case .month:
             let comps = cal.dateComponents([.year, .month], from: Date())
             guard let monthStart = cal.date(from: comps) else { return false }

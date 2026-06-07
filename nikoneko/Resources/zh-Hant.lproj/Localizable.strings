@@ -194,3 +194,7 @@
 "defaults.row.volume" = "音量";
 "timer.tip.longPress" = "長按結束";
 "timer.alert.tooShort" = "不足 1 分鐘的訓練不會納入記錄。";
+"defaults.section.calendar"   = "日曆";
+"defaults.row.weekStart"       = "週起始日";
+"defaults.weekStart.monday"    = "週一";
+"defaults.weekStart.sunday"    = "週日";

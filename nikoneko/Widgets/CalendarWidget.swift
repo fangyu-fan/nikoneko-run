@@ -45,13 +45,18 @@ struct CalendarProvider: AppIntentTimelineProvider {
 struct CalendarWidgetView: View {
     let entry: CalendarEntry
     private let cal = Calendar.current
-    // Mon-first headers
-    private let dayHeaders = ["M","T","W","T","F","S","S"]
+    private var dayHeaders: [String] {
+        AppGroupDefaults.weekStartsOnMonday
+            ? ["M","T","W","T","F","S","S"]
+            : ["S","M","T","W","T","F","S"]
+    }
 
     var body: some View {
         let monthStart = cal.dateInterval(of: .month, for: entry.date)!.start
-        let rawWeekday = cal.component(.weekday, from: monthStart)
-        let firstOffset = (rawWeekday + 5) % 7
+        let rawWeekday = cal.component(.weekday, from: monthStart)  // 1=Sun..7=Sat
+        let firstOffset = AppGroupDefaults.weekStartsOnMonday
+            ? (rawWeekday + 5) % 7   // Mon=0
+            : rawWeekday - 1          // Sun=0
         let daysInMonth = cal.range(of: .day, in: .month, for: entry.date)!.count
         let today = cal.startOfDay(for: entry.date)
         let dailyMax = maxDailyValue()

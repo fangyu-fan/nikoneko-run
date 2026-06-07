@@ -56,7 +56,12 @@ struct HeatmapProvider: AppIntentTimelineProvider {
 struct HeatmapWidgetView: View {
     let entry: HeatmapEntry
 
-    private let dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    // Day labels ordered from week start day
+    private var dayLabels: [String] {
+        AppGroupDefaults.weekStartsOnMonday
+            ? ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+            : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    }
     private let monthAbbr = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"]
     private let labelWidth: CGFloat = 26
     private let gap: CGFloat = 1.5
@@ -132,12 +137,10 @@ struct HeatmapWidgetView: View {
         let cal = Calendar.current
         let today = cal.startOfDay(for: entry.date)
 
-        // Find the Monday of the week that is (numCols - 1) weeks ago
-        // "This week's Monday" = start of the week containing today (ISO: Mon=1)
-        let todayWeekday = isoWeekday(of: today) // 1=Mon..7=Sun
-        let daysToMonday = todayWeekday - 1
-        let thisMonday = cal.date(byAdding: .day, value: -daysToMonday, to: today)!
-        let oldestMonday = cal.date(byAdding: .weekOfYear, value: -(numCols - 1), to: thisMonday)!
+        // Find the start of this week (Mon or Sun depending on setting)
+        let daysFromStart = AppGroupDefaults.weekdayOffset(for: today)
+        let thisWeekStart = cal.date(byAdding: .day, value: -daysFromStart, to: today)!
+        let oldestMonday = cal.date(byAdding: .weekOfYear, value: -(numCols - 1), to: thisWeekStart)!
 
         var columns = [[String?]](repeating: [String?](repeating: nil, count: 7), count: numCols)
         var monthHeaders = [String](repeating: "", count: numCols)
