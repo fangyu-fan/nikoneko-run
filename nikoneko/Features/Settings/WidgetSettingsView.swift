@@ -212,13 +212,7 @@ struct WidgetSettingsView: View {
 
     private var addToHomeButton: some View {
         Button {
-            if let url = URL(string: "widgetkit://") {
-                UIApplication.shared.open(url) { success in
-                    if !success { showAddInstructions = true }
-                }
-            } else {
-                showAddInstructions = true
-            }
+            showAddInstructions = true
         } label: {
             HStack {
                 Image(systemName: "plus.circle")
