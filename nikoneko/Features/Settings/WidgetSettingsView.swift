@@ -46,7 +46,7 @@ struct WidgetSettingsView: View {
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .always))
-            .frame(height: 270)
+            .frame(height: galleryFrameHeight)
             .animation(.easeInOut, value: selectedIndex)
             .tint(theme.accent)
 
@@ -89,7 +89,7 @@ struct WidgetSettingsView: View {
                 Spacer()
             }
             widgetPreview(kind: w.kind, widgetTheme: theme)
-                .frame(height: previewHeight(size: w.size))
+                .aspectRatio(previewAspectRatio(size: w.size), contentMode: .fit)
                 .cornerRadius(12)
                 .clipped()
         }
@@ -98,12 +98,23 @@ struct WidgetSettingsView: View {
         .cornerRadius(14)
     }
 
-    private func previewHeight(size: String) -> CGFloat {
+    // Widget actual pt sizes (iPhone 16): Small 158×158, Medium 338×158, Large 338×354
+    private func previewAspectRatio(size: String) -> CGFloat {
         switch size {
-        case "Large":  return 180
-        case "Medium": return 110
-        default:       return 140
+        case "Medium": return 338.0 / 158.0  // ~2.14:1
+        case "Large":  return 338.0 / 354.0  // ~0.955:1
+        default:       return 1.0             // Small: 1:1 square
         }
+    }
+
+    // Dynamic gallery height based on current widget's aspect ratio
+    // card width ≈ screen(375) - outer padding(36) - card padding(28) = 311pt
+    private var galleryFrameHeight: CGFloat {
+        let cardW: CGFloat = 311
+        let size = widgetDefs[selectedIndex].size
+        let ratio = previewAspectRatio(size: size)
+        let previewH = cardW / ratio
+        return previewH + 36 + 28 + 28  // preview + label row + card padding + page dots
     }
 
     // MARK: - Parameter Section
