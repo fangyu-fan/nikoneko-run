@@ -41,7 +41,7 @@ struct HeatmapProvider: AppIntentTimelineProvider {
     }
 
     private func makeEntry(for configuration: HeatmapWidgetIntent) -> HeatmapEntry {
-        let theme = WidgetTheme.load(for: "widget.heatmap.themeId")
+        let theme = WidgetSharedData.loadTheme()
         return HeatmapEntry(
             date: Date(),
             summaries: AppGroupDefaults.loadSummaries(),

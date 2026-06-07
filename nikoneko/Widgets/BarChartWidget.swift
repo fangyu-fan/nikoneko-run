@@ -60,7 +60,7 @@ struct BarChartProvider: AppIntentTimelineProvider {
     }
 
     private func build(metric: StatMetric) -> BarChartEntry {
-        let theme = WidgetTheme.load(for: "widget.barChart.themeId")
+        let theme = WidgetSharedData.loadTheme()
         let summaries = AppGroupDefaults.loadSummaries()
 
         let cal = Calendar.current
