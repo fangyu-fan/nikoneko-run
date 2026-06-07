@@ -500,9 +500,12 @@ struct HeatmapView: View {
         let rows = Int(ceil(Double(bars.count) / Double(cols)))
         return VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 4) {
-                ForEach([lm.L("heatmap.mon"), lm.L("heatmap.tue"), lm.L("heatmap.wed"),
-                         lm.L("heatmap.thu"), lm.L("heatmap.fri"), lm.L("heatmap.sat"), lm.L("heatmap.sun")],
-                        id: \.self) { d in
+                let monFirst = [lm.L("heatmap.mon"), lm.L("heatmap.tue"), lm.L("heatmap.wed"),
+                                lm.L("heatmap.thu"), lm.L("heatmap.fri"), lm.L("heatmap.sat"), lm.L("heatmap.sun")]
+                let sunFirst = [lm.L("heatmap.sun"), lm.L("heatmap.mon"), lm.L("heatmap.tue"), lm.L("heatmap.wed"),
+                                lm.L("heatmap.thu"), lm.L("heatmap.fri"), lm.L("heatmap.sat")]
+                let headers = AppGroupDefaults.weekStartsOnMonday ? monFirst : sunFirst
+                ForEach(headers, id: \.self) { d in
                     Text(String(d.prefix(1))).font(.system(size: 9)).foregroundColor(theme.textDim).frame(maxWidth: .infinity)
                 }
             }
@@ -548,8 +551,11 @@ struct HeatmapView: View {
 
                 let padded: [ChartBar?] = Array(repeating: nil, count: firstWD) + rowBars.bars.map { Optional($0) }
                 let totalCols = Int(ceil(Double(padded.count) / 7.0))
-                let dayLabels = [lm.L("heatmap.mon"), lm.L("heatmap.tue"), lm.L("heatmap.wed"),
-                                 lm.L("heatmap.thu"), lm.L("heatmap.fri"), lm.L("heatmap.sat"), lm.L("heatmap.sun")]
+                let monFirst = [lm.L("heatmap.mon"), lm.L("heatmap.tue"), lm.L("heatmap.wed"),
+                                lm.L("heatmap.thu"), lm.L("heatmap.fri"), lm.L("heatmap.sat"), lm.L("heatmap.sun")]
+                let sunFirst = [lm.L("heatmap.sun"), lm.L("heatmap.mon"), lm.L("heatmap.tue"), lm.L("heatmap.wed"),
+                                lm.L("heatmap.thu"), lm.L("heatmap.fri"), lm.L("heatmap.sat")]
+                let dayLabels = AppGroupDefaults.weekStartsOnMonday ? monFirst : sunFirst
 
                 VStack(alignment: .leading, spacing: 0) {
                     // Month labels
@@ -609,9 +615,11 @@ struct HeatmapView: View {
               let lastDay = cal.date(byAdding: .day, value: lastMonthRange.count - 1, to: lastMonthStart)
         else { return RowBars(bars: [], firstWeekday: 0) }
 
-        // Weekday of first day (Mon=0)
-        let wd = cal.component(.weekday, from: firstDay)
-        let firstWeekday = (wd + 5) % 7
+        // Weekday of first day, offset from week start (Mon=0 or Sun=0)
+        let wd = cal.component(.weekday, from: firstDay)  // 1=Sun..7=Sat
+        let firstWeekday = AppGroupDefaults.weekStartsOnMonday
+            ? (wd + 5) % 7   // Mon=0..Sun=6
+            : wd - 1          // Sun=0..Sat=6
 
         var result: [ChartBar] = []
         var current = firstDay

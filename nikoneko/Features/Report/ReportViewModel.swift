@@ -14,8 +14,10 @@ final class ReportViewModel {
     var yearStartWeekday: Int {
         let cal = Calendar(identifier: .gregorian)
         let range = dateRange
-        let wd = cal.component(.weekday, from: range.start)
-        return (wd + 5) % 7  // Mon=0 … Sun=6
+        let wd = cal.component(.weekday, from: range.start)  // 1=Sun..7=Sat
+        return AppGroupDefaults.weekStartsOnMonday
+            ? (wd + 5) % 7   // Mon=0..Sun=6
+            : wd - 1          // Sun=0..Sat=6
     }
 
     var sessions: [RunSession] = []
