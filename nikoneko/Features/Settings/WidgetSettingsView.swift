@@ -341,31 +341,46 @@ struct WidgetSettingsView: View {
     }
 
     private func heatmapPreview(widgetTheme: ThemeTokens) -> some View {
-        ZStack(alignment: .topLeading) {
-            widgetTheme.bg
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text("NIKONEKO RUN")
-                        .font(.system(size: 9)).tracking(0.8)
-                        .foregroundColor(widgetTheme.textMid)
-                    Spacer()
-                    Text(String(Calendar.current.component(.year, from: Date())))
-                        .font(.system(size: 9)).tracking(0.8)
-                        .foregroundColor(widgetTheme.textMid)
-                }
-                let cols = 18, rows = 7
-                LazyVGrid(
-                    columns: Array(repeating: GridItem(.flexible(), spacing: 2), count: cols),
-                    spacing: 2
-                ) {
-                    ForEach(0..<cols * rows, id: \.self) { i in
-                        RoundedRectangle(cornerRadius: 1)
-                            .fill(widgetTheme.bar[previewTier(index: i, total: cols * rows)])
-                            .aspectRatio(1, contentMode: .fit)
+        GeometryReader { geo in
+            let cols = 18, rows = 7
+            let gap: CGFloat = 2
+            let pad: CGFloat = 12
+            let headerH: CGFloat = 22  // header text + spacing
+            let availW = geo.size.width - pad * 2
+            let availH = geo.size.height - pad * 2 - headerH
+            // cell size = fit both width and height
+            let cellW = (availW - CGFloat(cols - 1) * gap) / CGFloat(cols)
+            let cellH = (availH - CGFloat(rows - 1) * gap) / CGFloat(rows)
+            let cell = min(cellW, cellH)
+
+            ZStack(alignment: .topLeading) {
+                widgetTheme.bg
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Text("NIKONEKO RUN")
+                            .font(.system(size: 9)).tracking(0.8)
+                            .foregroundColor(widgetTheme.textMid)
+                        Spacer()
+                        Text(String(Calendar.current.component(.year, from: Date())))
+                            .font(.system(size: 9)).tracking(0.8)
+                            .foregroundColor(widgetTheme.textMid)
+                    }
+                    VStack(spacing: gap) {
+                        ForEach(0..<rows, id: \.self) { row in
+                            HStack(spacing: gap) {
+                                ForEach(0..<cols, id: \.self) { col in
+                                    let i = row * cols + col
+                                    RoundedRectangle(cornerRadius: 1)
+                                        .fill(widgetTheme.bar[previewTier(index: i, total: cols * rows)])
+                                        .frame(width: cell, height: cell)
+                                }
+                            }
+                        }
                     }
                 }
+                .padding(pad)
             }
-            .padding(12)
+            .clipped()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -462,50 +477,65 @@ struct WidgetSettingsView: View {
     }
 
     private func calendarPreview(widgetTheme: ThemeTokens) -> some View {
-        ZStack(alignment: .topLeading) {
-            widgetTheme.bg
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text("NIKONEKO RUN")
-                        .font(.system(size: 9)).tracking(0.8)
-                        .foregroundColor(widgetTheme.textMid)
-                    Spacer()
-                    Text(monthYearString())
-                        .font(.system(size: 9)).tracking(0.8)
-                        .foregroundColor(widgetTheme.textMid)
-                }
-                .padding(.bottom, 8)
+        GeometryReader { geo in
+            let gap: CGFloat = 3
+            let pad: CGFloat = 12
+            let headerH: CGFloat = 36  // title row + day headers
+            let rows = 5
+            let cols = 7
+            let availW = geo.size.width - pad * 2
+            let availH = geo.size.height - pad * 2 - headerH
+            let cellW = (availW - CGFloat(cols - 1) * gap) / CGFloat(cols)
+            let cellH = (availH - CGFloat(rows - 1) * gap) / CGFloat(rows)
+            let cell = min(cellW, cellH)
 
-                HStack(spacing: 4) {
-                    ForEach(Array(["M","T","W","T","F","S","S"].enumerated()), id: \.offset) { _, d in
-                        Text(d)
-                            .font(.system(size: 9))
+            ZStack(alignment: .topLeading) {
+                widgetTheme.bg
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Text("NIKONEKO RUN")
+                            .font(.system(size: 9)).tracking(0.8)
                             .foregroundColor(widgetTheme.textMid)
-                            .frame(maxWidth: .infinity)
+                        Spacer()
+                        Text(monthYearString())
+                            .font(.system(size: 9)).tracking(0.8)
+                            .foregroundColor(widgetTheme.textMid)
                     }
-                }
-                .padding(.bottom, 2)
-
-                LazyVGrid(
-                    columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 7),
-                    spacing: 4
-                ) {
-                    ForEach(1...30, id: \.self) { n in
-                        let tier = previewTier(index: n, total: 30)
-                        ZStack(alignment: .topLeading) {
-                            widgetTheme.cal[tier]
-                                .aspectRatio(1, contentMode: .fit)
-                                .cornerRadius(6)
-                            Text("\(n)")
+                    HStack(spacing: gap) {
+                        ForEach(Array(["M","T","W","T","F","S","S"].enumerated()), id: \.offset) { _, d in
+                            Text(d)
                                 .font(.system(size: 8))
-                                .foregroundColor(widgetTheme.text.opacity(tier > 0 ? 0.8 : 0.4))
-                                .padding(3)
+                                .foregroundColor(widgetTheme.textMid)
+                                .frame(width: cell)
                         }
-                        .aspectRatio(1, contentMode: .fit)
+                    }
+                    // 5 rows × 7 cols, days 1–30 + empty cells
+                    VStack(spacing: gap) {
+                        ForEach(0..<rows, id: \.self) { row in
+                            HStack(spacing: gap) {
+                                ForEach(0..<cols, id: \.self) { col in
+                                    let n = row * cols + col + 1
+                                    ZStack(alignment: .topLeading) {
+                                        if n <= 30 {
+                                            let tier = previewTier(index: n, total: 30)
+                                            widgetTheme.cal[tier].cornerRadius(5)
+                                            Text("\(n)")
+                                                .font(.system(size: max(cell * 0.28, 6)))
+                                                .foregroundColor(widgetTheme.text.opacity(tier > 0 ? 0.7 : 0.4))
+                                                .padding(3)
+                                        } else {
+                                            widgetTheme.cal[0].cornerRadius(5)
+                                        }
+                                    }
+                                    .frame(width: cell, height: cell)
+                                }
+                            }
+                        }
                     }
                 }
+                .padding(pad)
             }
-            .padding(12)
+            .clipped()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
