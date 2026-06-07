@@ -703,7 +703,7 @@ struct SessionDetailSheet: View {
         return "\(f.string(from: session.startDate)) – \(f.string(from: end))"
     }
     private var dateLabel: String {
-        let f = DateFormatter(); f.dateFormat = "MMM d, yyyy"
+        let f = DateFormatter(); f.dateFormat = "MMMM d, yyyy"
         return f.string(from: session.startDate)
     }
 

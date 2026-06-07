@@ -22,7 +22,7 @@ struct CalendarEntry: TimelineEntry {
 
 struct CalendarProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> CalendarEntry {
-        CalendarEntry(date: Date(), summaries: [], metric: .duration, theme: ThemeLibrary.obsidian)
+        CalendarEntry(date: Date(), summaries: [], metric: .duration, theme: ThemeLibrary.moss)
     }
     func snapshot(for configuration: CalendarWidgetIntent, in context: Context) async -> CalendarEntry {
         entry(for: configuration)
@@ -33,7 +33,7 @@ struct CalendarProvider: AppIntentTimelineProvider {
     }
     private func entry(for config: CalendarWidgetIntent) -> CalendarEntry {
         let themeId = AppGroupDefaults.shared.string(forKey: "activeThemeId") ?? "obsidian"
-        let theme = ThemeLibrary.all.first { $0.id == themeId } ?? ThemeLibrary.obsidian
+        let theme = ThemeLibrary.all.first { $0.id == themeId } ?? ThemeLibrary.moss
         return CalendarEntry(date: Date(), summaries: AppGroupDefaults.loadSummaries(),
                              metric: config.metric, theme: theme)
     }
@@ -59,18 +59,18 @@ struct CalendarWidgetView: View {
             // Header
             HStack {
                 Text("NIKONEKO RUN")
-                    .font(.system(size: 9)).tracking(0.8)
+                    .font(.system(size: 10)).tracking(0.8)
                     .foregroundColor(entry.theme.textMid)
                 Spacer()
                 Text(monthYearLabel())
-                    .font(.system(size: 9)).tracking(0.8)
+                    .font(.system(size: 10)).tracking(0.8)
                     .foregroundColor(entry.theme.textMid)
             }
-            .padding(.bottom, 8)
+            .padding(.bottom, 14)
 
             HStack(spacing: 4) {
                 ForEach(dayHeaders, id: \.self) { d in
-                    Text(d).font(.system(size: 10)).foregroundColor(entry.theme.textMid)
+                    Text(d).font(.system(size: 11)).foregroundColor(entry.theme.textMid)
                         .frame(maxWidth: .infinity)
                 }
             }
@@ -100,11 +100,11 @@ struct CalendarWidgetView: View {
                     ZStack(alignment: .topLeading) {
                         cellColor.aspectRatio(1, contentMode: .fit).cornerRadius(8)
                         Text("\(day)")
-                            .font(.system(size: 9)).foregroundColor(dateColor)
+                            .font(.system(size: 10)).foregroundColor(dateColor)
                             .padding(5)
                         if !isFuture && value > 0 {
                             Text(formattedCellValue(value))
-                                .font(.system(size: 12, weight: .ultraLight))
+                                .font(.system(size: 13, weight: .ultraLight))
                                 .foregroundColor(valColor)
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                                 .padding(.bottom, 5)
@@ -124,7 +124,7 @@ struct CalendarWidgetView: View {
                          value: todayStats.value, unit: todayStats.unit,
                          alignment: .leading)
                 let monthStats = statValueUnit(monthTotal())
-                statCell(icon: metricIcon(), label: "THIS MONTH",
+                statCell(icon: "calendar", label: "MONTH",
                          value: monthStats.value, unit: monthStats.unit,
                          alignment: .center)
                 statCell(icon: "flame", label: "STREAK",
@@ -135,25 +135,25 @@ struct CalendarWidgetView: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(entry.theme.bg)
         .containerBackground(entry.theme.bg, for: .widget)
     }
 
     @ViewBuilder
     private func statCell(icon: String, label: String, value: String, unit: String, alignment: HorizontalAlignment) -> some View {
-        let hAlign: Alignment = alignment == .leading ? .leading : alignment == .trailing ? .trailing : .center
-        VStack(alignment: alignment, spacing: 3) {
+        let frameAlign: Alignment = alignment == .leading ? .leading : alignment == .trailing ? .trailing : .center
+        // VStack is always .leading so value aligns to the left edge of the label
+        VStack(alignment: .leading, spacing: 3) {
             HStack(spacing: 3) {
                 Image(systemName: icon)
-                    .font(.system(size: 8, weight: .light))
+                    .font(.system(size: 10, weight: .light))
                     .foregroundColor(entry.theme.textMid)
                 Text(label)
-                    .font(.system(size: 7)).tracking(0.4)
+                    .font(.system(size: 10)).tracking(0.8)
                     .foregroundColor(entry.theme.textMid)
             }
             HStack(alignment: .lastTextBaseline, spacing: 3) {
                 Text(value)
-                    .font(.system(size: 24, weight: .ultraLight))
+                    .font(.system(size: 40, weight: .ultraLight))
                     .foregroundColor(entry.theme.text)
                     .monospacedDigit()
                     .minimumScaleFactor(0.5)
@@ -163,7 +163,7 @@ struct CalendarWidgetView: View {
                     .foregroundColor(entry.theme.textMid)
             }
         }
-        .frame(maxWidth: .infinity, alignment: hAlign)
+        .frame(maxWidth: .infinity, alignment: frameAlign)
     }
 
     private func statValueUnit(_ raw: Double) -> (value: String, unit: String) {
@@ -327,7 +327,7 @@ struct CalendarWidget: Widget {
         date: Date(),
         summaries: CalendarPreviewData.summaries,
         metric: .duration,
-        theme: ThemeLibrary.obsidian
+        theme: ThemeLibrary.moss
     )
 }
 

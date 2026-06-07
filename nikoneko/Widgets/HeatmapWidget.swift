@@ -27,7 +27,7 @@ struct HeatmapProvider: AppIntentTimelineProvider {
     typealias Intent = HeatmapWidgetIntent
 
     func placeholder(in context: Context) -> HeatmapEntry {
-        HeatmapEntry(date: Date(), summaries: [], metric: .duration, theme: ThemeLibrary.obsidian)
+        HeatmapEntry(date: Date(), summaries: [], metric: .duration, theme: ThemeLibrary.moss)
     }
 
     func snapshot(for configuration: HeatmapWidgetIntent, in context: Context) async -> HeatmapEntry {
@@ -57,7 +57,7 @@ struct HeatmapWidgetView: View {
     let entry: HeatmapEntry
 
     private let dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-    private let monthAbbr = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+    private let monthAbbr = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"]
     private let labelWidth: CGFloat = 26
     private let gap: CGFloat = 1.5
     private let numCols = 18
@@ -75,21 +75,21 @@ struct HeatmapWidgetView: View {
             // Header
             HStack {
                 Text("NIKONEKO RUN")
-                    .font(.system(size: 9)).tracking(0.8)
+                    .font(.system(size: 10)).tracking(0.8)
                     .foregroundColor(entry.theme.textMid)
                 Spacer()
                 Text(String(Calendar.current.component(.year, from: entry.date)))
-                    .font(.system(size: 9)).tracking(0.8)
+                    .font(.system(size: 10)).tracking(0.8)
                     .foregroundColor(entry.theme.textMid)
             }
-            .padding(.bottom, 4)
+            .padding(.bottom, 6)
 
             // Month abbreviation row
             HStack(spacing: gap) {
                 Spacer().frame(width: labelWidth)
                 ForEach(0..<numCols, id: \.self) { col in
                     Text(monthHeaders[col])
-                        .font(.system(size: 7))
+                        .font(.system(size: 8))
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
                         .foregroundColor(entry.theme.textMid)
@@ -102,7 +102,7 @@ struct HeatmapWidgetView: View {
                 ForEach(0..<7, id: \.self) { row in
                     HStack(spacing: gap) {
                         Text(dayLabels[row])
-                            .font(.system(size: 7))
+                            .font(.system(size: 8))
                             .foregroundColor(entry.theme.textMid)
                             .frame(width: labelWidth, alignment: .leading)
 
@@ -121,8 +121,7 @@ struct HeatmapWidgetView: View {
             }
             .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(10)
-        .background(entry.theme.bg)
+        .padding(14)
         .containerBackground(entry.theme.bg, for: .widget)
     }
 
@@ -250,7 +249,7 @@ struct HeatmapWidget: Widget {
         date: Date(),
         summaries: HeatmapPreviewData.summaries,
         metric: .duration,
-        theme: ThemeLibrary.obsidian
+        theme: ThemeLibrary.moss
     )
 }
 

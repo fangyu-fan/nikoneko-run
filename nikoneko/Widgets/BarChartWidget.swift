@@ -20,6 +20,7 @@ struct BarChartEntry: TimelineEntry {
     let maxValue: Double
     let yTop: String        // formatted top y-label
     let yMid: String        // formatted mid y-label
+    let weekLabel: String   // e.g. "6/1 – 6/7"
     let metric: StatMetric
     let theme: ThemeTokens
 }
@@ -52,8 +53,9 @@ struct BarChartProvider: AppIntentTimelineProvider {
             maxValue: 30,
             yTop: "30",
             yMid: "15",
+            weekLabel: weekLabel(from: Date()),
             metric: .duration,
-            theme: ThemeLibrary.obsidian
+            theme: ThemeLibrary.moss
         )
     }
 
@@ -64,20 +66,15 @@ struct BarChartProvider: AppIntentTimelineProvider {
         let cal = Calendar.current
         let today = Date()
 
-        // Determine the Mon–Sun week containing today
-        // isoWeekday: Mon=2, Sun=1 in Gregorian. Map to Mon=0, Sun=6.
         let weekdayComponent = cal.component(.weekday, from: today)
-        // weekday: Sun=1, Mon=2 … Sat=7 → ISO Mon=0 … Sun=6
         let todayIndex = weekdayComponent == 1 ? 6 : weekdayComponent - 2
 
-        // Build the 7 daily values Mon–Sun
         var dailyValues: [Double] = Array(repeating: 0, count: 7)
 
-        // Find Monday of this week
-        let daysFromMonday = todayIndex  // todayIndex == days since Mon
+        let daysFromMonday = todayIndex
         guard let monday = cal.date(byAdding: .day, value: -daysFromMonday, to: cal.startOfDay(for: today)) else {
             return BarChartEntry(date: today, bars: dailyValues, todayIndex: todayIndex,
-                                 maxValue: 1, yTop: "1", yMid: "0", metric: metric, theme: theme)
+                                 maxValue: 1, yTop: "1", yMid: "0", weekLabel: "", metric: metric, theme: theme)
         }
 
         for dayOffset in 0..<7 {
@@ -97,9 +94,26 @@ struct BarChartProvider: AppIntentTimelineProvider {
             maxValue: maxValue,
             yTop: yTop,
             yMid: yMid,
+            weekLabel: weekLabel(from: monday),
             metric: metric,
             theme: theme
         )
+    }
+
+    private func weekLabel(from monday: Date) -> String {
+        let cal = Calendar.current
+        guard let sunday = cal.date(byAdding: .day, value: 6, to: monday) else { return "" }
+        let f = DateFormatter()
+        f.dateFormat = "MMM d"
+        let mMonth = cal.component(.month, from: monday)
+        let sMonth = cal.component(.month, from: sunday)
+        if mMonth == sMonth {
+            let dayF = DateFormatter()
+            dayF.dateFormat = "d"
+            return "\(f.string(from: monday).uppercased()) – \(dayF.string(from: sunday))"
+        } else {
+            return "\(f.string(from: monday).uppercased()) – \(f.string(from: sunday).uppercased())"
+        }
     }
 
     private func metricValue(for metric: StatMetric, sessions: [DaySessionSummary]) -> Double {
@@ -140,47 +154,73 @@ struct BarChartWidgetView: View {
     let entry: BarChartEntry
 
     private let xLabels = ["M", "T", "W", "T", "F", "S", "S"]
-    private let yAxisWidth: CGFloat = 22
+    private let yAxisWidth: CGFloat = 26
+
+    private var metricUnit: String {
+        switch entry.metric {
+        case .duration:  return "min"
+        case .distance:  return "km"
+        case .calories:  return "kcal"
+        case .steps:     return "steps"
+        case .runs:      return "runs"
+        case .streak:    return ""
+        }
+    }
+
+    private let barWidth: CGFloat = 6
+    private let chartHeight: CGFloat = 96
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 0) {
             // Header
-            Text("NIKONEKO RUN")
-                .font(.system(size: 9)).tracking(0.8)
-                .foregroundColor(entry.theme.textMid)
+            HStack {
+                Text("NIKONEKO RUN")
+                    .font(.system(size: 10)).tracking(0.8)
+                    .foregroundColor(entry.theme.textMid)
+                Spacer()
+                Text(entry.weekLabel)
+                    .font(.system(size: 10)).tracking(0.8)
+                    .foregroundColor(entry.theme.textMid)
+            }
+            .padding(.bottom, 6)
 
             // Chart area
             HStack(alignment: .bottom, spacing: 6) {
-                // Y-axis labels
-                VStack(alignment: .trailing, spacing: 0) {
+                // Y-axis
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(metricUnit)
+                        .font(.system(size: 10))
+                        .foregroundColor(entry.theme.textMid)
+                        .padding(.bottom, 2)
                     Text(entry.yTop)
+                        .font(.system(size: 10))
+                        .foregroundColor(entry.theme.textMid)
                     Spacer()
                     Text(entry.yMid)
+                        .font(.system(size: 10))
+                        .foregroundColor(entry.theme.textMid)
                     Spacer()
                     Text("0")
+                        .font(.system(size: 10))
+                        .foregroundColor(entry.theme.textMid)
                 }
-                .font(.system(size: 7))
-                .foregroundColor(entry.theme.textMid)
-                .frame(width: yAxisWidth)
-                .padding(.bottom, 14)  // baseline + x-label row height
+                .padding(.bottom, 13)
 
-                // Chart body: bars + baseline + x-labels
+                // Chart body
                 VStack(spacing: 0) {
-                    // Bars area with grid lines
+                    // Bars + grid
                     ZStack(alignment: .bottom) {
-                        // Grid lines at 100% and 50%
                         VStack(spacing: 0) {
+                            Spacer()
                             Rectangle()
-                                .fill(entry.theme.textDim.opacity(0.15))
+                                .fill(entry.theme.textMid.opacity(0.2))
                                 .frame(height: 0.5)
                             Spacer()
                             Rectangle()
-                                .fill(entry.theme.textDim.opacity(0.15))
+                                .fill(entry.theme.textMid.opacity(0.2))
                                 .frame(height: 0.5)
-                            Spacer()
                         }
-
-                        // Bar columns
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         HStack(alignment: .bottom, spacing: 0) {
                             ForEach(0..<7, id: \.self) { index in
                                 barView(index: index)
@@ -188,29 +228,28 @@ struct BarChartWidgetView: View {
                             }
                         }
                     }
+                    .frame(height: chartHeight)
 
                     // Baseline
                     Rectangle()
-                        .fill(entry.theme.textDim.opacity(0.3))
-                        .frame(height: 1)
+                        .fill(entry.theme.textMid.opacity(0.4))
+                        .frame(height: 0.5)
 
-                    // X-axis labels
+                    // X-axis day labels
                     HStack(spacing: 0) {
                         ForEach(0..<7, id: \.self) { index in
                             Text(xLabels[index])
-                                .font(.system(size: 7))
+                                .font(.system(size: 10))
                                 .foregroundColor(entry.theme.textMid)
                                 .frame(maxWidth: .infinity)
                         }
-                        // Spacer matching y-axis width so x-labels align under bars
-                        Color.clear.frame(width: 0)
                     }
-                    .frame(height: 11)
+                    .frame(height: 12)
+
                 }
             }
         }
-        .padding(13)
-        .background(entry.theme.bg)
+        .padding(14)
         .containerBackground(entry.theme.bg, for: .widget)
     }
 
@@ -218,34 +257,30 @@ struct BarChartWidgetView: View {
     private func barView(index: Int) -> some View {
         let value = entry.bars[index]
         let isToday = index == entry.todayIndex
+        let barH: CGFloat = {
+            if value <= 0 { return 2 }
+            return max(CGFloat(value / entry.maxValue) * chartHeight, 2)
+        }()
+        let barColor: Color = {
+            if value <= 0 { return entry.theme.bar[0] }
+            if isToday { return entry.theme.bar[4] }
+            return entry.theme.bar[2]
+        }()
 
-        GeometryReader { geo in
-            let maxH = geo.size.height
-            let barH: CGFloat = {
-                if value <= 0 { return 2 }
-                let proportional = CGFloat(value / entry.maxValue) * maxH
-                return max(proportional, 2)
-            }()
-
-            let barColor: Color = {
-                if value <= 0 { return entry.theme.bar[0] }
-                if isToday { return entry.theme.bar[4] }
-                return entry.theme.bar[2]
-            }()
-
-            VStack(spacing: 0) {
-                Spacer(minLength: 0)
-                UnevenRoundedRectangle(
-                    topLeadingRadius: 2,
-                    bottomLeadingRadius: 0,
-                    bottomTrailingRadius: 0,
-                    topTrailingRadius: 2
-                )
-                .fill(barColor)
-                .frame(width: 4, height: barH)
-            }
+        VStack(spacing: 0) {
+            Spacer(minLength: 0)
+            UnevenRoundedRectangle(
+                topLeadingRadius: 2,
+                bottomLeadingRadius: 0,
+                bottomTrailingRadius: 0,
+                topTrailingRadius: 2
+            )
+            .fill(barColor)
+            .frame(width: barWidth, height: barH)
         }
+        .frame(height: chartHeight)
     }
+
 }
 
 // MARK: - Widget
@@ -276,8 +311,9 @@ struct BarChartWidget: Widget {
         maxValue: 40,
         yTop: "40",
         yMid: "20",
+        weekLabel: "Jun 1 – 7",
         metric: .duration,
-        theme: ThemeLibrary.obsidian
+        theme: ThemeLibrary.moss
     )
 }
 #endif
