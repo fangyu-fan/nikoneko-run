@@ -9,6 +9,7 @@ final class ReportViewModel {
     var period: Period = .week
     var selectedMetric: Metric = .duration
     var currentOffset: Int = 0
+    var isZh: Bool = false  // injected by View, drives weekday label language
 
     var yearStartWeekday: Int {
         let cal = Calendar(identifier: .gregorian)
@@ -34,9 +35,12 @@ final class ReportViewModel {
             let end = cal.date(byAdding: .day, value: 1, to: start) ?? start
             return (start, end)
         case .week:
-            let weekStart = cal.dateInterval(of: .weekOfYear, for: now)?.start ?? today
-            let start = cal.date(byAdding: .weekOfYear, value: currentOffset, to: weekStart) ?? today
-            let end = cal.date(byAdding: .weekOfYear, value: 1, to: start) ?? start
+            // ISO week: always starts Monday (weekday 2). Compute this week's Monday.
+            let isoWd = cal.component(.weekday, from: today)  // 1=Sun..7=Sat
+            let daysFromMon = isoWd == 1 ? 6 : isoWd - 2      // Mon=0..Sun=6
+            let thisMonday = cal.date(byAdding: .day, value: -daysFromMon, to: today) ?? today
+            let start = cal.date(byAdding: .day, value: currentOffset * 7, to: thisMonday) ?? today
+            let end = cal.date(byAdding: .day, value: 7, to: start) ?? start
             return (start, end)
         case .month:
             let monthStart = cal.dateInterval(of: .month, for: now)?.start ?? today
@@ -211,13 +215,16 @@ final class ReportViewModel {
                     displayValue: formatBarValue(v))
             }
         case .week:
-            let fmt = DateFormatter()
-            fmt.dateFormat = "EEE"
-            fmt.locale = Locale.current
+            // Use fixed labels to avoid locale-dependent prefix bugs (e.g. "週一".prefix(1) == "週")
+            let enLabels = ["M","T","W","T","F","S","S"]
+            let zhLabels = ["一","二","三","四","五","六","日"]
+            let labels = isZh ? zhLabels : enLabels
             return (0..<7).map { dayOffset in
                 let day = cal.date(byAdding: .day, value: dayOffset, to: range.start) ?? range.start
                 let daySessions = sessions.filter { cal.isDate($0.startDate, inSameDayAs: day) }
-                let label = String(fmt.string(from: day).prefix(1))
+                let isoWd = cal.component(.weekday, from: day)  // 1=Sun..7=Sat
+                let monIdx = isoWd == 1 ? 6 : isoWd - 2        // Mon=0..Sun=6
+                let label = labels[monIdx]
                 let v2 = metricValue(for: daySessions)
                 return ChartBar(label: label, value: v2,
                     isToday: cal.isDateInToday(day),

@@ -19,9 +19,9 @@ struct ReportView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
+            VStack(spacing: 10) {
                 periodTabs
-                    .padding(.bottom, -12)
+                    .padding(.bottom, -8)
                 dateNavRow
 
                 // DURATION
@@ -33,6 +33,7 @@ struct ReportView: View {
                         .padding(.horizontal, 18)
                     metricCards
                 }
+                .padding(.bottom, 20)
 
                 // CHART
                 VStack(spacing: 8) {
@@ -98,6 +99,7 @@ struct ReportView: View {
             }
         }
         .onAppear {
+            vm.isZh = lm.language == .traditionalChinese
             #if DEBUG
             injectSeedData()
             #endif
@@ -120,6 +122,7 @@ struct ReportView: View {
             }
         }
         .onChange(of: sessions.count) { _, _ in vm.loadSessions(sessions) }
+        .onChange(of: lm.version) { _, _ in vm.isZh = lm.language == .traditionalChinese }
     }
 
     // MARK: - Period tabs
@@ -166,7 +169,7 @@ struct ReportView: View {
             }
         }
         .padding(.horizontal, 18)
-        .padding(.vertical, 9)
+        .padding(.vertical, 6)
     }
 
     // MARK: - Hero block
@@ -195,7 +198,7 @@ struct ReportView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 18)
             .padding(.top, 2)
-            .padding(.bottom, 8)
+            .padding(.bottom, 0)
         }
         .buttonStyle(.plain)
     }
@@ -226,7 +229,6 @@ struct ReportView: View {
             }
         }
         .padding(.horizontal, 18)
-        .padding(.bottom, 6)
     }
 
     // MARK: - Log list
@@ -348,8 +350,8 @@ struct ReportView: View {
             .tracking(0.8)
             .foregroundColor(theme.textDim)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.top, 12)
-            .padding(.bottom, 4)
+            .padding(.top, 0)
+            .padding(.bottom, 2)
     }
 }
 
@@ -452,7 +454,7 @@ struct LogRow: View {
                     .font(.system(size: 13))
                     .foregroundColor(theme.textMid)
             }
-            .padding(.vertical, 16)
+            .padding(.vertical, 10)
             .contentShape(Rectangle())
 
             Rectangle()
