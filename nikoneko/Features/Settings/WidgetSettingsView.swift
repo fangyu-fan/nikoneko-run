@@ -101,10 +101,16 @@ struct WidgetSettingsView: View {
             Group {
                 switch w.size {
                 case "Small":
-                    widgetPreview(kind: w.kind, widgetTheme: theme)
-                        .frame(width: 100, height: 100)
-                        .cornerRadius(16)
-                        .clipped()
+                    // Same height as Medium (≈145pt), square aspect ratio, centred
+                    GeometryReader { geo in
+                        let mediumH = geo.size.width / (338.0 / 158.0)
+                        widgetPreview(kind: w.kind, widgetTheme: theme)
+                            .frame(width: mediumH, height: mediumH)
+                            .cornerRadius(16)
+                            .clipped()
+                            .frame(width: geo.size.width, height: mediumH, alignment: .center)
+                    }
+                    .frame(height: 145)
                 case "Medium":
                     widgetPreview(kind: w.kind, widgetTheme: theme)
                         .aspectRatio(338.0 / 158.0, contentMode: .fit)
