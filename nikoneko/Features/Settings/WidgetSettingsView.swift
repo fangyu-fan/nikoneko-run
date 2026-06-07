@@ -45,10 +45,21 @@ struct WidgetSettingsView: View {
                         .padding(.horizontal, 18)
                 }
             }
-            .tabViewStyle(.page(indexDisplayMode: .always))
+            .tabViewStyle(.page(indexDisplayMode: .never))
             .frame(height: galleryFrameHeight)
             .animation(.easeInOut, value: selectedIndex)
             .tint(theme.accent)
+
+            // Page indicator below the cards
+            HStack(spacing: 6) {
+                ForEach(widgetDefs.indices, id: \.self) { i in
+                    Circle()
+                        .fill(i == selectedIndex ? theme.accent : theme.textDim.opacity(0.4))
+                        .frame(width: i == selectedIndex ? 7 : 5, height: i == selectedIndex ? 7 : 5)
+                        .animation(.easeInOut(duration: 0.2), value: selectedIndex)
+                }
+            }
+            .padding(.vertical, 8)
 
             Divider()
                 .padding(.top, 8)
@@ -85,23 +96,16 @@ struct WidgetSettingsView: View {
     // MARK: - Gallery Card
 
     private func galleryCard(_ w: (name: String, nameZh: String, size: String, kind: String)) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(lm.language == .traditionalChinese ? w.nameZh : w.name)
-                    .font(.system(size: 15))
-                    .foregroundColor(theme.text)
-                Text(w.size)
-                    .font(.system(size: 11))
-                    .foregroundColor(theme.textMid)
-                    .padding(.horizontal, 6).padding(.vertical, 2)
-                    .background(theme.card).cornerRadius(6)
-                Spacer()
-            }
-            // All previews centred within the available vertical space
+        VStack(alignment: .leading, spacing: 12) {
+            // Title row — name enlarged, size tag moved to overlay
+            Text(lm.language == .traditionalChinese ? w.nameZh : w.name)
+                .font(.system(size: 30, weight: .regular))
+                .foregroundColor(theme.text)
+
+            // Preview with size tag overlaid top-right
             Group {
                 switch w.size {
                 case "Small":
-                    // Same height as Medium (≈145pt), square aspect ratio, centred
                     GeometryReader { geo in
                         let mediumH = geo.size.width / (338.0 / 158.0)
                         widgetPreview(kind: w.kind, widgetTheme: theme)
@@ -124,6 +128,16 @@ struct WidgetSettingsView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            .overlay(
+                Text(w.size)
+                    .font(.system(size: 11))
+                    .foregroundColor(theme.textMid)
+                    .padding(.horizontal, 7).padding(.vertical, 3)
+                    .background(theme.bg.opacity(0.85))
+                    .cornerRadius(6)
+                    .padding(8),
+                alignment: .topTrailing
+            )
         }
         .padding(14)
         .frame(maxHeight: .infinity)
@@ -152,14 +166,16 @@ struct WidgetSettingsView: View {
                     AppGroupDefaults.shared.set(value.rawValue, forKey: "widget.stat.metric")
                     WidgetCenter.shared.reloadAllTimelines()
                 }
-                pickerRow(
-                    label: lm.language == .traditionalChinese ? "時間範圍" : "Period",
-                    options: TimePeriod.allCases,
-                    selected: $statPeriod,
-                    display: { periodLabel($0) }
-                ) { value in
-                    AppGroupDefaults.shared.set(value.rawValue, forKey: "widget.stat.period")
-                    WidgetCenter.shared.reloadAllTimelines()
+                if statMetric != .streak {
+                    pickerRow(
+                        label: lm.language == .traditionalChinese ? "時間範圍" : "Period",
+                        options: TimePeriod.allCases,
+                        selected: $statPeriod,
+                        display: { periodLabel($0) }
+                    ) { value in
+                        AppGroupDefaults.shared.set(value.rawValue, forKey: "widget.stat.period")
+                        WidgetCenter.shared.reloadAllTimelines()
+                    }
                 }
             }
         case 1: // HeatmapWidget
@@ -260,40 +276,88 @@ struct WidgetSettingsView: View {
     // MARK: - Instructions Sheet
 
     private var addInstructionsSheet: some View {
-        VStack(spacing: 20) {
-            Text(lm.language == .traditionalChinese ? "加入主畫面" : "Add to Home Screen")
-                .font(.system(size: 18, weight: .medium))
+        let zh = lm.language == .traditionalChinese
+        let steps: [(icon: String, title: String, body: String)] = zh ? [
+            ("hand.tap",          "長按主畫面",     "長按主畫面空白處，等待 app 圖示開始晃動"),
+            ("plus.circle",       "點擊「＋」",     "點擊右上角的加號按鈕"),
+            ("magnifyingglass",   "搜尋 Nikoneko", "在搜尋欄輸入「Nikoneko Run」"),
+            ("rectangle.3.group", "選擇尺寸",       "選取你想要的 widget 並點擊「加入 Widget」"),
+        ] : [
+            ("hand.tap",          "Long-press",       "Long-press an empty area until icons start jiggling"),
+            ("plus.circle",       "Tap +",            "Tap the + button in the top-right corner"),
+            ("magnifyingglass",   "Search",           "Type \"Nikoneko Run\" in the search bar"),
+            ("rectangle.3.group", "Choose size",      "Select your widget size and tap Add Widget"),
+        ]
+        return VStack(spacing: 0) {
+            // Handle
+            Capsule()
+                .fill(theme.textDim.opacity(0.3))
+                .frame(width: 36, height: 4)
+                .padding(.top, 12)
+                .padding(.bottom, 20)
+
+            Text(zh ? "加入主畫面" : "Add to Home Screen")
+                .font(.system(size: 20, weight: .medium))
                 .foregroundColor(theme.text)
+                .padding(.bottom, 24)
 
-            VStack(alignment: .leading, spacing: 12) {
-                instructionStep("1", lm.language == .traditionalChinese ? "長按主畫面空白處" : "Long-press an empty area on your Home Screen")
-                instructionStep("2", lm.language == .traditionalChinese ? "點右上角「＋」" : "Tap the + button in the top-right corner")
-                instructionStep("3", lm.language == .traditionalChinese ? "搜尋「Nikoneko Run」" : "Search for \"Nikoneko Run\"")
-                instructionStep("4", lm.language == .traditionalChinese ? "選擇你要的 widget 尺寸" : "Choose your preferred widget size")
+            VStack(spacing: 0) {
+                ForEach(Array(steps.enumerated()), id: \.offset) { idx, step in
+                    HStack(alignment: .top, spacing: 16) {
+                        ZStack {
+                            Circle()
+                                .fill(theme.accentDim)
+                                .frame(width: 40, height: 40)
+                            Image(systemName: step.icon)
+                                .font(.system(size: 17, weight: .light))
+                                .foregroundColor(theme.accent)
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(step.title)
+                                .font(.system(size: 15, weight: .medium))
+                                .foregroundColor(theme.text)
+                            Text(step.body)
+                                .font(.system(size: 13))
+                                .foregroundColor(theme.textMid)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        Spacer()
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 14)
+
+                    if idx < steps.count - 1 {
+                        Rectangle()
+                            .fill(theme.accentDim.opacity(0.5))
+                            .frame(height: 0.5)
+                            .padding(.leading, 80)
+                    }
+                }
             }
-            .padding(.horizontal, 24)
+            .background(theme.surface)
+            .cornerRadius(14)
+            .padding(.horizontal, 18)
 
-            Button(lm.language == .traditionalChinese ? "知道了" : "Got it") {
+            Button {
                 showAddInstructions = false
+            } label: {
+                Text(zh ? "知道了" : "Got it")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(theme.accent)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(theme.surface)
+                    .cornerRadius(14)
             }
-            .foregroundColor(theme.accent)
-            .padding(.top, 8)
-        }
-        .padding(.vertical, 32)
-        .presentationDetents([.medium])
-        .background(theme.bg.ignoresSafeArea())
-    }
+            .padding(.horizontal, 18)
+            .padding(.top, 12)
+            .padding(.bottom, 8)
 
-    private func instructionStep(_ number: String, _ text: String) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            Text(number)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundColor(theme.accent)
-                .frame(width: 20)
-            Text(text)
-                .font(.system(size: 14))
-                .foregroundColor(theme.text)
+            Spacer()
         }
+        .background(theme.bg.ignoresSafeArea())
+        .presentationDetents([.fraction(0.65)])
+        .presentationDragIndicator(.hidden)
     }
 
     // MARK: - Label Helpers
@@ -340,12 +404,7 @@ struct WidgetSettingsView: View {
             Group {
                 switch kind {
                 case "StatWidget":
-                    StatWidgetView(entry: StatEntry(
-                        date: .now, metric: .streak, period: .week,
-                        formattedValue: "12", unit: "days",
-                        metricLabel: "Streak", periodLabel: nil,
-                        fontSize: 80, theme: widgetTheme
-                    ))
+                    StatWidgetView(entry: statPreviewEntry(theme: widgetTheme))
                 case "HeatmapWidget":
                     HeatmapWidgetView(entry: HeatmapEntry(
                         date: .now, summaries: previewSummaries,
@@ -363,16 +422,10 @@ struct WidgetSettingsView: View {
                 case "CalendarWidget":
                     CalendarWidgetView(entry: CalendarEntry(
                         date: .now, summaries: previewSummaries,
-                        metric: .duration, theme: widgetTheme
+                        metric: calendarMetric, theme: widgetTheme
                     ))
                 default: // AllStatsWidget
-                    AllStatsWidgetView(entry: AllStatsEntry(
-                        date: .now, period: .week,
-                        durationFormatted: "24", durationUnit: "min",
-                        distanceKm: "2.8", caloriesStr: "168",
-                        stepsStr: "3.2k", avgHR: "—", maxHR: "—",
-                        runsStr: "1", theme: widgetTheme
-                    ))
+                    AllStatsWidgetView(entry: allStatsPreviewEntry(theme: widgetTheme))
                 }
             }
             .frame(width: native.width, height: native.height)
@@ -398,6 +451,55 @@ struct WidgetSettingsView: View {
                 steps: Int.random(in: 2000...7000)
             )
         }
+    }
+
+    // StatWidget preview entry — reflects current metric/period selection
+    private func statPreviewEntry(theme: ThemeTokens) -> StatEntry {
+        let (value, unit): (String, String) = {
+            switch statMetric {
+            case .streak:   return ("12", "days")
+            case .duration: return ("3.5", "hrs")
+            case .distance: return ("4.2", "km")
+            case .calories: return ("168", "cal")
+            case .steps:    return ("8.2k", "steps")
+            case .runs:     return ("5", "runs")
+            }
+        }()
+        let metricLabel: String = {
+            switch statMetric {
+            case .streak:   return "Streak"
+            case .duration: return "Duration"
+            case .distance: return "Distance"
+            case .calories: return "Calories"
+            case .steps:    return "Steps"
+            case .runs:     return "Runs"
+            }
+        }()
+        let periodLabel: String? = statMetric == .streak ? nil : {
+            switch statPeriod {
+            case .today: return "today"
+            case .week:  return "per week"
+            case .month: return "per month"
+            case .year:  return "per year"
+            }
+        }()
+        return StatEntry(
+            date: .now, metric: statMetric, period: statPeriod,
+            formattedValue: value, unit: unit,
+            metricLabel: metricLabel, periodLabel: periodLabel,
+            fontSize: 80, theme: theme
+        )
+    }
+
+    // AllStats preview entry — reflects current period selection
+    private func allStatsPreviewEntry(theme: ThemeTokens) -> AllStatsEntry {
+        AllStatsEntry(
+            date: .now, period: allStatsPeriod,
+            durationFormatted: "3.5", durationUnit: "hrs",
+            distanceKm: "14.2", caloriesStr: "1.4k",
+            stepsStr: "21.3k", avgHR: "142", maxHR: "168",
+            runsStr: "5", theme: theme
+        )
     }
 
 }
