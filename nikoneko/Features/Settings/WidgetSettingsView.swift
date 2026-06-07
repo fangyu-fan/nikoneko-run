@@ -26,6 +26,7 @@ struct WidgetSettingsView: View {
     }()
 
     @State private var showAddInstructions: Bool = false
+    @Environment(\.openURL) private var openURL
 
     private let widgetDefs: [(name: String, nameZh: String, size: String, kind: String)] = [
         ("Stat",        "數據",     "Small",  "StatWidget"),
@@ -212,8 +213,8 @@ struct WidgetSettingsView: View {
     private var addToHomeButton: some View {
         Button {
             if let url = URL(string: "widgetkit://") {
-                UIApplication.shared.open(url) { success in
-                    if !success { showAddInstructions = true }
+                openURL(url) { accepted in
+                    if !accepted { showAddInstructions = true }
                 }
             } else {
                 showAddInstructions = true
@@ -256,7 +257,7 @@ struct WidgetSettingsView: View {
         }
         .padding(.vertical, 32)
         .presentationDetents([.medium])
-        .background(theme.bg)
+        .background(theme.bg.ignoresSafeArea())
     }
 
     private func instructionStep(_ number: String, _ text: String) -> some View {
