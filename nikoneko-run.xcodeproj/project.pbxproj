@@ -89,7 +89,12 @@
 		WGT0000000000000000000003 /* RunSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47A41CB5A0DCC8540B92790 /* RunSession.swift */; };
 		WGT0000000000000000000004 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE70810786A82B53399969C0 /* Color+Hex.swift */; };
 		WGT0000000000000000000005 /* AppGroupDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41CC69BAD559A35148CE22CE /* AppGroupDefaults.swift */; };
-/* End PBXBuildFile section */
+		BB00000000000001 /* StatWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000001 /* StatWidget.swift */; };
+		BB00000000000002 /* HeatmapWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A91EFC02093F13F7835EC07 /* HeatmapWidget.swift */; };
+		BB00000000000003 /* BarChartWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E1975F41354C5FAA3B067C /* BarChartWidget.swift */; };
+		BB00000000000004 /* CalendarWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3430F6B294AB76C39EB1E74C /* CalendarWidget.swift */; };
+		BB00000000000005 /* AllStatsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65694CB94D934A70A14FBA1D /* AllStatsWidget.swift */; };
+		/* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		4E4325D690ED23E694D12343 /* PBXContainerItemProxy */ = {
@@ -644,6 +649,11 @@
 				A00CD2EFAD44BA1062193307 /* WidgetSettingsView.swift in Sources */,
 				116B897AF98886EBC20E141B /* WidgetSharedData.swift in Sources */,
 				1857C99985D7E5823A797987 /* StatWidgetIntent.swift in Sources */,
+				BB00000000000001 /* StatWidget.swift in Sources */,
+				BB00000000000002 /* HeatmapWidget.swift in Sources */,
+				BB00000000000003 /* BarChartWidget.swift in Sources */,
+				BB00000000000004 /* CalendarWidget.swift in Sources */,
+				BB00000000000005 /* AllStatsWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

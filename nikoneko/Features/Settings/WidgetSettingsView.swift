@@ -302,400 +302,83 @@ struct WidgetSettingsView: View {
     }
 
     // MARK: - Widget Previews
+    // Uses actual widget views scaled down to match preview frame size.
+    // Widget native sizes (iPhone 16): Small 158×158, Medium 338×158, Large 338×354
+
+    private static let nativeSize: [String: CGSize] = [
+        "StatWidget":     CGSize(width: 158, height: 158),
+        "HeatmapWidget":  CGSize(width: 338, height: 158),
+        "BarChartWidget": CGSize(width: 338, height: 158),
+        "CalendarWidget": CGSize(width: 338, height: 354),
+        "AllStatsWidget": CGSize(width: 338, height: 354),
+    ]
 
     @ViewBuilder
     private func widgetPreview(kind: String, widgetTheme: ThemeTokens) -> some View {
-        switch kind {
-        case "StatWidget":       statPreview(widgetTheme: widgetTheme)
-        case "HeatmapWidget":    heatmapPreview(widgetTheme: widgetTheme)
-        case "BarChartWidget":   barChartPreview(widgetTheme: widgetTheme)
-        case "CalendarWidget":   calendarPreview(widgetTheme: widgetTheme)
-        default:                 allStatsPreview(widgetTheme: widgetTheme)
-        }
-    }
-
-    // MARK: Stat (Small) — header top-right icon, big number, unit baseline, label bottom-left
-    private func statPreview(widgetTheme: ThemeTokens) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: .top) {
-                Text("NIKONEKO RUN")
-                    .font(.system(size: 9)).tracking(0.8)
-                    .foregroundColor(widgetTheme.textMid)
-                    .fixedSize(horizontal: false, vertical: true)
-                Spacer()
-                Image(systemName: "flame")
-                    .font(.system(size: 16, weight: .light))
-                    .foregroundColor(widgetTheme.textMid)
-            }
-            Spacer()
-            HStack(alignment: .lastTextBaseline, spacing: 4) {
-                Text("12")
-                    .font(.system(size: 56, weight: .ultraLight))
-                    .foregroundColor(widgetTheme.text)
-                    .monospacedDigit()
-                Text("days")
-                    .font(.system(size: 13, weight: .light))
-                    .foregroundColor(widgetTheme.textMid)
-            }
-            Spacer(minLength: 4)
-            Text("Streak")
-                .font(.system(size: 11))
-                .foregroundColor(widgetTheme.textMid)
-        }
-        .padding(10)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(widgetTheme.bg)
-    }
-
-    // MARK: Heatmap (Medium) — left day labels + month headers + grid
-    private func heatmapPreview(widgetTheme: ThemeTokens) -> some View {
+        let native = Self.nativeSize[kind] ?? CGSize(width: 158, height: 158)
         GeometryReader { geo in
-            let dayLabels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
-            let labelW: CGFloat = 26
-            let gap: CGFloat = 2
-            let pad: CGFloat = 10
-            let headerH: CGFloat = 20
-            let cols = 18, rows = 7
-            let availW = geo.size.width - pad * 2 - labelW - gap
-            let availH = geo.size.height - pad * 2 - headerH
-            let cellW = (availW - CGFloat(cols - 1) * gap) / CGFloat(cols)
-            let cellH = (availH - CGFloat(rows - 1) * gap) / CGFloat(rows)
-            let cell = min(cellW, cellH)
-
-            ZStack(alignment: .topLeading) {
-                widgetTheme.bg
-                VStack(alignment: .leading, spacing: 0) {
-                    // Header
-                    HStack {
-                        Text("NIKONEKO RUN")
-                            .font(.system(size: 9)).tracking(0.8)
-                            .foregroundColor(widgetTheme.textMid)
-                        Spacer()
-                        Text(String(Calendar.current.component(.year, from: Date())))
-                            .font(.system(size: 9)).tracking(0.8)
-                            .foregroundColor(widgetTheme.textMid)
-                    }
-                    .frame(height: headerH)
-                    // Grid with day labels
-                    HStack(alignment: .top, spacing: gap) {
-                        // Day label column
-                        VStack(alignment: .leading, spacing: gap) {
-                            ForEach(dayLabels, id: \.self) { d in
-                                Text(d)
-                                    .font(.system(size: 7))
-                                    .foregroundColor(widgetTheme.textMid)
-                                    .frame(width: labelW, height: cell, alignment: .leading)
-                            }
-                        }
-                        // Cells
-                        VStack(spacing: gap) {
-                            ForEach(0..<rows, id: \.self) { row in
-                                HStack(spacing: gap) {
-                                    ForEach(0..<cols, id: \.self) { col in
-                                        let i = row * cols + col
-                                        RoundedRectangle(cornerRadius: 2)
-                                            .fill(widgetTheme.bar[previewTier(index: i, total: cols * rows)])
-                                            .frame(width: cell, height: cell)
-                                    }
-                                }
-                            }
-                        }
-                    }
+            let scale = geo.size.width / native.width
+            Group {
+                switch kind {
+                case "StatWidget":
+                    StatWidgetView(entry: StatEntry(
+                        date: .now, metric: .streak, period: .week,
+                        formattedValue: "12", unit: "days",
+                        metricLabel: "Streak", periodLabel: nil,
+                        fontSize: 80, theme: widgetTheme
+                    ))
+                case "HeatmapWidget":
+                    HeatmapWidgetView(entry: HeatmapEntry(
+                        date: .now, summaries: previewSummaries,
+                        metric: .duration, theme: widgetTheme
+                    ))
+                case "BarChartWidget":
+                    BarChartWidgetView(entry: BarChartEntry(
+                        date: .now,
+                        bars: [23, 2, 35, 21, 46, 2, 28],
+                        todayIndex: 6, maxValue: 46,
+                        yTop: "46", yMid: "23",
+                        weekLabel: "JUN 1 – 7",
+                        metric: .duration, theme: widgetTheme
+                    ))
+                case "CalendarWidget":
+                    CalendarWidgetView(entry: CalendarEntry(
+                        date: .now, summaries: previewSummaries,
+                        metric: .duration, theme: widgetTheme
+                    ))
+                default: // AllStatsWidget
+                    AllStatsWidgetView(entry: AllStatsEntry(
+                        date: .now, period: .week,
+                        durationFormatted: "24", durationUnit: "min",
+                        distanceKm: "2.8", caloriesStr: "168",
+                        stepsStr: "3.2k", avgHR: "—", maxHR: "—",
+                        runsStr: "1", theme: widgetTheme
+                    ))
                 }
-                .padding(pad)
             }
+            .frame(width: native.width, height: native.height)
+            .background(widgetTheme.bg)  // containerBackground doesn't apply outside WidgetKit
+            .scaleEffect(scale, anchor: .topLeading)
+            .frame(width: geo.size.width, height: geo.size.height, alignment: .topLeading)
             .clipped()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    // MARK: Bar Chart (Medium) — Y-axis labels + grid lines + bars + X-axis labels
-    private func barChartPreview(widgetTheme: ThemeTokens) -> some View {
-        GeometryReader { geo in
-            let bars: [Double] = [0.5, 0.02, 0.7, 0.45, 1.0, 0.02, 0.6]
-            let xLabels = ["M","T","W","T","F","S","S"]
-            let todayIdx = 6
-            let yAxisW: CGFloat = 24
-            let pad: CGFloat = 10
-            let headerH: CGFloat = 20
-            let xLabelH: CGFloat = 14
-            let chartH = geo.size.height - pad * 2 - headerH - xLabelH
-
-            ZStack(alignment: .topLeading) {
-                widgetTheme.bg
-                VStack(alignment: .leading, spacing: 0) {
-                    // Header
-                    HStack {
-                        Text("NIKONEKO RUN")
-                            .font(.system(size: 9)).tracking(0.8)
-                            .foregroundColor(widgetTheme.textMid)
-                        Spacer()
-                        Text("JUN 1 – 7")
-                            .font(.system(size: 9)).tracking(0.8)
-                            .foregroundColor(widgetTheme.textMid)
-                    }
-                    .frame(height: headerH)
-
-                    HStack(alignment: .bottom, spacing: 4) {
-                        // Y-axis
-                        VStack(alignment: .leading, spacing: 0) {
-                            Text("min").font(.system(size: 8)).foregroundColor(widgetTheme.textMid)
-                            Spacer()
-                            Text("40").font(.system(size: 8)).foregroundColor(widgetTheme.textMid)
-                            Spacer()
-                            Text("20").font(.system(size: 8)).foregroundColor(widgetTheme.textMid)
-                            Spacer()
-                            Text("0").font(.system(size: 8)).foregroundColor(widgetTheme.textMid)
-                        }
-                        .frame(width: yAxisW, height: chartH + xLabelH)
-                        .padding(.bottom, xLabelH)
-
-                        VStack(spacing: 0) {
-                            // Chart area
-                            ZStack(alignment: .bottom) {
-                                // Grid lines
-                                VStack(spacing: 0) {
-                                    Rectangle().fill(widgetTheme.textMid.opacity(0.15)).frame(height: 0.5)
-                                    Spacer()
-                                    Rectangle().fill(widgetTheme.textMid.opacity(0.15)).frame(height: 0.5)
-                                    Spacer()
-                                    Rectangle().fill(widgetTheme.textMid.opacity(0.3)).frame(height: 0.5)
-                                }
-                                // Bars
-                                HStack(alignment: .bottom, spacing: 0) {
-                                    ForEach(bars.indices, id: \.self) { i in
-                                        let h = max(CGFloat(bars[i]) * chartH, 3)
-                                        VStack(spacing: 0) {
-                                            Spacer(minLength: 0)
-                                            UnevenRoundedRectangle(
-                                                topLeadingRadius: 2, bottomLeadingRadius: 0,
-                                                bottomTrailingRadius: 0, topTrailingRadius: 2
-                                            )
-                                            .fill(i == todayIdx ? widgetTheme.bar[4] : (bars[i] > 0.05 ? widgetTheme.bar[2] : widgetTheme.bar[0]))
-                                            .frame(maxWidth: .infinity)
-                                            .frame(height: h)
-                                        }
-                                        .frame(maxWidth: .infinity)
-                                        .frame(height: chartH)
-                                    }
-                                }
-                            }
-                            .frame(height: chartH)
-                            // X-axis labels
-                            HStack(spacing: 0) {
-                                ForEach(xLabels.indices, id: \.self) { i in
-                                    Text(xLabels[i])
-                                        .font(.system(size: 9))
-                                        .foregroundColor(widgetTheme.textMid)
-                                        .frame(maxWidth: .infinity)
-                                }
-                            }
-                            .frame(height: xLabelH)
-                        }
-                    }
-                }
-                .padding(pad)
-            }
+    // Sample summaries for heatmap/calendar previews
+    private var previewSummaries: [DaySessionSummary] {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        return (0..<30).compactMap { d -> DaySessionSummary? in
+            guard d % 2 == 0 || d % 3 == 0 else { return nil }
+            let date = cal.date(byAdding: .day, value: -d, to: today)!
+            return DaySessionSummary(
+                date: date,
+                duration: Double.random(in: 600...2400),
+                completionRatio: 1.0,
+                hrAvg: Int.random(in: 120...160),
+                steps: Int.random(in: 2000...7000)
+            )
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    // MARK: AllStats (Large) — header + hero duration + 3×2 summary card grid
-    private func allStatsPreview(widgetTheme: ThemeTokens) -> some View {
-        let cards: [(value: String, unit: String, icon: String, label: String)] = [
-            ("2.8", "km",   "location.circle",  "Distance"),
-            ("168", "kcal", "flame",             "Calories"),
-            ("3.2k","",     "shoeprints.fill",   "Steps"),
-            ("—",   "",     "heart",             "Avg HR"),
-            ("—",   "",     "heart",             "Max HR"),
-            ("1",   "runs", "figure.run",        "Runs"),
-        ]
-        return VStack(alignment: .leading, spacing: 0) {
-            // Header
-            HStack {
-                Text("NIKONEKO RUN")
-                    .font(.system(size: 9)).tracking(0.8)
-                    .foregroundColor(widgetTheme.textMid)
-                Spacer()
-                Text("June 8")
-                    .font(.system(size: 9)).tracking(0.8)
-                    .foregroundColor(widgetTheme.textMid)
-            }
-            .padding(.bottom, 4)
-
-            // Hero
-            HStack(alignment: .lastTextBaseline, spacing: 4) {
-                Text("total")
-                    .font(.system(size: 13, weight: .ultraLight))
-                    .foregroundColor(widgetTheme.accent)
-                Text("24")
-                    .font(.system(size: 52, weight: .ultraLight))
-                    .foregroundColor(widgetTheme.accent)
-                    .monospacedDigit()
-                    .minimumScaleFactor(0.5)
-                    .lineLimit(1)
-                Text("min")
-                    .font(.system(size: 16, weight: .ultraLight))
-                    .foregroundColor(widgetTheme.accent)
-            }
-            .padding(.bottom, 8)
-
-            // 3×2 grid
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 5), count: 3), spacing: 5) {
-                ForEach(cards, id: \.label) { c in
-                    VStack(alignment: .leading, spacing: 2) {
-                        HStack(alignment: .lastTextBaseline, spacing: 3) {
-                            Text(c.value)
-                                .font(.system(size: 18, weight: .ultraLight))
-                                .foregroundColor(widgetTheme.text)
-                                .monospacedDigit()
-                                .minimumScaleFactor(0.5)
-                                .lineLimit(1)
-                            if !c.unit.isEmpty {
-                                Text(c.unit)
-                                    .font(.system(size: 10))
-                                    .foregroundColor(widgetTheme.text)
-                            }
-                        }
-                        HStack(spacing: 3) {
-                            Image(systemName: c.icon)
-                                .font(.system(size: 9))
-                                .foregroundColor(widgetTheme.text)
-                            Text(c.label)
-                                .font(.system(size: 9))
-                                .foregroundColor(widgetTheme.text)
-                        }
-                    }
-                    .padding(7)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(widgetTheme.card)
-                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(widgetTheme.accentDim, lineWidth: 0.5))
-                    .cornerRadius(10)
-                }
-            }
-        }
-        .padding(10)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(widgetTheme.bg)
-    }
-
-    // MARK: Calendar (Large) — header + M/T/W/T/F/S/S + date grid + bottom stats row
-    private func calendarPreview(widgetTheme: ThemeTokens) -> some View {
-        GeometryReader { geo in
-            let gap: CGFloat = 4
-            let pad: CGFloat = 12
-            // 月份從當前日期算
-            let cal = Calendar.current
-            let now = Date()
-            let year = cal.component(.year, from: now)
-            let month = cal.component(.month, from: now)
-            let daysInMonth = cal.range(of: .day, in: .month, for: now)!.count
-            let firstWeekday = cal.component(.weekday, from: cal.date(from: DateComponents(year: year, month: month, day: 1))!)
-            let firstOffset = (firstWeekday + 5) % 7  // Mon=0
-
-            let bottomH: CGFloat = 44
-            let headerH: CGFloat = 20
-            let dayHeaderH: CGFloat = 16
-            let availH = geo.size.height - pad * 2 - headerH - dayHeaderH - bottomH - gap * 2
-            let rows = 5
-            let cols = 7
-            let availW = geo.size.width - pad * 2
-            let cellW = (availW - CGFloat(cols - 1) * gap) / CGFloat(cols)
-            let cellH = (availH - CGFloat(rows - 1) * gap) / CGFloat(rows)
-            let cell = min(cellW, cellH)
-
-            ZStack(alignment: .topLeading) {
-                widgetTheme.bg
-                VStack(alignment: .leading, spacing: 0) {
-                    // Title row
-                    HStack {
-                        Text("NIKONEKO RUN")
-                            .font(.system(size: 9)).tracking(0.8)
-                            .foregroundColor(widgetTheme.textMid)
-                        Spacer()
-                        Text(monthYearString())
-                            .font(.system(size: 9)).tracking(0.8)
-                            .foregroundColor(widgetTheme.textMid)
-                    }
-                    .frame(height: headerH)
-
-                    // Day headers M T W T F S S
-                    HStack(spacing: gap) {
-                        ForEach(Array(["M","T","W","T","F","S","S"].enumerated()), id: \.offset) { _, d in
-                            Text(d)
-                                .font(.system(size: 9))
-                                .foregroundColor(widgetTheme.textMid)
-                                .frame(width: cell, height: dayHeaderH)
-                        }
-                    }
-
-                    // Calendar cells
-                    let totalCells = rows * cols
-                    VStack(spacing: gap) {
-                        ForEach(0..<rows, id: \.self) { row in
-                            HStack(spacing: gap) {
-                                ForEach(0..<cols, id: \.self) { col in
-                                    let cellIdx = row * cols + col
-                                    let day = cellIdx - firstOffset + 1
-                                    ZStack(alignment: .topLeading) {
-                                        if day >= 1 && day <= daysInMonth {
-                                            let tier = previewTier(index: day, total: daysInMonth)
-                                            widgetTheme.cal[tier]
-                                                .cornerRadius(6)
-                                            Text("\(day)")
-                                                .font(.system(size: max(cell * 0.26, 7)))
-                                                .foregroundColor(widgetTheme.text.opacity(tier > 0 ? 0.7 : 0.35))
-                                                .padding(3)
-                                        } else {
-                                            widgetTheme.cal[0].cornerRadius(6).opacity(0)
-                                        }
-                                    }
-                                    .frame(width: cell, height: cell)
-                                }
-                            }
-                        }
-                    }
-                    .padding(.bottom, gap)
-
-                    // Bottom stats row
-                    HStack(alignment: .top, spacing: 0) {
-                        bottomStatCell(icon: "timer", label: "TODAY", value: "18", unit: "min", t: widgetTheme, align: .leading)
-                        bottomStatCell(icon: "calendar", label: "MONTH", value: "2", unit: "hr", t: widgetTheme, align: .center)
-                        bottomStatCell(icon: "flame", label: "STREAK", value: "3", unit: "days", t: widgetTheme, align: .trailing)
-                    }
-                    .frame(height: bottomH)
-                }
-                .padding(pad)
-            }
-            .clipped()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    private func bottomStatCell(icon: String, label: String, value: String, unit: String, t: ThemeTokens, align: HorizontalAlignment) -> some View {
-        let frameAlign: Alignment = align == .leading ? .leading : align == .trailing ? .trailing : .center
-        return VStack(alignment: .leading, spacing: 2) {
-            HStack(spacing: 3) {
-                Image(systemName: icon).font(.system(size: 8, weight: .light)).foregroundColor(t.textMid)
-                Text(label).font(.system(size: 8)).tracking(0.6).foregroundColor(t.textMid)
-            }
-            HStack(alignment: .lastTextBaseline, spacing: 2) {
-                Text(value).font(.system(size: 20, weight: .ultraLight)).foregroundColor(t.text).monospacedDigit()
-                Text(unit).font(.system(size: 8, weight: .light)).foregroundColor(t.textMid)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: frameAlign)
-    }
-
-    private func monthYearString() -> String {
-        let f = DateFormatter()
-        f.dateFormat = "MMMM yyyy"
-        return f.string(from: Date())
-    }
-
-    private func previewTier(index: Int, total: Int) -> Int {
-        let wave = sin(Double(index) / Double(total) * .pi * 4 + 1.0)
-        let mapped = (wave + 1.0) / 2.0
-        return min(4, Int(mapped * 5))
-    }
 }
