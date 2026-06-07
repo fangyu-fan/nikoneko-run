@@ -88,34 +88,30 @@ struct WidgetSettingsView: View {
                     .background(theme.card).cornerRadius(6)
                 Spacer()
             }
-            widgetPreview(kind: w.kind, widgetTheme: theme)
-                .aspectRatio(previewAspectRatio(size: w.size), contentMode: .fit)
-                .cornerRadius(12)
-                .clipped()
+            if w.size == "Small" {
+                // Small widget: fixed 50% of native size (79×79), centred
+                widgetPreview(kind: w.kind, widgetTheme: theme)
+                    .frame(width: 79, height: 79)
+                    .cornerRadius(12)
+                    .clipped()
+                    .frame(maxWidth: .infinity, alignment: .center)
+            } else {
+                widgetPreview(kind: w.kind, widgetTheme: theme)
+                    .aspectRatio(w.size == "Medium" ? 338.0/158.0 : 338.0/354.0, contentMode: .fit)
+                    .cornerRadius(12)
+                    .clipped()
+            }
         }
         .padding(14)
         .background(theme.surface)
         .cornerRadius(14)
     }
 
-    // Widget actual pt sizes (iPhone 16): Small 158×158, Medium 338×158, Large 338×354
-    private func previewAspectRatio(size: String) -> CGFloat {
-        switch size {
-        case "Medium": return 338.0 / 158.0  // ~2.14:1
-        case "Large":  return 338.0 / 354.0  // ~0.955:1
-        default:       return 1.0             // Small: 1:1 square
-        }
-    }
-
-    // Dynamic gallery height based on current widget's aspect ratio
-    // card width ≈ screen(375) - outer padding(36) - card padding(28) = 311pt
-    private var galleryFrameHeight: CGFloat {
-        let cardW: CGFloat = 311
-        let size = widgetDefs[selectedIndex].size
-        let ratio = previewAspectRatio(size: size)
-        let previewH = cardW / ratio
-        return previewH + 36 + 28 + 28  // preview + label row + card padding + page dots
-    }
+    // Gallery height is fixed so it doesn't jump when swiping between widget sizes.
+    // Sized for Medium widgets (widest cards) + label row + card padding + page dots.
+    // card width ≈ 375 - 36 (outer) - 28 (card padding) = 311pt
+    // Medium preview height = 311 / (338/158) ≈ 145pt
+    private var galleryFrameHeight: CGFloat { 145 + 36 + 28 + 28 }
 
     // MARK: - Parameter Section
 
