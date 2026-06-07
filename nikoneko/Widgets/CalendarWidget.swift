@@ -32,10 +32,11 @@ struct CalendarProvider: AppIntentTimelineProvider {
         return Timeline(entries: [entry(for: configuration)], policy: .after(next))
     }
     private func entry(for config: CalendarWidgetIntent) -> CalendarEntry {
-        let themeId = AppGroupDefaults.shared.string(forKey: "activeThemeId") ?? "obsidian"
-        let theme = ThemeLibrary.all.first { $0.id == themeId } ?? ThemeLibrary.moss
+        let theme = WidgetSharedData.loadTheme()
+        let metric = AppGroupDefaults.shared.string(forKey: "widget.calendar.metric")
+            .flatMap { StatMetric(rawValue: $0) } ?? config.metric
         return CalendarEntry(date: Date(), summaries: AppGroupDefaults.loadSummaries(),
-                             metric: config.metric, theme: theme)
+                             metric: metric, theme: theme)
     }
 }
 
