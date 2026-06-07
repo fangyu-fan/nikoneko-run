@@ -26,7 +26,6 @@ struct WidgetSettingsView: View {
     }()
 
     @State private var showAddInstructions: Bool = false
-    @Environment(\.openURL) private var openURL
 
     private let widgetDefs: [(name: String, nameZh: String, size: String, kind: String)] = [
         ("Stat",        "數據",     "Small",  "StatWidget"),
@@ -49,6 +48,7 @@ struct WidgetSettingsView: View {
             .tabViewStyle(.page(indexDisplayMode: .always))
             .frame(height: 270)
             .animation(.easeInOut, value: selectedIndex)
+            .tint(theme.accent)
 
             Divider()
                 .padding(.top, 8)
@@ -143,7 +143,7 @@ struct WidgetSettingsView: View {
         case 3: // CalendarWidget
             pickerRow(
                 label: lm.language == .traditionalChinese ? "指標" : "Metric",
-                options: StatMetric.allCases,
+                options: StatMetric.allCases.filter { $0 != .streak },
                 selected: $calendarMetric,
                 display: { metricLabel($0) }
             ) { value in
@@ -212,13 +212,7 @@ struct WidgetSettingsView: View {
 
     private var addToHomeButton: some View {
         Button {
-            if let url = URL(string: "widgetkit://") {
-                openURL(url) { accepted in
-                    if !accepted { showAddInstructions = true }
-                }
-            } else {
-                showAddInstructions = true
-            }
+            showAddInstructions = true
         } label: {
             HStack {
                 Image(systemName: "plus.circle")
@@ -463,7 +457,7 @@ struct WidgetSettingsView: View {
                 }
                 .padding(.bottom, 2)
                 HStack {
-                    ForEach(["M","T","W","T","F","S","S"], id: \.self) { d in
+                    ForEach(Array(["M","T","W","T","F","S","S"].enumerated()), id: \.offset) { _, d in
                         Text(d)
                             .font(.system(size: 5))
                             .foregroundColor(widgetTheme.textDim)
