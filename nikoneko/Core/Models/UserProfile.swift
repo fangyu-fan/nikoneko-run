@@ -17,7 +17,7 @@ final class UserProfile {
     var showDistance: Bool = true
     var showCalories: Bool = true
     var showSteps: Bool = true
-    var activeThemeId: String = "obsidian"
+    var activeThemeId: String = "moss"
     var activeCharacterId: String = "cat_a"
     var languageRaw: String = AppLanguage.english.rawValue
     var heightCm: Double = 170
@@ -27,7 +27,7 @@ final class UserProfile {
     var notificationHour: Int = 7
     var notificationMinute: Int = 0
     var healthKitEnabled: Bool = false
-    var iCloudEnabled: Bool = false
+    var iCloudEnabled: Bool = true
 
     // Computed enum accessors
     var soundType: SoundType {

@@ -97,12 +97,20 @@ struct WidgetSettingsView: View {
 
     private func galleryCard(_ w: (name: String, nameZh: String, size: String, kind: String)) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Title row — name enlarged, size tag moved to overlay
-            Text(lm.language == .traditionalChinese ? w.nameZh : w.name)
-                .font(.system(size: 30, weight: .regular))
-                .foregroundColor(theme.text)
+            // Title row — name + size badge on the same line
+            HStack(alignment: .lastTextBaseline, spacing: 8) {
+                Text(lm.language == .traditionalChinese ? w.nameZh : w.name)
+                    .font(.system(size: 30, weight: .regular))
+                    .foregroundColor(theme.text)
+                Text(w.size)
+                    .font(.system(size: 11))
+                    .foregroundColor(theme.textMid)
+                    .padding(.horizontal, 7).padding(.vertical, 3)
+                    .background(theme.accentDim.opacity(0.5))
+                    .cornerRadius(6)
+            }
 
-            // Preview with size tag overlaid top-right
+            // Preview
             Group {
                 switch w.size {
                 case "Small":
@@ -128,16 +136,6 @@ struct WidgetSettingsView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            .overlay(
-                Text(w.size)
-                    .font(.system(size: 11))
-                    .foregroundColor(theme.textMid)
-                    .padding(.horizontal, 7).padding(.vertical, 3)
-                    .background(theme.bg.opacity(0.85))
-                    .cornerRadius(6)
-                    .padding(8),
-                alignment: .topTrailing
-            )
         }
         .padding(14)
         .frame(maxHeight: .infinity)

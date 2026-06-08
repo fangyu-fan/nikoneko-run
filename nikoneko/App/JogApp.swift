@@ -23,9 +23,11 @@ struct NikoNekoApp: App {
 
     private func makeContainer() -> ModelContainer {
         let schema = Schema([RunSession.self, UserProfile.self, ThresholdConfig.self])
-        let iCloudEnabled = UserDefaults.standard.bool(forKey: "iCloudEnabled")
+        let iCloudOn = UserDefaults.standard.object(forKey: "iCloudEnabled") == nil
+            ? true
+            : UserDefaults.standard.bool(forKey: "iCloudEnabled")
 
-        if iCloudEnabled {
+        if iCloudOn {
             let cloudConfig = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
             if let container = try? ModelContainer(for: schema, configurations: [cloudConfig]) {
                 return container

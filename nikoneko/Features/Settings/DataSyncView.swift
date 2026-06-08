@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 import WidgetKit
 import UniformTypeIdentifiers
+import HealthKit
 
 struct DataSyncView: View {
     @Environment(ThemeManager.self) private var themeManager
@@ -35,22 +36,15 @@ struct DataSyncView: View {
                                 }
                               ))
                     Rectangle().fill(theme.accentDim).frame(height: 0.5)
-                    VStack(spacing: 0) {
-                        toggleRow(icon: "icloud", label: lm.L("dataSync.row.iCloud"),
-                                  binding: Binding(
-                                    get: { profile?.iCloudEnabled ?? false },
-                                    set: { v in
-                                        profile?.iCloudEnabled = v
-                                        UserDefaults.standard.set(v, forKey: "iCloudEnabled")
-                                        try? ctx.save()
-                                    }
-                                  ))
-                        Text(lm.L("dataSync.icloud.note"))
-                            .font(.system(size: 11))
-                            .foregroundColor(theme.textDim)
-                            .padding(.horizontal, 16)
-                            .padding(.bottom, 10)
-                    }
+                    toggleRow(icon: "icloud", label: lm.L("dataSync.row.iCloud"),
+                              binding: Binding(
+                                get: { profile?.iCloudEnabled ?? true },
+                                set: { v in
+                                    profile?.iCloudEnabled = v
+                                    UserDefaults.standard.set(v, forKey: "iCloudEnabled")
+                                    try? ctx.save()
+                                }
+                              ))
                 }
                 .background(theme.surface)
                 .cornerRadius(14)
@@ -82,6 +76,7 @@ struct DataSyncView: View {
         }
         .background(theme.bg.ignoresSafeArea())
         .id(lm.version)
+        .onAppear { syncHealthKitStatus() }
         .navigationTitle(lm.L("dataSync.title"))
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showShareSheet) {
@@ -112,6 +107,19 @@ struct DataSyncView: View {
                 WidgetCenter.shared.reloadAllTimelines()
             }
             Button(lm.L("dataSync.confirm.cancel"), role: .cancel) {}
+        }
+    }
+
+    // MARK: - HealthKit Status Sync
+
+    private func syncHealthKitStatus() {
+        guard HKHealthStore.isHealthDataAvailable() else { return }
+        let store = HKHealthStore()
+        let type = HKQuantityType(.heartRate)
+        let status = store.authorizationStatus(for: type)
+        if status == .sharingAuthorized && profile?.healthKitEnabled == false {
+            profile?.healthKitEnabled = true
+            try? ctx.save()
         }
     }
 
