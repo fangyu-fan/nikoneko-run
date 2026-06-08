@@ -5,6 +5,7 @@ struct CharacterPickerView: View {
     @Binding var selectedId: String
     @Environment(\.dismiss) private var dismiss
     @Environment(ThemeManager.self) private var themeManager
+    @Environment(LanguageManager.self) private var lm
     @Environment(\.modelContext) private var ctx
     @Query private var profiles: [UserProfile]
 
@@ -12,9 +13,9 @@ struct CharacterPickerView: View {
     private var profile: UserProfile? { profiles.first }
 
     // Characters that map to actual Lottie files in the bundle
-    private let characters: [(id: String, label: String)] = [
-        ("loader_cat", "Loader Cat"),
-        ("bad_cat",    "Bad Cat"),
+    private let characters: [(id: String, labelKey: String)] = [
+        ("loader_cat", "character.loaderCat"),
+        ("bad_cat",    "character.badCat"),
     ]
 
     var body: some View {
@@ -37,12 +38,12 @@ struct CharacterPickerView: View {
                 .padding(.top, 8)
             }
             .background(theme.bg.ignoresSafeArea())
-            .navigationTitle("Characters")
+            .navigationTitle(lm.L("character.title"))
             .navigationBarTitleDisplayMode(.inline)
         }
     }
 
-    private func characterRow(char: (id: String, label: String)) -> some View {
+    private func characterRow(char: (id: String, labelKey: String)) -> some View {
         let isSelected = selectedId == char.id
         return Button(action: {
             selectedId = char.id
@@ -59,7 +60,7 @@ struct CharacterPickerView: View {
                 )
                 .frame(width: 56, height: 40)
 
-                Text(char.label)
+                Text(lm.L(char.labelKey))
                     .font(.system(size: 16))
                     .foregroundColor(theme.text)
 

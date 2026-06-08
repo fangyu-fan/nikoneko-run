@@ -311,7 +311,7 @@ struct TimerView: View {
                         get: { vm.isCountdown ? 0 : 1 },
                         set: { vm.isCountdown = $0 == 0 }
                     ),
-                    segments: ["Countdown", "Stopwatch"],
+                    segments: [lm.L("timer.mode.countdown"), lm.L("timer.mode.stopwatch")],
                     selectedTint: theme.accent,
                     background: theme.surface,
                     selectedTextColor: theme.bg,

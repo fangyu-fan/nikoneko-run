@@ -135,7 +135,7 @@ final class ReportViewModel {
         case .steps:     return NSLocalizedString("report.metric.steps", comment: "")
         case .hrAvg:     return NSLocalizedString("session.unit.bpm", comment: "")
         case .hrMax:     return NSLocalizedString("session.unit.bpm", comment: "")
-        case .count:     return NSLocalizedString("report.metric.count", comment: "")
+        case .count:     return NSLocalizedString("report.unit.count", comment: "")
         }
     }
 
@@ -219,8 +219,8 @@ final class ReportViewModel {
             // Labels ordered from week start day
             let enMon = ["M","T","W","T","F","S","S"]  // Mon-first
             let enSun = ["S","M","T","W","T","F","S"]  // Sun-first
-            let zhMon = ["一","二","三","四","五","六","日"]
-            let zhSun = ["日","一","二","三","四","五","六"]
+            let zhMon = ["週一","週二","週三","週四","週五","週六","週日"]
+            let zhSun = ["週日","週一","週二","週三","週四","週五","週六"]
             let startsMonday = AppGroupDefaults.weekStartsOnMonday
             let labels = isZh ? (startsMonday ? zhMon : zhSun) : (startsMonday ? enMon : enSun)
             return (0..<7).map { dayOffset in

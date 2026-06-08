@@ -35,6 +35,7 @@
 "report.metric.maxHR"         = "最高心率";
 "report.metric.cadence"       = "平均步頻";
 "report.metric.count"         = "次數";
+"report.unit.count"           = "次";
 
 /* Session detail */
 "session.total"               = "累積";
@@ -198,3 +199,8 @@
 "defaults.row.weekStart"       = "週起始日";
 "defaults.weekStart.monday"    = "週一";
 "defaults.weekStart.sunday"    = "週日";
+
+/* Characters */
+"character.title"             = "角色";
+"character.loaderCat"         = "貓貓";
+"character.badCat"            = "壞貓";

@@ -28,7 +28,8 @@ struct DefaultsView: View {
                 VStack(spacing: 0) {
                     stepperRow(icon: "flag", name: lm.L("defaults.row.dailyGoal"),
                                value: profile?.dailyGoalMinutes ?? 15,
-                               step: 5, range: 5...999) { v in
+                               step: 5, range: 5...999,
+                               unit: lm.L("report.unit.min")) { v in
                         profile?.dailyGoalMinutes = v
                         profile?.defaultDuration = v
                         try? ctx.save()
@@ -216,6 +217,7 @@ struct DefaultsView: View {
     private func stepperRow(icon: String, name: String, value: Int,
                              step: Int, range: ClosedRange<Int>,
                              isBPM: Bool = false,
+                             unit: String = "",
                              onChange: @escaping (Int) -> Void) -> some View {
         HStack(spacing: 10) {
             Image(systemName: icon)
@@ -228,11 +230,18 @@ struct DefaultsView: View {
             Spacer()
             HStack(spacing: 8) {
                 stepButton("−") { onChange(max(range.lowerBound, value - step)) }
-                Text("\(value)")
-                    .font(.system(size: 16, weight: .ultraLight))
-                    .foregroundColor(theme.text)
-                    .monospacedDigit()
-                    .frame(minWidth: isBPM ? 40 : 52, alignment: .center)
+                HStack(spacing: 3) {
+                    Text("\(value)")
+                        .font(.system(size: 16, weight: .ultraLight))
+                        .foregroundColor(theme.text)
+                        .monospacedDigit()
+                        .frame(minWidth: isBPM ? 40 : 52, alignment: .center)
+                    if !unit.isEmpty {
+                        Text(unit)
+                            .font(.system(size: 12))
+                            .foregroundColor(theme.textMid)
+                    }
+                }
                 stepButton("+") { onChange(min(range.upperBound, value + step)) }
             }
         }
@@ -284,6 +293,7 @@ struct DefaultsView: View {
                     } label: {
                         Text(isMon ? lm.L("defaults.weekStart.monday") : lm.L("defaults.weekStart.sunday"))
                             .font(.system(size: 13))
+                            .lineLimit(1)
                             .foregroundColor(weekStartsOnMonday == isMon ? theme.text : theme.textMid)
                             .padding(.vertical, 5)
                             .padding(.horizontal, 10)

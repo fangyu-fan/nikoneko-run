@@ -3,13 +3,13 @@ import WidgetKit
 
 @Observable
 final class ThemeManager {
-    private(set) var current: ThemeTokens = ThemeLibrary.obsidian
+    private(set) var current: ThemeTokens = ThemeLibrary.moss
 
     init() {
         let appGroup = UserDefaults(suiteName: AppGroupDefaults.suiteName)
         let savedId = appGroup?.string(forKey: "activeThemeId")
                    ?? UserDefaults.standard.string(forKey: "activeThemeId")
-                   ?? "obsidian"
+                   ?? "moss"
         if let saved = ThemeLibrary.all.first(where: { $0.id == savedId }) {
             current = saved
         }

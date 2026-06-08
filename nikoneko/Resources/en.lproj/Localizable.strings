@@ -35,6 +35,7 @@
 "report.metric.maxHR"         = "Max HR";
 "report.metric.cadence"       = "Avg Cadence";
 "report.metric.count"         = "Runs";
+"report.unit.count"           = "runs";
 
 /* Session detail */
 "session.total"               = "total";
@@ -196,5 +197,10 @@
 "timer.alert.tooShort" = "Sessions under 1 minute are not recorded.";
 "defaults.section.calendar"   = "CALENDAR";
 "defaults.row.weekStart"       = "Week Starts On";
-"defaults.weekStart.monday"    = "Monday";
-"defaults.weekStart.sunday"    = "Sunday";
+"defaults.weekStart.monday"    = "Mon";
+"defaults.weekStart.sunday"    = "Sun";
+
+/* Characters */
+"character.title"             = "Characters";
+"character.loaderCat"         = "Loader Cat";
+"character.badCat"            = "Bad Cat";

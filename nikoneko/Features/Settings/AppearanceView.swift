@@ -54,10 +54,14 @@ struct AppearanceView: View {
                 Text(themeZhName(t.id))
                     .font(.system(size: 14, weight: .regular))
                     .foregroundColor(t.text)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
             } else {
                 Text(themeEnName(t.id))
                     .font(.system(size: 14, weight: .regular))
                     .foregroundColor(t.text)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
             }
 
             Spacer()
