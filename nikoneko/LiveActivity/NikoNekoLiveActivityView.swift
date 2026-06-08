@@ -21,7 +21,7 @@ struct NikoNekoLiveActivityView: Widget {
                 DynamicIslandExpandedRegion(.trailing) {
                     VStack(alignment: .trailing, spacing: 4) {
                         LottieCharacterView(
-                            
+                            characterId: context.state.characterId,
                             color: theme.accentMid,
                             bpm: context.state.bpm,
                             isAnimating: true
@@ -33,7 +33,7 @@ struct NikoNekoLiveActivityView: Widget {
                 }
             } compactLeading: {
                 LottieCharacterView(
-                    
+                    characterId: context.state.characterId,
                     color: theme.accentMid,
                     bpm: context.state.bpm,
                     isAnimating: true
@@ -45,7 +45,7 @@ struct NikoNekoLiveActivityView: Widget {
                     .monospacedDigit()
             } minimal: {
                 LottieCharacterView(
-                    
+                    characterId: context.state.characterId,
                     color: theme.accentMid,
                     bpm: context.state.bpm,
                     isAnimating: true
@@ -78,6 +78,7 @@ struct LockScreenCardView: View {
             }
             Spacer()
             LottieCharacterView(
+                characterId: state.characterId,
                 color: theme.accentMid,
                 bpm: state.bpm,
                 isAnimating: true

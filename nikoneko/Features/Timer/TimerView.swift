@@ -13,6 +13,7 @@ struct TimerView: View {
     @State private var metronome = MetronomeService()
     @State private var hrService = HeartRateService()
     @State private var motionService = MotionService()
+    @State private var liveActivity = LiveActivityService()
     @State private var longPressProgress: CGFloat = 0
     @State private var isLongPressing: Bool = false
     @State private var isLongPressingPending: Bool = false
@@ -248,15 +249,25 @@ struct TimerView: View {
                     motionService.heightCm = profile?.heightCm ?? 170
                     hrService.startMonitoring()
                     motionService.startTracking()
+                    let characterId = profile?.activeCharacterId ?? "loader_cat"
+                    let themeId = profile?.activeThemeId ?? "moss"
+                    let target = vm.isCountdown ? vm.targetDuration : 0
+                    liveActivity.start(bpm: bpm, target: target, characterId: characterId, themeId: themeId)
                 }
             case .paused:
                 metronome.pause()
+                liveActivity.update(elapsed: vm.elapsed, remaining: vm.remaining)
             case .idle:
                 metronome.stop()
+                liveActivity.end()
                 hrService.stopMonitoring()
                 motionService.stopTracking()
                 withAnimation(.easeOut(duration: 0.2)) { longPressProgress = 0 }
             }
+        }
+        .onChange(of: vm.elapsed) { _, elapsed in
+            guard vm.state == .running else { return }
+            liveActivity.update(elapsed: elapsed, remaining: vm.remaining)
         }
         .onChange(of: isLongPressing) { _, pressing in
             if pressing { UIImpactFeedbackGenerator(style: .medium).impactOccurred() }
