@@ -453,7 +453,10 @@ private struct NotifCloudStepView: View {
     @Binding var notificationMinute: Int
     @Binding var iCloudEnabled: Bool
 
-    @State private var notifTime: Date = Date()
+    @State private var notifTime: Date = {
+        var c = DateComponents(); c.hour = 7; c.minute = 0
+        return Calendar.current.date(from: c) ?? Date()
+    }()
     @State private var isRequestingNotif = false
 
     var body: some View {
