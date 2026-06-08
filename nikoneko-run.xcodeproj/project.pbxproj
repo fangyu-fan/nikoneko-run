@@ -73,7 +73,6 @@
 		CB0D7B65CA278F3FCD8E67CD /* ThemeLibraryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C6C35DB6789D15893E88FB /* ThemeLibraryTests.swift */; };
 		CF9744269F992B9BDEF28D98 /* AppGroupDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41CC69BAD559A35148CE22CE /* AppGroupDefaults.swift */; };
 		AA22222222222222222222AA /* AppGroupDefaults+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11111111111111111111AA /* AppGroupDefaults+App.swift */; };
-		OB22222222222222222222OB /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OB11111111111111111111OB /* OnboardingView.swift */; };
 		CFDAE6CC1A46F86B8C113FB0 /* DataSyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA30BB7EC8E9C43340904825 /* DataSyncView.swift */; };
 		D6501BC66A4A5476CA4F2E3A /* MetronomeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A139D04CE594B0310B390D /* MetronomeService.swift */; };
 		D7AF75D6579CFCBF3B87363A /* ReportViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B651FBED4DA2547C58BDD0AF /* ReportViewModelTests.swift */; };
@@ -153,7 +152,6 @@
 		40B2416199CDA9A73244756D /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
 		41CC69BAD559A35148CE22CE /* AppGroupDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupDefaults.swift; sourceTree = "<group>"; };
 		AA11111111111111111111AA /* AppGroupDefaults+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppGroupDefaults+App.swift"; sourceTree = "<group>"; };
-		OB11111111111111111111OB /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		47C6C35DB6789D15893E88FB /* ThemeLibraryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeLibraryTests.swift; sourceTree = "<group>"; };
 		4B479A6B08DA7AF4D6DF0489 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
 		4B96B25A530CAD4829826F8B /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -341,21 +339,12 @@
 		863EAC55D8A89E0182F26D2E /* Features */ = {
 			isa = PBXGroup;
 			children = (
-				OB33333333333333333333OB /* Onboarding */,
 				9A14851F7C908DE0C751BBDA /* Report */,
 				CFE742941A1BCCCAE7D2A1B0 /* Settings */,
 				CCA5076C5102527D15E08917 /* Summary */,
 				B2AB15218B366A80A051A394 /* Timer */,
 			);
 			path = Features;
-			sourceTree = "<group>";
-		};
-		OB33333333333333333333OB /* Onboarding */ = {
-			isa = PBXGroup;
-			children = (
-				OB11111111111111111111OB /* OnboardingView.swift */,
-			);
-			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		9A14851F7C908DE0C751BBDA /* Report */ = {
@@ -624,7 +613,6 @@
 				45C61964C4251AD7FDD870E9 /* CharacterView.swift in Sources */,
 				3B70160644FA316EE67E9F24 /* Color+Hex.swift in Sources */,
 				11D640EC8A8243985ED5C6B4 /* ContentView.swift in Sources */,
-				OB22222222222222222222OB /* OnboardingView.swift in Sources */,
 				CFDAE6CC1A46F86B8C113FB0 /* DataSyncView.swift in Sources */,
 				7D2D06F23FD23EDD46FC449C /* DefaultsView.swift in Sources */,
 				FFAF81159DD3F1F71B9FD84C /* DisplayView.swift in Sources */,

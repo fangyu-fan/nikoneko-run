@@ -7,70 +7,60 @@ struct ContentView: View {
     @Environment(\.modelContext) private var ctx
     @Query private var profiles: [UserProfile]
     @State private var timerVM = TimerViewModel()
-    @State private var showOnboarding: Bool = !UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
-    @State private var onboardingVM = OnboardingViewModel()
     private var theme: ThemeTokens { themeManager.current }
 
     var body: some View {
-        Group {
-            if showOnboarding {
-                OnboardingView(vm: onboardingVM) {
-                    showOnboarding = false
-                }
-            } else {
-                NavigationStack {
-                    ZStack {
-                        theme.bg.ignoresSafeArea()
+        NavigationStack {
+            ZStack {
+                theme.bg.ignoresSafeArea()
 
-                        TimerView(vm: timerVM)
+                TimerView(vm: timerVM)
 
-                        // Top-left: Report, Top-right: Settings — hidden while running
-                        if timerVM.state == .idle {
-                            VStack {
-                                HStack {
-                                    NavigationLink {
-                                        ReportView()
-                                    } label: {
-                                        Image(systemName: "chart.bar")
-                                            .font(.system(size: 18, weight: .light))
-                                            .foregroundColor(theme.text)
-                                            .frame(width: 44, height: 44)
-                                    }
-                                    Spacer()
-                                    NavigationLink {
-                                        SettingsView()
-                                    } label: {
-                                        Image(systemName: "gearshape")
-                                            .font(.system(size: 18, weight: .light))
-                                            .foregroundColor(theme.text)
-                                            .frame(width: 44, height: 44)
-                                    }
-                                }
-                                .padding(.horizontal, 12)
-                                .padding(.top, 56)
-                                Spacer()
+                // Top-left: Report, Top-right: Settings — hidden while running
+                if timerVM.state == .idle {
+                    VStack {
+                        HStack {
+                            NavigationLink {
+                                ReportView()
+                            } label: {
+                                Image(systemName: "chart.bar")
+                                    .font(.system(size: 18, weight: .light))
+                                    .foregroundColor(theme.text)
+                                    .frame(width: 44, height: 44)
                             }
-                            .transition(.opacity)
+                            Spacer()
+                            NavigationLink {
+                                SettingsView()
+                            } label: {
+                                Image(systemName: "gearshape")
+                                    .font(.system(size: 18, weight: .light))
+                                    .foregroundColor(theme.text)
+                                    .frame(width: 44, height: 44)
+                            }
                         }
+                        .padding(.horizontal, 12)
+                        .padding(.top, 56)
+                        Spacer()
                     }
-                    .animation(.easeInOut(duration: 0.3), value: timerVM.state == .idle)
-                    .navigationBarHidden(true)
+                    .transition(.opacity)
                 }
             }
+            .animation(.easeInOut(duration: 0.3), value: timerVM.state == .idle)
+            .navigationBarHidden(true)
         }
         .onAppear { ensureProfile() }
     }
 
     private func ensureProfile() {
-        guard !showOnboarding else { return }
-        if profiles.isEmpty {
-            let p = UserProfile()
-            ctx.insert(p)
-            try? ctx.save()
-        } else {
+        guard profiles.isEmpty else {
+            // Restore saved language into LanguageManager on each launch
             if let lang = profiles.first?.language {
                 languageManager.apply(lang)
             }
+            return
         }
+        let profile = UserProfile()
+        ctx.insert(profile)
+        try? ctx.save()
     }
 }
