@@ -9,7 +9,9 @@ enum SoundType: String, Codable, CaseIterable {
     case tap    // light finger tap
     case bell   // small bell
     case drum   // drum hit
-    case wood   // soft wood block — default
+    case wood   // soft wood block — default (mid)
+    case woodHi // wood block, high frequency (~800 Hz octave up)
+    case woodLo // wood block, low frequency (~800 Hz octave down)
 }
 
 enum TimeFormat: String, Codable {

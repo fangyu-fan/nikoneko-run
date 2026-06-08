@@ -353,12 +353,11 @@ struct DefaultsView: View {
 
     private var soundPicker: some View {
         let options: [(SoundType, String)] = [
-            (.tap,  lm.L("defaults.sound.tap")),
-            (.bell, lm.L("defaults.sound.bell")),
-            (.drum, lm.L("defaults.sound.drum")),
-            (.wood, lm.L("defaults.sound.wood")),
+            (.woodLo, lm.L("defaults.sound.woodLo")),
+            (.wood,   lm.L("defaults.sound.wood")),
+            (.woodHi, lm.L("defaults.sound.woodHi")),
         ]
-        let current = profile?.soundType ?? .tap
+        let current = profile?.soundType ?? .wood
         return HStack(spacing: 2) {
             ForEach(options, id: \.0) { (type, label) in
                 Button(action: { profile?.soundType = type; try? ctx.save() }) {

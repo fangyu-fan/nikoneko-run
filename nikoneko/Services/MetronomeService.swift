@@ -48,7 +48,7 @@ final class MetronomeService {
         let rate = outputFormat.sampleRate > 0 ? outputFormat.sampleRate : sampleRate
         guard let format = AVAudioFormat(standardFormatWithSampleRate: rate, channels: channels) else { return nil }
 
-        let durationMs: Double = soundType == .bell ? 80 : 40
+        let durationMs: Double = (soundType == .bell || soundType == .woodLo) ? 80 : 40
         let frameCount = AVAudioFrameCount(rate * durationMs / 1000)
         guard let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount) else { return nil }
         buf.frameLength = frameCount
@@ -88,6 +88,16 @@ final class MetronomeService {
         case .wood:
             let env = exp(-t * 100)
             let f1 = 800 * pitchMult, f2 = 1200 * pitchMult
+            return (sin(2 * .pi * f1 * t) * 0.6 + sin(2 * .pi * f2 * t) * 0.4) * env
+
+        case .woodHi:
+            let env = exp(-t * 120)
+            let f1 = 1400 * pitchMult, f2 = 2100 * pitchMult
+            return (sin(2 * .pi * f1 * t) * 0.6 + sin(2 * .pi * f2 * t) * 0.4) * env
+
+        case .woodLo:
+            let env = exp(-t * 80)
+            let f1 = 400 * pitchMult, f2 = 600 * pitchMult
             return (sin(2 * .pi * f1 * t) * 0.6 + sin(2 * .pi * f2 * t) * 0.4) * env
         }
     }

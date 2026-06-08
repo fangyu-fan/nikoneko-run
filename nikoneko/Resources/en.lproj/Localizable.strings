@@ -125,7 +125,9 @@
 "defaults.sound.tap"          = "Tap";
 "defaults.sound.bell"         = "Bell";
 "defaults.sound.drum"         = "Drum";
-"defaults.sound.wood"         = "Wood";
+"defaults.sound.wood"         = "Mid";
+"defaults.sound.woodHi"       = "Hi";
+"defaults.sound.woodLo"       = "Lo";
 
 /* Widget settings */
 "widget.title"                = "Widget";

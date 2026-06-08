@@ -125,7 +125,9 @@
 "defaults.sound.tap"          = "叩";
 "defaults.sound.bell"         = "鈴";
 "defaults.sound.drum"         = "鼓";
-"defaults.sound.wood"         = "木";
+"defaults.sound.wood"         = "中";
+"defaults.sound.woodHi"       = "高";
+"defaults.sound.woodLo"       = "低";
 
 /* Widget settings */
 "widget.title"                = "小工具";

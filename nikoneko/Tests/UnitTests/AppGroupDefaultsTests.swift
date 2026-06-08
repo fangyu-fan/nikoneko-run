@@ -46,6 +46,8 @@ final class AppGroupDefaultsTests: XCTestCase {
         XCTAssertEqual(SoundType.bell.rawValue, "bell")
         XCTAssertEqual(SoundType.drum.rawValue, "drum")
         XCTAssertEqual(SoundType.wood.rawValue, "wood")
+        XCTAssertEqual(SoundType.woodHi.rawValue, "woodHi")
+        XCTAssertEqual(SoundType.woodLo.rawValue, "woodLo")
     }
 
     func test_widgetCellInfoRawValues() {

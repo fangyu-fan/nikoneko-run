@@ -31,7 +31,7 @@ final class UserProfile {
 
     // Computed enum accessors
     var soundType: SoundType {
-        get { SoundType(rawValue: soundTypeRaw) ?? .tap }
+        get { SoundType(rawValue: soundTypeRaw) ?? .wood }
         set { soundTypeRaw = newValue.rawValue }
     }
     var timerMode: TimerMode {
