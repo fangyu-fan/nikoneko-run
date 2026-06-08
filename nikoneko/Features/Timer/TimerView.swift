@@ -210,6 +210,12 @@ struct TimerView: View {
                 }
                 ctx.insert(session)
                 try? ctx.save()
+                // Sync latest sessions to App Group so widgets read fresh data
+                let allSessions = (try? ctx.fetch(FetchDescriptor<RunSession>())) ?? []
+                AppGroupDefaults.writeSessionSummaries(
+                    from: allSessions,
+                    dailyGoalMinutes: profile?.dailyGoalMinutes ?? 20
+                )
                 WidgetCenter.shared.reloadAllTimelines()
                 savedSession = session
             }
