@@ -33,6 +33,10 @@ targets:
       - path: nikoneko/Characters
       - path: nikoneko/LiveActivity
       - path: nikoneko/Resources
+      - path: nikoneko/Widgets
+        excludes:
+          - NikoNekoWidgetBundle.swift
+          - Info.plist
     settings:
       base:
         INFOPLIST_FILE: nikoneko/App/Info.plist
@@ -107,6 +111,15 @@ targets:
     bundleId: com.fangyu.nikoneko.widgets
     sources:
       - path: nikoneko/Widgets
+      - path: nikoneko/Core
+        excludes:
+          - Models/RunSession.swift
+          - Models/UserProfile.swift
+          - Models/ThresholdConfig.swift
+          - WidgetTypes.swift
+          - LanguageManager.swift
+          - AppGroupDefaults+App.swift
+      - path: nikoneko/Characters
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.fangyu.nikoneko.widgets
