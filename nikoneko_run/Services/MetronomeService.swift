@@ -28,16 +28,23 @@ final class MetronomeService {
         engine.attach(player)
         engine.connect(player, to: engine.mainMixerNode, format: nil)
         engine.mainMixerNode.outputVolume = volume
-        // Configure category once at init time; do NOT activate here so we don't
-        // interrupt background music (Spotify, Apple Music, etc.) on app launch.
+        // Category configured at init; session NOT activated and engine NOT started
+        // here — both happen only when the user actually starts the metronome.
         try? AVAudioSession.sharedInstance().setCategory(
             .playback,
             options: [.mixWithOthers, .allowAirPlay, .allowBluetoothA2DP]
         )
-        try? engine.start()
     }
 
     private func loadBuffers() {
+        // Use a fixed 44100 Hz fallback since engine isn't running yet at init.
+        // Buffers are regenerated with the real hardware rate on first start().
+        let rate: Double = 44100
+        strongBuffer = synthesize(sampleRate: rate, high: true)
+        weakBuffer   = synthesize(sampleRate: rate, high: false)
+    }
+
+    private func reloadBuffersFromEngine() {
         let outputFormat = engine.mainMixerNode.outputFormat(forBus: 0)
         let rate = outputFormat.sampleRate > 0 ? outputFormat.sampleRate : 44100
         strongBuffer = synthesize(sampleRate: rate, high: true)
@@ -109,13 +116,14 @@ final class MetronomeService {
     // MARK: - Playback
 
     func start() {
-        // Activate the audio session only when the metronome is actually about to
-        // play — this prevents the app from claiming audio focus at launch.
         try? AVAudioSession.sharedInstance().setActive(true)
         isPlaying = true
         beatCount = 0
         if !engine.isRunning {
-            do { try engine.start() } catch {
+            do {
+                try engine.start()
+                reloadBuffersFromEngine()  // now we have the real hardware sample rate
+            } catch {
                 isPlaying = false
                 try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
                 return
@@ -183,6 +191,6 @@ final class MetronomeService {
 
     func updateSoundType(_ type: SoundType) {
         soundType = type
-        loadBuffers()
+        if engine.isRunning { reloadBuffersFromEngine() } else { loadBuffers() }
     }
 }

@@ -28,8 +28,7 @@ struct DefaultsView: View {
                 VStack(spacing: 0) {
                     stepperRow(icon: "flag", name: lm.L("defaults.row.dailyGoal"),
                                value: profile?.dailyGoalMinutes ?? 15,
-                               step: 5, range: 5...999,
-                               unit: lm.L("report.unit.min")) { v in
+                               step: 5, range: 5...999) { v in
                         profile?.dailyGoalMinutes = v
                         profile?.defaultDuration = v
                         try? ctx.save()
