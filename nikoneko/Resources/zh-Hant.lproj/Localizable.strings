@@ -206,3 +206,12 @@
 "character.title"             = "角色";
 "character.loaderCat"         = "貓貓";
 "character.badCat"            = "壞貓";
+
+/* Onboarding */
+"onboarding.card1.title"      = "設定節奏";
+"onboarding.card1.body"       = "選一個 BPM，跟著節拍慢跑。";
+"onboarding.card2.title"      = "每次都算數";
+"onboarding.card2.body"       = "時長、距離、心率，自動記錄。";
+"onboarding.card3.title"      = "選你的夥伴";
+"onboarding.card3.body"       = "連續跑步解鎖角色。";
+"onboarding.cta"              = "開始";

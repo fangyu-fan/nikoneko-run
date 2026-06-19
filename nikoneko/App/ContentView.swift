@@ -7,6 +7,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var ctx
     @Query private var profiles: [UserProfile]
     @State private var timerVM = TimerViewModel()
+    @State private var showOnboarding: Bool = !UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
     private var theme: ThemeTokens { themeManager.current }
 
     var body: some View {
@@ -49,6 +50,13 @@ struct ContentView: View {
             .navigationBarHidden(true)
         }
         .onAppear { ensureProfile() }
+        .fullScreenCover(isPresented: $showOnboarding) {
+            OnboardingView {
+                showOnboarding = false
+            }
+            .environment(themeManager)
+            .environment(languageManager)
+        }
     }
 
     private func ensureProfile() {
