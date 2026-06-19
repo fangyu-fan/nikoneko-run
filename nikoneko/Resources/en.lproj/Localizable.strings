@@ -117,7 +117,7 @@
 "defaults.section.time"       = "TIME";
 "defaults.section.beat"       = "BEAT";
 "defaults.row.duration"       = "Duration";
-"defaults.row.dailyGoal"      = "Daily Goal";
+"defaults.row.dailyGoal"      = "Daily Goal (min)";
 "defaults.row.bpm"            = "BPM";
 "defaults.row.sound"          = "Sound";
 "defaults.row.lockVolume"     = "Lock Volume";

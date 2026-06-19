@@ -294,6 +294,7 @@ struct DefaultsView: View {
                         Text(isMon ? lm.L("defaults.weekStart.monday") : lm.L("defaults.weekStart.sunday"))
                             .font(.system(size: 13))
                             .lineLimit(1)
+                            .fixedSize()
                             .foregroundColor(weekStartsOnMonday == isMon ? theme.text : theme.textMid)
                             .padding(.vertical, 5)
                             .padding(.horizontal, 10)

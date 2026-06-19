@@ -117,7 +117,7 @@
 "defaults.section.time"       = "時間";
 "defaults.section.beat"       = "節拍";
 "defaults.row.duration"       = "時長";
-"defaults.row.dailyGoal"      = "每日目標";
+"defaults.row.dailyGoal"      = "每日目標（分）";
 "defaults.row.bpm"            = "BPM";
 "defaults.row.sound"          = "音效";
 "defaults.row.lockVolume"     = "鎖定音量";
