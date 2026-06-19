@@ -11,13 +11,22 @@ struct ContentView: View {
     private var theme: ThemeTokens { themeManager.current }
 
     var body: some View {
+        if showOnboarding {
+            OnboardingView {
+                showOnboarding = false
+            }
+            .environment(themeManager)
+            .environment(languageManager)
+        } else {
+            mainView
+        }
+    }
+
+    private var mainView: some View {
         NavigationStack {
             ZStack {
                 theme.bg.ignoresSafeArea()
-
                 TimerView(vm: timerVM)
-
-                // Top-left: Report, Top-right: Settings — hidden while running
                 if timerVM.state == .idle {
                     VStack {
                         HStack {
@@ -50,18 +59,10 @@ struct ContentView: View {
             .navigationBarHidden(true)
         }
         .onAppear { ensureProfile() }
-        .fullScreenCover(isPresented: $showOnboarding) {
-            OnboardingView {
-                showOnboarding = false
-            }
-            .environment(themeManager)
-            .environment(languageManager)
-        }
     }
 
     private func ensureProfile() {
         guard profiles.isEmpty else {
-            // Restore saved language into LanguageManager on each launch
             if let lang = profiles.first?.language {
                 languageManager.apply(lang)
             }
