@@ -57,18 +57,19 @@ targets:
     info:
       path: nikoneko/App/Info.plist
       properties:
+        CFBundleDisplayName: "Niconeko Run"
         UILaunchScreen:
           UIColorName: ""
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
-        NSHealthShareUsageDescription: "nikoneko reads heart rate during runs."
-        NSHealthUpdateUsageDescription: "nikoneko saves workout data to Health."
-        NSMotionUsageDescription: "nikoneko tracks steps and distance."
-        NSBluetoothAlwaysUsageDescription: "nikoneko connects to heart rate monitors."
+        NSHealthShareUsageDescription: "Niconeko Run reads heart rate during runs."
+        NSHealthUpdateUsageDescription: "Niconeko Run saves workout data to Health."
+        NSMotionUsageDescription: "Niconeko Run tracks steps and distance."
+        NSBluetoothAlwaysUsageDescription: "Niconeko Run connects to heart rate monitors."
         UIBackgroundModes:
           - audio
           - location
-        NSLocationWhenInUseUsageDescription: "nikoneko uses location to track distance."
+        NSLocationWhenInUseUsageDescription: "Niconeko Run uses location to track distance."
     capabilities:
       healthKit: {}
       backgroundModes:
