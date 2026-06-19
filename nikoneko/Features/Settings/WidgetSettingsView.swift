@@ -47,7 +47,7 @@ struct WidgetSettingsView: View {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .frame(height: galleryFrameHeight)
-            .animation(.easeInOut, value: selectedIndex)
+            .animation(nil, value: selectedIndex)
             .tint(theme.accent)
 
             // Page indicator below the cards
@@ -118,21 +118,18 @@ struct WidgetSettingsView: View {
                         let mediumH = geo.size.width / (338.0 / 158.0)
                         widgetPreview(kind: w.kind, widgetTheme: theme)
                             .frame(width: mediumH, height: mediumH)
-                            .cornerRadius(16)
-                            .clipped()
+                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                             .frame(width: geo.size.width, height: mediumH, alignment: .center)
                     }
                     .frame(height: 145)
                 case "Medium":
                     widgetPreview(kind: w.kind, widgetTheme: theme)
                         .aspectRatio(338.0 / 158.0, contentMode: .fit)
-                        .cornerRadius(16)
-                        .clipped()
+                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                 default: // Large
                     widgetPreview(kind: w.kind, widgetTheme: theme)
                         .aspectRatio(338.0 / 354.0, contentMode: .fit)
-                        .cornerRadius(16)
-                        .clipped()
+                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
