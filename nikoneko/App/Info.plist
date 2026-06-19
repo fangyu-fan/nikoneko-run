@@ -8,8 +8,6 @@
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleDisplayName</key>
-	<string>Nikoneko Run</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -21,7 +19,7 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Nikoneko Run connects to heart rate monitors.</string>
+	<string>nikoneko connects to heart rate monitors.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>nikoneko reads heart rate during runs.</string>
 	<key>NSHealthUpdateUsageDescription</key>
@@ -34,7 +32,6 @@
 	<array>
 		<string>audio</string>
 		<string>location</string>
-		<string>remote-notification</string>
 	</array>
 	<key>UILaunchScreen</key>
 	<dict>

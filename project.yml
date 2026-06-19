@@ -1,4 +1,4 @@
-name: nikoneko
+name: nikoneko-run
 options:
   bundleIdPrefix: com.fangyu
   deploymentTarget:
@@ -47,7 +47,7 @@ targets:
         com.apple.developer.icloud-container-identifiers:
           - iCloud.com.fangyu.nikoneko
         com.apple.security.application-groups:
-          - group.com.fangyu.nikoneko
+          - group.com.fangyu.nikoneko-run
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
     info:
@@ -72,7 +72,7 @@ targets:
       push: {}
       appGroups:
         groups:
-          - group.com.fangyu.nikoneko
+          - group.com.fangyu.nikoneko-run
       iCloud:
         services:
           - cloudKit
@@ -116,7 +116,7 @@ targets:
       path: nikoneko/NikoNekoWidgets.entitlements
       properties:
         com.apple.security.application-groups:
-          - group.com.fangyu.nikoneko
+          - group.com.fangyu.nikoneko-run
     info:
       path: nikoneko/Widgets/Info.plist
       properties:
