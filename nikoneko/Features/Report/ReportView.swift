@@ -100,9 +100,6 @@ struct ReportView: View {
         }
         .onAppear {
             vm.isZh = lm.language == .traditionalChinese
-            #if DEBUG
-            injectSeedData()
-            #endif
             vm.loadSessions(sessions)
             let streak = vm.currentStreak
             if streak > 0 {
@@ -256,42 +253,6 @@ struct ReportView: View {
         }
         .padding(.horizontal, 18)
     }
-
-    #if DEBUG
-    @Environment(\.modelContext) private var modelContext
-    private func injectSeedData() {
-        guard sessions.isEmpty else { return }
-        let cal = Calendar.current
-        let now = Date()
-        let seeds: [(daysAgo: Int, mins: Double, km: Double, kcal: Double, steps: Int, hr: Int)] = [
-            (0, 25, 3.2, 180, 3200, 142), (1, 30, 3.8, 210, 3800, 148),
-            (2, 20, 2.5, 140, 2500, 135), (4, 35, 4.5, 250, 4500, 155),
-            (5, 28, 3.5, 195, 3500, 144), (7, 32, 4.0, 220, 4000, 150),
-            (8, 15, 1.8, 100, 1800, 128), (10, 40, 5.1, 280, 5100, 158),
-            (11, 22, 2.8, 155, 2800, 138), (13, 30, 3.8, 210, 3800, 147),
-            (14, 18, 2.2, 122, 2200, 132), (16, 35, 4.4, 245, 4400, 153),
-            (17, 27, 3.4, 188, 3400, 143), (19, 31, 3.9, 216, 3900, 149),
-            (20, 24, 3.0, 167, 3000, 140), (22, 38, 4.8, 265, 4800, 157),
-            (23, 20, 2.5, 139, 2500, 134), (25, 33, 4.2, 232, 4200, 151),
-            (26, 28, 3.5, 194, 3500, 145), (28, 26, 3.3, 183, 3300, 142),
-        ]
-        for s in seeds {
-            let date = cal.date(byAdding: .day, value: -s.daysAgo, to: now)!
-            let session = RunSession(
-                startDate: cal.date(bySettingHour: 7, minute: Int.random(in: 0...59), second: 0, of: date)!,
-                duration: s.mins * 60,
-                distance: s.km * 1000,
-                calories: s.kcal,
-                steps: s.steps,
-                avgHR: s.hr,
-                maxHR: s.hr + Int.random(in: 5...15),
-                avgCadence: Int.random(in: 165...180)
-            )
-            modelContext.insert(session)
-        }
-        try? modelContext.save()
-    }
-    #endif
 
     private var streakToast: some View {
         let streak = vm.currentStreak
