@@ -26,25 +26,25 @@ targets:
     deploymentTarget: "17.0"
     bundleId: com.fangyu.nikoneko
     sources:
-      - path: nikoneko/App
-      - path: nikoneko/Core
-      - path: nikoneko/Features
-      - path: nikoneko/Services
-      - path: nikoneko/Characters
-      - path: nikoneko/LiveActivity
-      - path: nikoneko/Resources
-      - path: nikoneko/Widgets
+      - path: nikoneko_run/App
+      - path: nikoneko_run/Core
+      - path: nikoneko_run/Features
+      - path: nikoneko_run/Services
+      - path: nikoneko_run/Characters
+      - path: nikoneko_run/LiveActivity
+      - path: nikoneko_run/Resources
+      - path: nikoneko_run/Widgets
         excludes:
           - NikoNekoWidgetBundle.swift
           - Info.plist
     settings:
       base:
-        INFOPLIST_FILE: nikoneko/App/Info.plist
+        INFOPLIST_FILE: nikoneko_run/App/Info.plist
         PRODUCT_BUNDLE_IDENTIFIER: com.fangyu.nikoneko
         SWIFT_VERSION: 6.0
         DEVELOPMENT_TEAM: B58R97M2WC
     entitlements:
-      path: nikoneko/nikoneko.entitlements
+      path: nikoneko_run/nikoneko.entitlements
       properties:
         com.apple.developer.icloud-services:
           - CloudKit
@@ -55,7 +55,7 @@ targets:
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
     info:
-      path: nikoneko/App/Info.plist
+      path: nikoneko_run/App/Info.plist
       properties:
         CFBundleDisplayName: "Niconeko Run"
         UILaunchScreen:
@@ -96,7 +96,7 @@ targets:
     deploymentTarget: "17.0"
     bundleId: com.fangyu.nikoneko.tests
     sources:
-      - path: nikoneko/Tests
+      - path: nikoneko_run/Tests
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.fangyu.nikoneko.tests
@@ -111,8 +111,8 @@ targets:
     deploymentTarget: "17.0"
     bundleId: com.fangyu.nikoneko.widgets
     sources:
-      - path: nikoneko/Widgets
-      - path: nikoneko/Core
+      - path: nikoneko_run/Widgets
+      - path: nikoneko_run/Core
         excludes:
           - Models/RunSession.swift
           - Models/UserProfile.swift
@@ -120,19 +120,19 @@ targets:
           - WidgetTypes.swift
           - LanguageManager.swift
           - AppGroupDefaults+App.swift
-      - path: nikoneko/Characters
+      - path: nikoneko_run/Characters
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.fangyu.nikoneko.widgets
         SWIFT_VERSION: 6.0
         NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:
-      path: nikoneko/NikoNekoWidgets.entitlements
+      path: nikoneko_run/NikoNekoWidgets.entitlements
       properties:
         com.apple.security.application-groups:
           - group.com.fangyu.nikoneko-run
     info:
-      path: nikoneko/Widgets/Info.plist
+      path: nikoneko_run/Widgets/Info.plist
       properties:
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
