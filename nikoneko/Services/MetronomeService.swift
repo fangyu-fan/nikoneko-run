@@ -28,9 +28,13 @@ final class MetronomeService {
         engine.attach(player)
         engine.connect(player, to: engine.mainMixerNode, format: nil)
         engine.mainMixerNode.outputVolume = volume
+        // Configure category once at init time; do NOT activate here so we don't
+        // interrupt background music (Spotify, Apple Music, etc.) on app launch.
+        try? AVAudioSession.sharedInstance().setCategory(
+            .playback,
+            options: [.mixWithOthers, .allowAirPlay, .allowBluetoothA2DP]
+        )
         try? engine.start()
-        try? AVAudioSession.sharedInstance().setCategory(.playback, options: .mixWithOthers)
-        try? AVAudioSession.sharedInstance().setActive(true)
     }
 
     private func loadBuffers() {
@@ -105,10 +109,17 @@ final class MetronomeService {
     // MARK: - Playback
 
     func start() {
+        // Activate the audio session only when the metronome is actually about to
+        // play — this prevents the app from claiming audio focus at launch.
+        try? AVAudioSession.sharedInstance().setActive(true)
         isPlaying = true
         beatCount = 0
         if !engine.isRunning {
-            do { try engine.start() } catch { isPlaying = false; return }
+            do { try engine.start() } catch {
+                isPlaying = false
+                try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+                return
+            }
         }
         nextBeatTime = AVAudioTime(hostTime: mach_absolute_time())
         scheduleBeat()
@@ -144,15 +155,21 @@ final class MetronomeService {
         beatCount = 0
         player.stop()
         nextBeatTime = nil
+        // Yield audio focus so other apps (Spotify, Apple Music, etc.) can resume.
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
 
     func pause() {
         isPlaying = false
         player.stop()  // clears the buffer queue to prevent overlap on resume
         nextBeatTime = nil
+        // Yield audio focus while paused.
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
 
     func resume() {
+        // Re-acquire audio focus before scheduling beats.
+        try? AVAudioSession.sharedInstance().setActive(true)
         isPlaying = true
         if !engine.isRunning {
             try? engine.start()

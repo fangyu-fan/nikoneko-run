@@ -126,8 +126,8 @@
 "defaults.sound.bell"         = "Bell";
 "defaults.sound.drum"         = "Drum";
 "defaults.sound.wood"         = "Mid";
-"defaults.sound.woodHi"       = "Hi";
-"defaults.sound.woodLo"       = "Lo";
+"defaults.sound.woodHi"       = "High";
+"defaults.sound.woodLo"       = "Low";
 
 /* Widget settings */
 "widget.title"                = "Widget";
@@ -206,3 +206,12 @@
 "character.title"             = "Characters";
 "character.loaderCat"         = "Loader Cat";
 "character.badCat"            = "Bad Cat";
+
+/* Onboarding */
+"onboarding.card1.title"      = "Set your pace";
+"onboarding.card1.body"       = "Pick a BPM and let the beat guide your slow jog.";
+"onboarding.card2.title"      = "Every run counts";
+"onboarding.card2.body"       = "Duration, distance, and heart rate — logged automatically.";
+"onboarding.card3.title"      = "Choose your companion";
+"onboarding.card3.body"       = "Unlock characters as your streak grows.";
+"onboarding.cta"              = "Start";
