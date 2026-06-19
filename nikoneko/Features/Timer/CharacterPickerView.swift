@@ -55,6 +55,7 @@ struct CharacterPickerView: View {
                 LottieCharacterView(
                     characterId: char.id,
                     color: theme.accentMid,
+                    shadowColor: theme.accentDim,
                     bpm: 160,
                     isAnimating: isSelected
                 )

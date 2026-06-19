@@ -83,6 +83,7 @@ struct TimerView: View {
                 LottieCharacterView(
                     characterId: profile?.activeCharacterId ?? "loader_cat",
                     color: theme.accentMid,
+                    shadowColor: theme.accentDim,
                     bpm: bpm,
                     isAnimating: vm.state == .running
                 )

@@ -32,6 +32,7 @@ struct SummaryView: View {
 
             LottieCharacterView(
                 color: theme.accentMid,
+                shadowColor: theme.accentDim,
                 bpm: 240,
                 isAnimating: true
             )

@@ -14,6 +14,7 @@ struct LottieTrophyView: View {
 struct LottieCharacterView: View {
     var characterId: String = "loader_cat"
     let color: Color
+    var shadowColor: Color? = nil  // loader_cat tail shadow / ground shadow; falls back to color
     let bpm: Int
     let isAnimating: Bool
 
@@ -43,6 +44,8 @@ struct LottieCharacterView: View {
         if let url = Bundle.main.url(forResource: lottieFileName, withExtension: "json") {
             let uiColor = UIColor(color)
             let colorProvider = ColorValueProvider(uiColor.lottieColorValue)
+            let shadowUIColor = UIColor(shadowColor ?? color)
+            let shadowProvider = ColorValueProvider(shadowUIColor.lottieColorValue)
             LottieView(animation: .filepath(url.path))
                 .configure { view in
                     view.contentMode = .scaleAspectFit
@@ -50,6 +53,9 @@ struct LottieCharacterView: View {
                 .valueProvider(colorProvider, for: AnimationKeypath(keypath: "**.Fill 1.Color"))
                 .valueProvider(colorProvider, for: AnimationKeypath(keypath: "**.Fill 2.Color"))
                 .valueProvider(colorProvider, for: AnimationKeypath(keypath: "**.Stroke 1.Color"))
+                // loader_cat shadow layers — tail shadow stroke + ground ellipse fill
+                .valueProvider(shadowProvider, for: AnimationKeypath(keypath: "**.Queue Ombre.**.Stroke 1.Color"))
+                .valueProvider(shadowProvider, for: AnimationKeypath(keypath: "**.Ombre.**.Fill 1.Color"))
                 .animationSpeed(animationSpeed)
                 .playing(isAnimating
                     ? .fromProgress(0, toProgress: 1, loopMode: .loop)
