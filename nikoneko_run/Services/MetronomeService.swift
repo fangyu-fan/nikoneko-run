@@ -28,12 +28,18 @@ final class MetronomeService {
         engine.attach(player)
         engine.connect(player, to: engine.mainMixerNode, format: nil)
         engine.mainMixerNode.outputVolume = volume
-        // Category configured at init; session NOT activated and engine NOT started
-        // here — both happen only when the user actually starts the metronome.
+        // Do NOT touch AVAudioSession here — any setCategory call at init time
+        // interrupts background music even without setActive(true).
+        // Session is configured lazily in activateAudioSession(), called only
+        // when the user actually starts the metronome.
+    }
+
+    private func activateAudioSession() {
         try? AVAudioSession.sharedInstance().setCategory(
             .playback,
             options: [.mixWithOthers, .allowAirPlay, .allowBluetoothA2DP]
         )
+        try? AVAudioSession.sharedInstance().setActive(true)
     }
 
     private func loadBuffers() {
@@ -116,13 +122,13 @@ final class MetronomeService {
     // MARK: - Playback
 
     func start() {
-        try? AVAudioSession.sharedInstance().setActive(true)
+        activateAudioSession()
         isPlaying = true
         beatCount = 0
         if !engine.isRunning {
             do {
                 try engine.start()
-                reloadBuffersFromEngine()  // now we have the real hardware sample rate
+                reloadBuffersFromEngine()
             } catch {
                 isPlaying = false
                 try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
@@ -176,13 +182,11 @@ final class MetronomeService {
     }
 
     func resume() {
-        // Re-acquire audio focus before scheduling beats.
-        try? AVAudioSession.sharedInstance().setActive(true)
+        activateAudioSession()
         isPlaying = true
         if !engine.isRunning {
             try? engine.start()
         }
-        // Re-schedule from now so no gap or overlap
         nextBeatTime = AVAudioTime(hostTime: mach_absolute_time())
         scheduleBeat()
     }
