@@ -4,7 +4,7 @@ import HealthKit
 @Observable
 @MainActor
 final class HeartRateService {
-    enum HRSource: Equatable { case watch, ble, none }
+    enum HRSource: Equatable { case watch, none }
 
     private(set) var currentHR: Int = 0
     private(set) var avgHR: Int = 0
@@ -18,11 +18,15 @@ final class HeartRateService {
 
     func startMonitoring() {
         samples = []
-        currentHR = 0; avgHR = 0; maxHR = 0
+        currentHR = 0; avgHR = 0; maxHR = 0; source = .none
+        guard HKHealthStore.isHealthDataAvailable() else { return }
+        startHealthKitQuery()
+    }
 
-        if HKHealthStore.isHealthDataAvailable() {
-            startHealthKitQuery()
-        }
+    func stopMonitoring() {
+        if let q = anchoredQuery { store.stop(q) }
+        anchoredQuery = nil
+        source = .none
     }
 
     private func startHealthKitQuery() {
@@ -50,22 +54,17 @@ final class HeartRateService {
     }
 
     private func processHKSamples(_ hkSamples: [HKQuantitySample]?) {
-        guard let hkSamples else { return }
-        let unit = HKUnit.count().unitDivided(by: .minute())
+        guard let hkSamples, !hkSamples.isEmpty else { return }
+        let unit = HKUnit(from: "count/min")
         hkSamples.map { Int($0.quantity.doubleValue(for: unit)) }.forEach { simulateSample(hr: $0) }
     }
 
+    // Used by unit tests and for injecting HR values in debug/preview contexts.
     func simulateSample(hr: Int) {
-        currentHR = hr
         samples.append(hr)
-        maxHR = max(maxHR, hr)
+        currentHR = hr
+        if hr > maxHR { maxHR = hr }
         avgHR = samples.reduce(0, +) / samples.count
         if source == .none { source = .watch }
-    }
-
-    func stopMonitoring() {
-        if let q = anchoredQuery { store.stop(q) }
-        anchoredQuery = nil
-        source = .none
     }
 }

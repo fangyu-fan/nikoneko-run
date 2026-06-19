@@ -20,8 +20,6 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Niconeko Run connects to heart rate monitors.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>Niconeko Run reads heart rate during runs.</string>
 	<key>NSHealthUpdateUsageDescription</key>

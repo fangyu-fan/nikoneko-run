@@ -39,7 +39,6 @@
 		575A6E0A6F74B758F3BBEAB9 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE56B4A442C67A3F92C2DDEC /* ThemeManager.swift */; };
 		5973A20B6396FE89CB1878AB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3F5FE2378FE34F4AECFC5F /* SettingsView.swift */; };
 		59845CF0ABDAB69E86B65CFC /* ReportViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA81960393AABD848F96B250 /* ReportViewModelTests.swift */; };
-		5C9F2C06547B5993C418CEBF /* BLEHeartRateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910333E0713BD97F4D61E05E /* BLEHeartRateManager.swift */; };
 		5CB153DF3256EA7E2500C0C0 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DA000BDF804808817A188E3 /* TimerView.swift */; };
 		5D34C5A1DB07A483685128D6 /* WidgetDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E939ADC1B0268AC8E50377A5 /* WidgetDataTests.swift */; };
 		608A538B277628246DC82BE8 /* BarColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70890FC411099E4B4D869D9D /* BarColorTests.swift */; };
@@ -150,7 +149,7 @@
 		3DEB58B584691F812FCE3FA8 /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
 		3F128697330A9DCBE0111098 /* HeartRateServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateServiceTests.swift; sourceTree = "<group>"; };
 		3F42CF6C52FCCE7C9D5EE995 /* MetronomeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeService.swift; sourceTree = "<group>"; };
-		4092B86F4B9838A42CB4EC87 /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
+		4092B86F4B9838A42CB4EC87 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		4593F302764A66A3C1FA2B66 /* StatWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatWidget.swift; sourceTree = "<group>"; };
 		490F883C38011D033F56149B /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
 		495B748BA95AA1C38AE0ACC2 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -168,18 +167,17 @@
 		6C13ED6BC9690B8BAD1C293D /* MotionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionService.swift; sourceTree = "<group>"; };
 		6DA000BDF804808817A188E3 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		70890FC411099E4B4D869D9D /* BarColorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarColorTests.swift; sourceTree = "<group>"; };
-		71D2FA86F770B4C318865C59 /* nikoneko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nikoneko.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		71D2FA86F770B4C318865C59 /* nikoneko.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = nikoneko.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78B6343558BD9688E80FDA8B /* DrumPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrumPickerView.swift; sourceTree = "<group>"; };
 		794BBFC86D73BEA2E96E6423 /* WidgetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTheme.swift; sourceTree = "<group>"; };
 		804E8509F10256D89DD44B65 /* CharacterPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterPickerView.swift; sourceTree = "<group>"; };
 		825E9C61C670A6E83FA35AB3 /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
-		851219F02A5812D69C0A0F7D /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
+		851219F02A5812D69C0A0F7D /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		867D74EA379E7D40AC574AA4 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
 		86F91B7FA58805B940A4FA71 /* AppGroupDefaults+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppGroupDefaults+App.swift"; sourceTree = "<group>"; };
 		888DF2FE51B76083773D44DE /* BarChartWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartWidget.swift; sourceTree = "<group>"; };
 		8B58C26204FD4FB69A1A152E /* Loader cat.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Loader cat.json"; sourceTree = "<group>"; };
 		8C42A970F271028A75659A3A /* HeatmapWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapWidget.swift; sourceTree = "<group>"; };
-		910333E0713BD97F4D61E05E /* BLEHeartRateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEHeartRateManager.swift; sourceTree = "<group>"; };
 		92204FB8054C341F2E7DF3E2 /* DataSyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSyncView.swift; sourceTree = "<group>"; };
 		961CB9E3CB2ADE59EA7511F6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9A60E9F3704F3567458738D1 /* LottieCharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieCharacterView.swift; sourceTree = "<group>"; };
@@ -296,7 +294,6 @@
 		2A21E3DC8CD2453FEA4EBC09 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				910333E0713BD97F4D61E05E /* BLEHeartRateManager.swift */,
 				867D74EA379E7D40AC574AA4 /* HealthKitService.swift */,
 				F6C01E2FED6A6B3BE96A2614 /* HeartRateService.swift */,
 				54827D3C3293DBBCF93D01C5 /* LiveActivityService.swift */,
@@ -565,6 +562,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
+					1B16E05F2284765C9C4D3B33 = {
+						DevelopmentTeam = RD7PKRJWKK;
+					};
 					65A79B967CF501C538F52FDB = {
 						DevelopmentTeam = RD7PKRJWKK;
 					};
@@ -661,7 +661,6 @@
 				A4922B5A40DC2DB2561F1B7C /* AppGroupDefaults+App.swift in Sources */,
 				DB80E2661E2EBCA3430DFCA3 /* AppGroupDefaults.swift in Sources */,
 				385A314ECAC9F2A1D867215E /* AppearanceView.swift in Sources */,
-				5C9F2C06547B5993C418CEBF /* BLEHeartRateManager.swift in Sources */,
 				50BED7E902075ADC00EC7D52 /* BPMPanelView.swift in Sources */,
 				8146DE555F267430728A45E8 /* BarChartView.swift in Sources */,
 				6D4A455696757587BAA61039 /* BarChartWidget.swift in Sources */,
@@ -827,7 +826,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = nikoneko_run/nikoneko.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = W3L4T944MU;
+				DEVELOPMENT_TEAM = RD7PKRJWKK;
 				INFOPLIST_FILE = nikoneko_run/App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -911,7 +910,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = nikoneko_run/nikoneko.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = W3L4T944MU;
+				DEVELOPMENT_TEAM = RD7PKRJWKK;
 				INFOPLIST_FILE = nikoneko_run/App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (

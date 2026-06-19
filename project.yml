@@ -65,7 +65,6 @@ targets:
         NSHealthShareUsageDescription: "Niconeko Run reads heart rate during runs."
         NSHealthUpdateUsageDescription: "Niconeko Run saves workout data to Health."
         NSMotionUsageDescription: "Niconeko Run tracks steps and distance."
-        NSBluetoothAlwaysUsageDescription: "Niconeko Run connects to heart rate monitors."
         UIBackgroundModes:
           - audio
           - location
