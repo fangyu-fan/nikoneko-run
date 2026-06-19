@@ -100,7 +100,7 @@ struct DataSyncView: View {
         .alert(lm.L("dataSync.import.error"), isPresented: $showImportError) {
             Button("OK", role: .cancel) {}
         }
-        .confirmationDialog(lm.L("dataSync.confirm.title"), isPresented: $showDeleteConfirm, titleVisibility: .visible) {
+        .alert(lm.L("dataSync.confirm.title"), isPresented: $showDeleteConfirm) {
             Button(lm.L("dataSync.confirm.delete"), role: .destructive) {
                 for session in sessions { ctx.delete(session) }
                 try? ctx.save()
