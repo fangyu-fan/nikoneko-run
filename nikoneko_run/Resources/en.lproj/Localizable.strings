@@ -208,10 +208,27 @@
 "character.badCat"            = "Bad Cat";
 
 /* Onboarding */
-"onboarding.card1.title"      = "Set your pace";
-"onboarding.card1.body"       = "Pick a BPM and let the beat guide your slow jog.";
-"onboarding.card2.title"      = "Every run counts";
-"onboarding.card2.body"       = "Duration, distance, and heart rate — logged automatically.";
-"onboarding.card3.title"      = "Choose your companion";
-"onboarding.card3.body"       = "Unlock characters as your streak grows.";
-"onboarding.cta"              = "Start";
+"onboarding.next"                    = "Next";
+"onboarding.cta.start"               = "Start running";
+
+"onboarding.lang.title"              = "Language";
+
+"onboarding.notif.title"             = "Daily reminder";
+"onboarding.notif.body"              = "Pick a time and we'll nudge you.";
+
+"onboarding.perms.title"             = "A few permissions";
+"onboarding.perms.body"              = "These help us track your runs accurately.";
+"onboarding.perms.health.name"       = "Apple Health";
+"onboarding.perms.health.desc"       = "Heart rate and workout data";
+"onboarding.perms.motion.name"       = "Motion";
+"onboarding.perms.motion.desc"       = "Steps and distance";
+"onboarding.perms.notif.name"        = "Notifications";
+"onboarding.perms.notif.desc"        = "Daily reminder";
+"onboarding.perms.notif.skipped"     = "Skipped";
+"onboarding.perms.status.pending"    = "Allow";
+"onboarding.perms.status.granted"    = "Allowed";
+"onboarding.perms.status.denied"     = "Denied";
+"onboarding.perms.cta"               = "Allow All";
+
+/* DataSync */
+"dataSync.healthkit.disabled"        = "Heart rate and workout data won't appear in reports.";

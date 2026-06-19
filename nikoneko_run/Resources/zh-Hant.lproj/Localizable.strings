@@ -208,10 +208,27 @@
 "character.badCat"            = "壞貓";
 
 /* Onboarding */
-"onboarding.card1.title"      = "設定節奏";
-"onboarding.card1.body"       = "選一個 BPM，跟著節拍慢跑。";
-"onboarding.card2.title"      = "每次都算數";
-"onboarding.card2.body"       = "時長、距離、心率，自動記錄。";
-"onboarding.card3.title"      = "選你的夥伴";
-"onboarding.card3.body"       = "連續跑步解鎖角色。";
-"onboarding.cta"              = "開始";
+"onboarding.next"                    = "下一步";
+"onboarding.cta.start"               = "開始跑步";
+
+"onboarding.lang.title"              = "語言";
+
+"onboarding.notif.title"             = "每日提醒";
+"onboarding.notif.body"              = "選一個時間，我們會提醒你。";
+
+"onboarding.perms.title"             = "需要幾個權限";
+"onboarding.perms.body"              = "讓記錄更完整。";
+"onboarding.perms.health.name"       = "Apple 健康";
+"onboarding.perms.health.desc"       = "心率與運動記錄";
+"onboarding.perms.motion.name"       = "動作與健身";
+"onboarding.perms.motion.desc"       = "步數與距離";
+"onboarding.perms.notif.name"        = "通知";
+"onboarding.perms.notif.desc"        = "每日提醒";
+"onboarding.perms.notif.skipped"     = "已略過";
+"onboarding.perms.status.pending"    = "允許";
+"onboarding.perms.status.granted"    = "已允許";
+"onboarding.perms.status.denied"     = "已拒絕";
+"onboarding.perms.cta"               = "允許所有";
+
+/* DataSync */
+"dataSync.healthkit.disabled"        = "報表將缺少心率與運動資料。";
