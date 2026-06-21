@@ -24,7 +24,6 @@ struct OnboardingView: View {
     @State private var motionStatus: PermStatus = .pending
     @State private var notifStatus: PermStatus = .pending
     @State private var isRequesting: Bool = false
-    // Tracks language selection locally so UI responds immediately
     @State private var selectedLanguage: AppLanguage = .english
 
     private var theme: ThemeTokens { themeManager.current }
@@ -43,14 +42,10 @@ struct OnboardingView: View {
 
                 GeometryReader { geo in
                     HStack(spacing: 0) {
-                        languagePage
-                            .frame(width: geo.size.width)
-                        themePage
-                            .frame(width: geo.size.width)
-                        pacePage
-                            .frame(width: geo.size.width)
-                        notifPermsPage
-                            .frame(width: geo.size.width)
+                        languagePage.frame(width: geo.size.width)
+                        themePage.frame(width: geo.size.width)
+                        pacePage.frame(width: geo.size.width)
+                        notifPermsPage.frame(width: geo.size.width)
                     }
                     .frame(width: geo.size.width * CGFloat(totalPages), alignment: .leading)
                     .offset(x: -geo.size.width * CGFloat(page))
@@ -62,7 +57,6 @@ struct OnboardingView: View {
         }
         .id(lm.version)
         .onAppear {
-            // Ensure profile exists before onboarding tries to write to it
             if profiles.isEmpty {
                 let p = UserProfile()
                 ctx.insert(p)
@@ -114,6 +108,7 @@ struct OnboardingView: View {
     }
 
     private func langOption(label: String, lang: AppLanguage) -> some View {
+        // selected is driven by local @State — no SwiftData round-trip delay
         let selected = selectedLanguage == lang
         return Button {
             selectedLanguage = lang
@@ -132,10 +127,9 @@ struct OnboardingView: View {
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .stroke(selected ? theme.accent : Color.clear, lineWidth: 1.5)
                 )
+                .animation(.easeInOut(duration: 0.15), value: selected)
         }
         .buttonStyle(.plain)
-        // Force re-render when selectedLanguage changes (independent of lm.version rebuild)
-        .id(lang.rawValue + (selected ? "_on" : "_off"))
     }
 
     // MARK: - Page 2: Theme
@@ -144,8 +138,12 @@ struct OnboardingView: View {
         let saved = UserDefaults.standard.string(forKey: "activeThemeId") ?? "moss"
         return ThemeLibrary.all.firstIndex(where: { $0.id == saved }) ?? 0
     }()
-    @State private var dragOffset: CGFloat = 0
-    @State private var isDragging: Bool = false
+    // Continuous drag progress in card-units (positive = dragging left/forward)
+    @State private var carouselDrag: CGFloat = 0
+
+    private let cardSize: CGFloat = 96      // all cards same size
+    private let cardStep: CGFloat = 104     // card + gap between card centres
+    private let visibleCount = 5            // -2…+2
 
     private var themePage: some View {
         VStack(spacing: 0) {
@@ -185,87 +183,56 @@ struct OnboardingView: View {
         }
     }
 
-    // Card width constants
-    private let cardWidthCenter: CGFloat = 106
-    private let cardWidthSide: CGFloat = 82
-    private let cardWidthFar: CGFloat = 64
-    private let cardSpacing: CGFloat = 8
-
     private var themeCarousel: some View {
-        let cardW = cardWidthCenter
-        // Each step = one card width + spacing (approximate)
-        let stepWidth: CGFloat = cardWidthSide + cardSpacing
+        let count = ThemeLibrary.all.count
 
-        return GeometryReader { geo in
-            let count = ThemeLibrary.all.count
-            // Build visible range: center ± 2
-            let slots = (-2...2).map { offset -> (Int, Int) in
+        return ZStack {
+            // Fixed centre ring — never moves
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(theme.accent.opacity(0.6), lineWidth: 1.5)
+                .frame(width: cardSize, height: cardSize + 22)
+
+            // Cards slide underneath the ring
+            ForEach(-2...2, id: \.self) { offset in
                 let idx = ((selectedThemeIndex + offset) % count + count) % count
-                return (offset, idx)
+                let t = ThemeLibrary.all[idx]
+                // continuous x position: offset - drag progress in card units
+                let x = (CGFloat(offset) - carouselDrag) * cardStep
+                themeCard(t, width: cardSize)
+                    .offset(x: x)
             }
-
-            ZStack {
-                ForEach(slots, id: \.0) { (offset, idx) in
-                    let t = ThemeLibrary.all[idx]
-                    let isCenter = offset == 0
-                    let continuousOffset = dragOffset / stepWidth
-                    let effectiveOffset = CGFloat(offset) - continuousOffset
-                    let scale: CGFloat = max(0.7, 1.0 - abs(effectiveOffset) * 0.14)
-                    let xPos = geo.size.width / 2 + effectiveOffset * (cardWidthSide + cardSpacing)
-
-                    themeCard(t, isCenter: isCenter, width: isCenter ? cardW : (abs(offset) == 1 ? cardWidthSide : cardWidthFar))
-                        .scaleEffect(scale)
-                        .position(x: xPos, y: 60)
-                        .onTapGesture {
-                            if offset != 0 {
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
-                                    selectTheme(at: idx)
-                                }
-                            }
-                        }
-                }
-            }
-            .frame(height: 120)
-            .clipped()
-            .gesture(
-                DragGesture(minimumDistance: 4)
-                    .onChanged { value in
-                        isDragging = true
-                        dragOffset = -value.translation.width
-                    }
-                    .onEnded { value in
-                        isDragging = false
-                        let velocity = value.predictedEndTranslation.width - value.translation.width
-                        let threshold: CGFloat = 30
-                        let shouldAdvance = -value.translation.width > threshold || velocity < -80
-                        let shouldReverse = -value.translation.width < -threshold || velocity > 80
-
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
-                            dragOffset = 0
-                            if shouldAdvance {
-                                selectTheme(at: (selectedThemeIndex + 1) % count)
-                            } else if shouldReverse {
-                                selectTheme(at: (selectedThemeIndex - 1 + count) % count)
-                            }
-                        }
-                    }
-            )
         }
-        .frame(height: 120)
+        .frame(width: cardStep * CGFloat(visibleCount), height: cardSize + 22)
+        .clipped()
+        .gesture(
+            DragGesture(minimumDistance: 4)
+                .onChanged { value in
+                    // drag is in points; convert to card-units
+                    carouselDrag = value.translation.width / -cardStep
+                }
+                .onEnded { value in
+                    // velocity in card-units/s
+                    let velocity = value.predictedEndTranslation.width / -cardStep
+                    let raw = carouselDrag + velocity * 0.18
+                    let steps = Int(raw.rounded())
+                    let target = ((selectedThemeIndex + steps) % count + count) % count
+                    withAnimation(.easeOut(duration: 0.22)) {
+                        carouselDrag = 0
+                        selectTheme(at: target)
+                    }
+                }
+        )
     }
 
-    private func themeCard(_ t: ThemeTokens, isCenter: Bool, width: CGFloat) -> some View {
-        let barHeight: CGFloat = isCenter ? 11 : 9
-        let cardHeight: CGFloat = isCenter ? 100 : 88
-        let nameSize: CGFloat = isCenter ? 11 : 10
-        return VStack(spacing: 0) {
+    private func themeCard(_ t: ThemeTokens, width: CGFloat) -> some View {
+        VStack(spacing: 0) {
             Rectangle()
                 .fill(t.bg)
-                .frame(width: width, height: cardHeight - (isCenter ? 26 : 22))
+                .frame(width: width, height: width - 22)
                 .overlay(alignment: .bottom) {
                     HStack(spacing: 2) {
                         ForEach(t.bar.indices, id: \.self) { i in
-                            Rectangle().fill(t.bar[i]).frame(height: barHeight)
+                            Rectangle().fill(t.bar[i]).frame(height: 10)
                         }
                     }
                     .padding(.horizontal, 8)
@@ -273,20 +240,16 @@ struct OnboardingView: View {
                 }
             Rectangle()
                 .fill(t.bg)
-                .frame(width: width, height: isCenter ? 26 : 22)
+                .frame(width: width, height: 22)
                 .overlay {
                     Text(themeDisplayName(t.id))
-                        .font(.system(size: nameSize, weight: .medium))
+                        .font(.system(size: 10, weight: .medium))
                         .foregroundColor(t.text)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                 }
         }
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .stroke(isCenter ? Color.white.opacity(0.55) : Color.clear, lineWidth: 1.5)
-        )
     }
 
     private var themeDots: some View {
@@ -298,9 +261,7 @@ struct OnboardingView: View {
                     .frame(width: i == selectedThemeIndex ? 14 : (dist == 1 ? 5 : 3), height: 3)
                     .animation(.easeInOut(duration: 0.2), value: selectedThemeIndex)
                     .onTapGesture {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
-                            selectTheme(at: i)
-                        }
+                        withAnimation(.easeOut(duration: 0.22)) { selectTheme(at: i) }
                     }
             }
         }
@@ -341,16 +302,16 @@ struct OnboardingView: View {
     @State private var bpm: Int = 180
     @State private var goalMinutes: Int = 20
     @State private var selectedSound: SoundType = .wood
-    @State private var metronomeOn: Bool = true
+    @State private var metronomeOn: Bool = false   // off by default, turned on in onAppear
     private let previewMetronome = MetronomeService()
 
     private var pacePage: some View {
         VStack(spacing: 0) {
             Spacer()
 
+            // Mute toggle top-right
             HStack {
                 Spacer()
-                // Mute toggle — top right
                 Button {
                     metronomeOn.toggle()
                     if metronomeOn {
@@ -362,8 +323,9 @@ struct OnboardingView: View {
                 } label: {
                     Image(systemName: metronomeOn ? "speaker.wave.2" : "speaker.slash")
                         .font(.system(size: 16, weight: .light))
-                        .foregroundColor(theme.textMid)
+                        .foregroundColor(metronomeOn ? theme.accent : theme.textMid)
                         .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
             }
@@ -398,7 +360,6 @@ struct OnboardingView: View {
                     .tracking(-2)
                     .foregroundColor(theme.text)
                     .monospacedDigit()
-
                 bpmSlider
             }
             .padding(.horizontal, 32)
@@ -413,9 +374,7 @@ struct OnboardingView: View {
                     HStack(spacing: 12) {
                         paceStepButton("−") {
                             goalMinutes = max(5, goalMinutes - 5)
-                            profile?.dailyGoalMinutes = goalMinutes
-                            profile?.defaultDuration = goalMinutes
-                            try? ctx.save()
+                            saveGoal()
                         }
                         HStack(alignment: .firstTextBaseline, spacing: 3) {
                             Text("\(goalMinutes)")
@@ -428,9 +387,7 @@ struct OnboardingView: View {
                         }
                         paceStepButton("+") {
                             goalMinutes = min(120, goalMinutes + 5)
-                            profile?.dailyGoalMinutes = goalMinutes
-                            profile?.defaultDuration = goalMinutes
-                            try? ctx.save()
+                            saveGoal()
                         }
                     }
                 }
@@ -454,17 +411,26 @@ struct OnboardingView: View {
             .padding(.bottom, 52)
         }
         .onAppear {
+            // Read from profile (guaranteed to exist after body.onAppear)
             bpm = profile?.defaultBPM ?? 180
             goalMinutes = profile?.dailyGoalMinutes ?? 20
             selectedSound = profile?.soundType ?? .wood
-            metronomeOn = true
+            // Start metronome; set metronomeOn = true AFTER start so icon reflects state
             previewMetronome.updateSoundType(selectedSound)
             previewMetronome.updateBPM(bpm)
             previewMetronome.start()
+            metronomeOn = true
         }
         .onDisappear {
             previewMetronome.stop()
+            metronomeOn = false
         }
+    }
+
+    private func saveGoal() {
+        profile?.dailyGoalMinutes = goalMinutes
+        profile?.defaultDuration = goalMinutes
+        try? ctx.save()
     }
 
     private var bpmSlider: some View {
@@ -485,9 +451,14 @@ struct OnboardingView: View {
                     .onChanged { value in
                         let newFraction = min(1, max(0, value.location.x / geo.size.width))
                         bpm = 140 + Int(newFraction * range)
-                        if metronomeOn { previewMetronome.updateBPM(bpm) }
+                        // Do NOT call updateBPM during drag — scheduleBeat reads self.bpm directly
+                        // on its next beat, so it will pick up the new value automatically.
                     }
                     .onEnded { _ in
+                        // Update metronome once drag ends to avoid flooding MainActor
+                        if metronomeOn {
+                            previewMetronome.updateBPM(bpm)
+                        }
                         profile?.defaultBPM = bpm
                         try? ctx.save()
                     }
@@ -508,10 +479,12 @@ struct OnboardingView: View {
                     selectedSound = type
                     profile?.soundType = type
                     try? ctx.save()
-                    previewMetronome.updateSoundType(type)
-                    if metronomeOn && !previewMetronome.isPlaying {
-                        previewMetronome.updateBPM(bpm)
-                        previewMetronome.start()
+                    // updateSoundType handles stop→reload→start internally
+                    // Only call it when metronome is on; otherwise just update soundType for when it starts
+                    if metronomeOn {
+                        previewMetronome.updateSoundType(type)
+                    } else {
+                        previewMetronome.soundType = type
                     }
                 } label: {
                     Text(label)
@@ -619,24 +592,7 @@ struct OnboardingView: View {
 
                     if notifStatus == .denied {
                         Rectangle().fill(theme.accentDim).frame(height: 0.5)
-                        Button {
-                            if let url = URL(string: UIApplication.openSettingsURLString) {
-                                openURL(url)
-                            }
-                        } label: {
-                            HStack {
-                                Text(lm.L("onboarding.notif2.enableInSettings"))
-                                    .font(.system(size: 13))
-                                    .foregroundColor(theme.accent)
-                                Spacer()
-                                Image(systemName: "arrow.up.right.square")
-                                    .font(.system(size: 12))
-                                    .foregroundColor(theme.accent)
-                            }
-                            .padding(.vertical, 10)
-                            .padding(.horizontal, 16)
-                        }
-                        .buttonStyle(.plain)
+                        settingsLink(text: lm.L("onboarding.notif2.enableInSettings"))
                     }
                 }
                 .background(theme.surface)
@@ -658,25 +614,9 @@ struct OnboardingView: View {
                         .padding(.top, 12)
                         .padding(.bottom, 4)
 
-                    permToggleRow(
-                        icon: "heart",
-                        name: lm.L("onboarding.perms.health.name"),
-                        desc: lm.L("onboarding.perms.health.desc"),
-                        hint: lm.L("onboarding.perms.health.hint"),
-                        isOn: $healthEnabled,
-                        status: healthStatus
-                    ) { Task { await requestHealthPermission() } }
-
+                    healthPermRow
                     Rectangle().fill(theme.accentDim).frame(height: 0.5)
-
-                    permToggleRow(
-                        icon: "figure.walk",
-                        name: lm.L("onboarding.perms.motion.name"),
-                        desc: lm.L("onboarding.perms.motion.desc"),
-                        hint: lm.L("onboarding.perms.motion.hint"),
-                        isOn: $motionEnabled,
-                        status: motionStatus
-                    ) { Task { await requestMotionPermission() } }
+                    motionPermRow
                 }
                 .background(theme.surface)
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
@@ -684,85 +624,114 @@ struct OnboardingView: View {
 
                 Spacer().frame(height: 32)
 
-                nextButton(
-                    label: lm.L("onboarding.cta.start"),
-                    enabled: !isRequesting
-                ) { finish() }
+                nextButton(label: lm.L("onboarding.cta.start"), enabled: !isRequesting) { finish() }
                     .padding(.horizontal, 32)
                     .padding(.bottom, 52)
             }
         }
     }
 
-    private func permToggleRow(
-        icon: String,
-        name: String,
-        desc: String,
-        hint: String,
-        isOn: Binding<Bool>,
-        status: PermStatus,
-        onToggleOn: @escaping () -> Void
-    ) -> some View {
+    private var healthPermRow: some View {
         VStack(spacing: 0) {
             HStack(spacing: 12) {
-                Image(systemName: icon)
+                Image(systemName: "heart")
                     .font(.system(size: 16, weight: .light))
                     .foregroundColor(theme.text)
                     .frame(width: 24)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(name).font(.system(size: 15)).foregroundColor(theme.text)
-                    Text(desc).font(.system(size: 12)).foregroundColor(theme.textDim)
+                    Text(lm.L("onboarding.perms.health.name"))
+                        .font(.system(size: 15))
+                        .foregroundColor(theme.text)
+                    Text(lm.L("onboarding.perms.health.desc"))
+                        .font(.system(size: 12))
+                        .foregroundColor(theme.textDim)
                 }
                 Spacer()
                 Toggle("", isOn: Binding(
-                    get: { isOn.wrappedValue },
+                    get: { healthEnabled },
                     set: { newVal in
                         if newVal {
-                            if status == .denied {
-                                // Denied — open Settings so user can re-enable
-                                if let url = URL(string: UIApplication.openSettingsURLString) {
-                                    UIApplication.shared.open(url)
-                                }
-                                isOn.wrappedValue = false
-                            } else {
-                                onToggleOn()
-                            }
+                            // Always try to request — iOS shows system prompt if not yet decided,
+                            // silently does nothing if already denied (user must go to Settings)
+                            Task { await requestHealthPermission() }
                         } else {
-                            isOn.wrappedValue = false
+                            healthEnabled = false
                         }
                     }
                 ))
                 .tint(theme.accent)
                 .labelsHidden()
-                .disabled(status == .granted || isRequesting)
+                .disabled(healthStatus == .granted || isRequesting)
             }
             .padding(.vertical, 14)
             .padding(.horizontal, 16)
 
-            if status == .denied {
-                Button {
-                    if let url = URL(string: UIApplication.openSettingsURLString) {
-                        UIApplication.shared.open(url)
-                    }
-                } label: {
-                    HStack {
-                        Text(hint)
-                            .font(.system(size: 12))
-                            .foregroundColor(theme.textDim)
-                            .fixedSize(horizontal: false, vertical: true)
-                        Spacer()
-                        Image(systemName: "arrow.up.right.square")
-                            .font(.system(size: 11))
-                            .foregroundColor(theme.textDim)
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 12)
-                }
-                .buttonStyle(.plain)
-                .transition(.opacity)
+            // Health can have partial grants — point to Settings
+            if healthStatus == .denied {
+                settingsLink(text: lm.L("onboarding.perms.health.hint"))
             }
         }
-        .animation(.easeInOut(duration: 0.25), value: status)
+        .animation(.easeInOut(duration: 0.25), value: healthStatus)
+    }
+
+    private var motionPermRow: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 12) {
+                Image(systemName: "figure.walk")
+                    .font(.system(size: 16, weight: .light))
+                    .foregroundColor(theme.text)
+                    .frame(width: 24)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(lm.L("onboarding.perms.motion.name"))
+                        .font(.system(size: 15))
+                        .foregroundColor(theme.text)
+                    Text(lm.L("onboarding.perms.motion.desc"))
+                        .font(.system(size: 12))
+                        .foregroundColor(theme.textDim)
+                }
+                Spacer()
+                Toggle("", isOn: Binding(
+                    get: { motionEnabled },
+                    set: { newVal in
+                        if newVal { Task { await requestMotionPermission() } }
+                        else { motionEnabled = false }
+                    }
+                ))
+                .tint(theme.accent)
+                .labelsHidden()
+                .disabled(motionStatus == .granted || isRequesting)
+            }
+            .padding(.vertical, 14)
+            .padding(.horizontal, 16)
+
+            if motionStatus == .denied {
+                settingsLink(text: lm.L("onboarding.perms.motion.hint"))
+            }
+        }
+        .animation(.easeInOut(duration: 0.25), value: motionStatus)
+    }
+
+    private func settingsLink(text: String) -> some View {
+        Button {
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                openURL(url)
+            }
+        } label: {
+            HStack {
+                Text(text)
+                    .font(.system(size: 12))
+                    .foregroundColor(theme.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer()
+                Image(systemName: "arrow.up.right.square")
+                    .font(.system(size: 11))
+                    .foregroundColor(theme.textDim)
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 12)
+        }
+        .buttonStyle(.plain)
+        .transition(.opacity)
     }
 
     // MARK: - Finish
@@ -841,16 +810,5 @@ struct OnboardingView: View {
             }
         }
         isRequesting = false
-    }
-
-    private func statusBadge(_ status: PermStatus) -> some View {
-        let (label, color): (String, Color) = {
-            switch status {
-            case .pending: return (lm.L("onboarding.perms.status.pending"), theme.textDim)
-            case .granted: return ("✓ " + lm.L("onboarding.perms.status.granted"), theme.accent)
-            case .denied:  return (lm.L("onboarding.perms.status.denied"), Color.orange)
-            }
-        }()
-        return Text(label).font(.system(size: 12)).foregroundColor(color)
     }
 }
