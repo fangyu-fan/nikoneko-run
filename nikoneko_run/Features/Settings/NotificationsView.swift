@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UserNotifications
 
 struct NotificationsView: View {
     @Environment(ThemeManager.self) private var themeManager
@@ -32,8 +33,27 @@ struct NotificationsView: View {
                                 try? ctx.save()
                                 if v {
                                     Task {
-                                        let granted = await NotificationService.requestPermission()
-                                        if granted {
+                                        let center = UNUserNotificationCenter.current()
+                                        let settings = await center.notificationSettings()
+                                        switch settings.authorizationStatus {
+                                        case .notDetermined:
+                                            let granted = await NotificationService.requestPermission()
+                                            if granted {
+                                                NotificationService.scheduleDaily(
+                                                    hour: profile?.notificationHour ?? 7,
+                                                    minute: profile?.notificationMinute ?? 0
+                                                )
+                                            } else {
+                                                profile?.notificationsEnabled = false
+                                                try? ctx.save()
+                                            }
+                                        case .denied:
+                                            if let url = URL(string: UIApplication.openSettingsURLString) {
+                                                await UIApplication.shared.open(url)
+                                            }
+                                            profile?.notificationsEnabled = false
+                                            try? ctx.save()
+                                        default:
                                             NotificationService.scheduleDaily(
                                                 hour: profile?.notificationHour ?? 7,
                                                 minute: profile?.notificationMinute ?? 0
