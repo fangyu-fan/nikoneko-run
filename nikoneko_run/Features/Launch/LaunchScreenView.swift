@@ -4,6 +4,8 @@ struct LaunchScreenView: View {
     @Environment(ThemeManager.self) private var themeManager
     let onComplete: () -> Void
 
+    @State private var isAnimating: Bool = false  // starts static, animates after brief pause
+
     private var theme: ThemeTokens { themeManager.current }
 
     var body: some View {
@@ -16,7 +18,7 @@ struct LaunchScreenView: View {
                     color: theme.accentMid,
                     shadowColor: theme.accentDim,
                     bpm: 180,
-                    isAnimating: true
+                    isAnimating: isAnimating
                 )
                 .frame(width: 120, height: 88)
                 .padding(.bottom, 32)
@@ -36,7 +38,11 @@ struct LaunchScreenView: View {
         }
         .onAppear {
             Task {
-                try? await Task.sleep(for: .seconds(0.8))
+                // Brief pause on first frame so system launch screen → static cat is seamless
+                try? await Task.sleep(for: .milliseconds(120))
+                isAnimating = true
+                // Total visible: 120ms static + 900ms animation
+                try? await Task.sleep(for: .milliseconds(900))
                 onComplete()
             }
         }
