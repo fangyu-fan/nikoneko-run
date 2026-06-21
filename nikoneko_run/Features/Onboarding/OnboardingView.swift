@@ -112,9 +112,171 @@ struct OnboardingView: View {
         .buttonStyle(.plain)
     }
 
+    // MARK: - Page 2: Theme
+
+    @State private var selectedThemeIndex: Int = {
+        let saved = UserDefaults.standard.string(forKey: "activeThemeId") ?? "moss"
+        return ThemeLibrary.all.firstIndex(where: { $0.id == saved }) ?? 0
+    }()
+
+    private var themePage: some View {
+        VStack(spacing: 0) {
+            Spacer()
+            LottieCharacterView(
+                characterId: "loader_cat",
+                color: theme.accentMid,
+                shadowColor: theme.accentDim,
+                bpm: 180,
+                isAnimating: true
+            )
+            .frame(width: 120, height: 88)
+            .padding(.bottom, 28)
+
+            Text(lm.L("onboarding.theme.title"))
+                .font(.system(size: 28, weight: .ultraLight))
+                .tracking(-0.5)
+                .foregroundColor(theme.text)
+                .padding(.bottom, 6)
+
+            Text(lm.L("onboarding.theme.subtitle"))
+                .font(.system(size: 13))
+                .tracking(0.04)
+                .foregroundColor(theme.textDim)
+                .padding(.bottom, 32)
+
+            themeCarousel
+                .padding(.bottom, 12)
+
+            themeDots
+
+            Spacer()
+            nextButton(label: lm.L("onboarding.next")) { page = 2 }
+                .padding(.horizontal, 32)
+                .padding(.bottom, 52)
+        }
+    }
+
+    private var themeCarousel: some View {
+        let slots: [(offset: Int, scale: CGFloat, opacity: Double, width: CGFloat)] = [
+            (-2, 0.72, 0.25, 52),
+            (-1, 0.84, 0.55, 68),
+            ( 0, 1.00, 1.00, 88),
+            ( 1, 0.84, 0.55, 68),
+            ( 2, 0.72, 0.25, 52),
+        ]
+        return HStack(spacing: 6) {
+            ForEach(slots, id: \.offset) { slot in
+                let idx = ((selectedThemeIndex + slot.offset) % ThemeLibrary.all.count + ThemeLibrary.all.count) % ThemeLibrary.all.count
+                let t = ThemeLibrary.all[idx]
+                themeCard(t, isCenter: slot.offset == 0, width: slot.width)
+                    .scaleEffect(slot.scale)
+                    .opacity(slot.opacity)
+                    .onTapGesture {
+                        if slot.offset != 0 {
+                            withAnimation(.easeInOut(duration: 0.25)) {
+                                selectTheme(at: idx)
+                            }
+                        }
+                    }
+            }
+        }
+        .frame(height: 100)
+        .gesture(
+            DragGesture(minimumDistance: 20)
+                .onEnded { value in
+                    if value.translation.width < -20 {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            selectTheme(at: (selectedThemeIndex + 1) % ThemeLibrary.all.count)
+                        }
+                    } else if value.translation.width > 20 {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            selectTheme(at: (selectedThemeIndex - 1 + ThemeLibrary.all.count) % ThemeLibrary.all.count)
+                        }
+                    }
+                }
+        )
+    }
+
+    private func themeCard(_ t: ThemeTokens, isCenter: Bool, width: CGFloat) -> some View {
+        let barHeight: CGFloat = isCenter ? 9 : 7
+        return VStack(spacing: 0) {
+            Rectangle()
+                .fill(t.bg)
+                .frame(width: width, height: isCenter ? 60 : 48)
+                .overlay(alignment: .bottom) {
+                    HStack(spacing: 1.5) {
+                        ForEach(t.bar.indices, id: \.self) { i in
+                            Rectangle().fill(t.bar[i]).frame(height: barHeight)
+                        }
+                    }
+                    .padding(.horizontal, 6)
+                    .padding(.bottom, 6)
+                }
+            Rectangle()
+                .fill(t.bg)
+                .frame(width: width, height: isCenter ? 22 : 18)
+                .overlay {
+                    Text(themeDisplayName(t.id))
+                        .font(.system(size: isCenter ? 9 : 8, weight: .medium))
+                        .foregroundColor(t.text)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .stroke(isCenter ? Color.white.opacity(0.55) : Color.clear, lineWidth: 1.5)
+        )
+    }
+
+    private var themeDots: some View {
+        HStack(spacing: 3) {
+            ForEach(ThemeLibrary.all.indices, id: \.self) { i in
+                let dist = abs(i - selectedThemeIndex)
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(i == selectedThemeIndex ? theme.accent : theme.text.opacity(0.2))
+                    .frame(width: i == selectedThemeIndex ? 14 : (dist == 1 ? 5 : 3), height: 3)
+                    .animation(.easeInOut(duration: 0.2), value: selectedThemeIndex)
+                    .onTapGesture {
+                        withAnimation(.easeInOut(duration: 0.25)) { selectTheme(at: i) }
+                    }
+            }
+        }
+    }
+
+    private func selectTheme(at index: Int) {
+        selectedThemeIndex = index
+        let t = ThemeLibrary.all[index]
+        themeManager.apply(t.id)
+        profile?.activeThemeId = t.id
+        try? ctx.save()
+    }
+
+    private func themeDisplayName(_ id: String) -> String {
+        let map: [String: String] = [
+            "obsidian": "Obsidian", "paper": "Paper", "limestone": "Limestone",
+            "grove": "Grove", "moss": "Moss & Amber", "mocha": "Mocha",
+            "seafloor": "Seafloor", "skyline": "Skyline", "navy": "Deep Navy",
+            "lavender": "Lavender Fog", "midnight": "Midnight Mauve",
+            "teal": "Teal & Coral", "blush": "Blush Garden",
+            "slateRose": "Slate & Rose", "sapphireGold": "Sapphire & Gold",
+        ]
+        let mapZh: [String: String] = [
+            "obsidian": "黑曜", "paper": "白紙", "limestone": "石灰岩",
+            "grove": "林間", "moss": "苔蘚琥珀", "mocha": "摩卡",
+            "seafloor": "海床", "skyline": "天際", "navy": "深海藍",
+            "lavender": "薰衣草霧", "midnight": "午夜藕色",
+            "teal": "青與珊瑚", "blush": "胭脂花園",
+            "slateRose": "石板玫瑰", "sapphireGold": "藍寶石與金",
+        ]
+        return lm.language == .traditionalChinese
+            ? (mapZh[id] ?? id)
+            : (map[id] ?? id.capitalized)
+    }
+
     // MARK: - Placeholders (filled in subsequent tasks)
 
-    private var themePage: some View { Color.clear }
     private var pacePage: some View { Color.clear }
     private var notifPermsPage: some View { Color.clear }
 
