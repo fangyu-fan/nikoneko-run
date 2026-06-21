@@ -30,11 +30,41 @@ struct DataSyncView: View {
                               binding: Binding(
                                 get: { profile?.healthKitEnabled ?? false },
                                 set: { v in
-                                    profile?.healthKitEnabled = v
-                                    try? ctx.save()
-                                    if v { Task { await HealthKitService.shared.requestPermissions() } }
+                                    if v {
+                                        Task {
+                                            let store = HKHealthStore()
+                                            guard HKHealthStore.isHealthDataAvailable() else { return }
+                                            let status = store.authorizationStatus(for: HKQuantityType(.heartRate))
+                                            switch status {
+                                            case .notDetermined:
+                                                await HealthKitService.shared.requestPermissions()
+                                                let newStatus = store.authorizationStatus(for: HKQuantityType(.heartRate))
+                                                profile?.healthKitEnabled = (newStatus == .sharingAuthorized)
+                                                try? ctx.save()
+                                            case .sharingDenied:
+                                                if let url = URL(string: UIApplication.openSettingsURLString) {
+                                                    await UIApplication.shared.open(url)
+                                                }
+                                            case .sharingAuthorized:
+                                                profile?.healthKitEnabled = true
+                                                try? ctx.save()
+                                            @unknown default:
+                                                break
+                                            }
+                                        }
+                                    } else {
+                                        profile?.healthKitEnabled = false
+                                        try? ctx.save()
+                                    }
                                 }
                               ))
+                    if profile?.healthKitEnabled == false {
+                        Text(lm.L("dataSync.healthkit.disabled"))
+                            .font(.system(size: 12))
+                            .foregroundColor(theme.textDim)
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 10)
+                    }
                     Rectangle().fill(theme.accentDim).frame(height: 0.5)
                     toggleRow(icon: "icloud", label: lm.L("dataSync.row.iCloud"),
                               binding: Binding(
