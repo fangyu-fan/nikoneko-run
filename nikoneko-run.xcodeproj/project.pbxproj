@@ -7,552 +7,570 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		001E3A9E2863961477057DA2 /* ReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2033754460492D7D77F18039 /* ReportViewModel.swift */; };
-		084EA4DF5B4146D0B3B9E224 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F2C3B82D860DBEAE46000161 /* Localizable.strings */; };
-		0A4CA9A149DCC196B6299F53 /* HeatmapWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A91EFC02093F13F7835EC07 /* HeatmapWidget.swift */; };
-		0E9FA4ACAB221DC27926DC81 /* DrumPickerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD482BE3F0359120522BC4B /* DrumPickerTests.swift */; };
-		116B897AF98886EBC20E141B /* WidgetSharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692A4CE44C4629742DF29CB4 /* WidgetSharedData.swift */; };
-		11D640EC8A8243985ED5C6B4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E2557D24257006B3A70623E /* ContentView.swift */; };
-		150770602ED1172F1DFC11AD /* ReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39EED6F79092D83B426CB8FD /* ReportView.swift */; };
-		15904655350632AEA9D4E6BA /* Loader cat.json in Resources */ = {isa = PBXBuildFile; fileRef = BC3857EA2107D24479B6F4A4 /* Loader cat.json */; };
-		1857C99985D7E5823A797986 /* StatWidgetIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60A930852793A1E55F271E4 /* StatWidgetIntent.swift */; };
-		1C22AFA84D6C0A451062471B /* RunSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47A41CB5A0DCC8540B92790 /* RunSession.swift */; };
-		1FE862B862923F545FBB6999 /* DrumPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15637ACAD2484A82A22BDF92 /* DrumPickerView.swift */; };
-		224AA6750F55AB20626DDC1E /* AppearanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A951D7D67AA0736CC5EE18 /* AppearanceView.swift */; };
-		245588D9C10C8D3D4CDEF8F9 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683561C28DAAD36040FC64B6 /* TimerView.swift */; };
-		262AB533D5E709E8DDC51585 /* MetronomeServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A81F0CC8EA8B77366D5EC9 /* MetronomeServiceTests.swift */; };
-		2A04A0BDC70340CF96700732 /* AllStatsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65694CB94D934A70A14FBA1D /* AllStatsWidget.swift */; };
-		2AACC927B60CDFC431B51819 /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4AE07ADAB1DDD5531BB1A2 /* NotificationsView.swift */; };
-		2E53331D1075FDC6ABF7DBFC /* CalendarWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3430F6B294AB76C39EB1E74C /* CalendarWidget.swift */; };
-		32CBC192B0462D0A929B6279 /* JogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9700B55E207C8421EF31FF /* JogApp.swift */; };
-		38A20A6739EC0EC32EDDAF9F /* NikoNekoWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB679D1A96C74C6D9ECC5CB0 /* NikoNekoWidgetBundle.swift */; };
-		3B70160644FA316EE67E9F24 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE70810786A82B53399969C0 /* Color+Hex.swift */; };
-		3BC28031D6E58F2A5769B129 /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E52428AFEA5830C9CA70441 /* SummaryView.swift */; };
-		45C61964C4251AD7FDD870E9 /* CharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA07617A1ADF8B82799A917 /* CharacterView.swift */; };
-		4678815D9F5F462DF49F11BE /* WidgetSharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE2FB9352036C37A85C1E358 /* WidgetSharedData.swift */; };
-		4B023B6203D09F52D11F361E /* AppGroupBridgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36846EE06F8E6FA0E23F62F /* AppGroupBridgeTests.swift */; };
-		4FB72CB5628303C7F508576D /* NikoNekoLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80F008EC514575F3D6BEE87C /* NikoNekoLiveActivityAttributes.swift */; };
-		5BB77C26A163FFD28DB3C047 /* LiveActivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D721D963CCB92F5122648C /* LiveActivityService.swift */; };
-		5C01188090135C0BDA392DBF /* BLEHeartRateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C4C9329B6E813CD1FFF321 /* BLEHeartRateManager.swift */; };
-		5FADD0201D1B6E8E31B9B79E /* CharacterPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31A4722E86CCC15FEF8A34E /* CharacterPickerView.swift */; };
-		6075677081CE64D0432D1B04 /* BarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F9DCA77BE44839B071ADB6 /* BarChartView.swift */; };
-		683D451A170E65E6C8AE53DB /* ThemeTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D4FF987E86A2ED1BF4CA64 /* ThemeTokens.swift */; };
-		698005F3EEAB77449C607BA9 /* BarColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 723CA97A98DB13E1FC5D6DA2 /* BarColorTests.swift */; };
-		6FA05A34D35CF0FD79085EEB /* MotionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0590DDEE163696F0BB7616C5 /* MotionServiceTests.swift */; };
-		70F76358B48AD7AC047E9A78 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCED456EC26FF17E1687557 /* SettingsView.swift */; };
-		75DA61462FD64D9CB669BCF8 /* TodayDistanceWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50936AB69144CBBD516119 /* TodayDistanceWidget.swift */; };
-		7A04A782CED3C8A5FDE59A68 /* BPMPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAFF643108FF44CE0A575F9B /* BPMPanelView.swift */; };
-		7CB244948A1DA1DE6C73A710 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0766CFAF5B8392B7C3B1BA99 /* UserProfile.swift */; };
-		7D2D06F23FD23EDD46FC449C /* DefaultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6122A3593C727B79F42BC445 /* DefaultsView.swift */; };
-		8005265A02D7F322507CB587 /* HeartRateServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 936762368324ECC658B74C0F /* HeartRateServiceTests.swift */; };
-		82215704DC246B9BB13ECD1A /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3976078715F6225646B2ACBA /* ThemeManager.swift */; };
-		88B84CC75AACE3C5594864C2 /* SummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3C6394E4CA30F033907F733 /* SummaryViewModel.swift */; };
-		8AB8674DE987BB6124193A2D /* MotionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62191EE7B8EE56F062463D2 /* MotionService.swift */; };
-		8CCFF715BB804B23B02EFC87 /* TodayStepsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02182D9B92964F53988CE1E8 /* TodayStepsWidget.swift */; };
-		97B761E1E11BA02B234FB2C8 /* WidgetDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8E0F352C37B73F692CC63D0 /* WidgetDataTests.swift */; };
-		9A7DED754E0D45F4F30FE23C /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B96B25A530CAD4829826F8B /* NotificationService.swift */; };
-		A00CD2EFAD44BA1062193307 /* WidgetSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE1A57D985D42E58F16F21A /* WidgetSettingsView.swift */; };
-		A1B2C3D4E5F60002 /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60001 /* SegmentedPicker.swift */; };
-		A21530874B4CE5255B0B71EF /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B479A6B08DA7AF4D6DF0489 /* HealthKitService.swift */; };
-		A5B6D967C59FA96ADD3304FD /* LottieCharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC93C89ACDC3B32CD28C3F6 /* LottieCharacterView.swift */; };
-		A9D26887E563CFFD485F6AFE /* PlaceholderCharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A80A80A06A255F8197DB14B /* PlaceholderCharacterView.swift */; };
-		AA00000000000002 /* StatWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000001 /* StatWidget.swift */; };
-		AA1001001001001001001001 /* Bad Cat.json in Resources */ = {isa = PBXBuildFile; fileRef = AA2001001001001001001001 /* Bad Cat.json */; };
-		AA1001001001001001001002 /* Trophy.json in Resources */ = {isa = PBXBuildFile; fileRef = AA2001001001001001001002 /* Trophy.json */; };
-		AA1001001001001001001003 /* 404 Error Lottie animation.json in Resources */ = {isa = PBXBuildFile; fileRef = AA2001001001001001001003 /* 404 Error Lottie animation.json */; };
-		ACBB147C11F9E8DC31BA296F /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99EFA2C278A02AF7C6A03F91 /* ShareCardView.swift */; };
-		ADE725D25D31481DB7C2389A /* WidgetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD49913BE73D4F229C730940 /* WidgetTheme.swift */; };
-		B9CC082CDCC8698CFD62C27F /* SummaryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C0C5D0756AB6633FABFC4D /* SummaryViewModelTests.swift */; };
-		BB647FE5566A775E8EBEA2DB /* TotalTimeWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC6EC592FDFCB451D671B50 /* TotalTimeWidget.swift */; };
-		BE3EC2A2BB072C0AD7FE7B34 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = E2E7458600F715689DA8114C /* Lottie */; };
-		C1135C0C4DBE8D721A2B0108 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40B2416199CDA9A73244756D /* SessionDetailView.swift */; };
-		C2FCE20EFCD323FC9BF7E362 /* ThemeLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 276EE26A2EA0588721536ADC /* ThemeLibrary.swift */; };
-		C50EE854F60BBD3C0005656F /* HeartRateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3BE25830E57B84BE11522F /* HeartRateService.swift */; };
-		C53DF6D8656AD38A847A78B4 /* ThresholdConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B6E57BB9AB171C43795D8D3 /* ThresholdConfig.swift */; };
-		CB0D7B65CA278F3FCD8E67CD /* ThemeLibraryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C6C35DB6789D15893E88FB /* ThemeLibraryTests.swift */; };
-		CF9744269F992B9BDEF28D98 /* AppGroupDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41CC69BAD559A35148CE22CE /* AppGroupDefaults.swift */; };
-		AA22222222222222222222AA /* AppGroupDefaults+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11111111111111111111AA /* AppGroupDefaults+App.swift */; };
-		CFDAE6CC1A46F86B8C113FB0 /* DataSyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA30BB7EC8E9C43340904825 /* DataSyncView.swift */; };
-		D6501BC66A4A5476CA4F2E3A /* MetronomeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A139D04CE594B0310B390D /* MetronomeService.swift */; };
-		D7AF75D6579CFCBF3B87363A /* ReportViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B651FBED4DA2547C58BDD0AF /* ReportViewModelTests.swift */; };
-		E4DFBCC46CFC50B78E09F947 /* NikoNekoLiveActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB4FFF4351D6AEBD495C876 /* NikoNekoLiveActivityView.swift */; };
-		E64BAB1BB40D47958483A016 /* BarChartWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E1975F41354C5FAA3B067C /* BarChartWidget.swift */; };
-		E93A8C7AB9AE9AEA912AF603 /* StreakWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E4AF6D353E4E702654D308 /* StreakWidget.swift */; };
-		ED783424F7C4AFE59C4C4465 /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27218DDBF5760415222496 /* LanguageManager.swift */; };
-		F7173C25F57435EC47C9A812 /* TimerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23B0F4EDAB5707630CF45A9 /* TimerViewModel.swift */; };
-		F7BC978AD298CDA3A6841412 /* AppGroupDefaultsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61118AA292061AB685874C87 /* AppGroupDefaultsTests.swift */; };
-		FA096AF93CDA70DEE91A3501 /* TimerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39530A75977A09DA84D2124C /* TimerViewModelTests.swift */; };
-		FFAF81159DD3F1F71B9FD84C /* DisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D4725502CD58ABA44F5E4B /* DisplayView.swift */; };
-		WGT0000000000000000000001 /* ThemeTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D4FF987E86A2ED1BF4CA64 /* ThemeTokens.swift */; };
-		WGT0000000000000000000002 /* ThemeLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 276EE26A2EA0588721536ADC /* ThemeLibrary.swift */; };
-		WGT0000000000000000000003 /* RunSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47A41CB5A0DCC8540B92790 /* RunSession.swift */; };
-		WGT0000000000000000000004 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE70810786A82B53399969C0 /* Color+Hex.swift */; };
-		WGT0000000000000000000005 /* AppGroupDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41CC69BAD559A35148CE22CE /* AppGroupDefaults.swift */; };
+		0043CABED0591E062ED9976C /* NikoNekoLiveActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E198C49902F32FF5A4C39E /* NikoNekoLiveActivityView.swift */; };
+		02D489707433C2A1DA530C47 /* ThemeTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CB002201A3605B5C755D99 /* ThemeTokens.swift */; };
+		0333531A6175034DA8AA0A93 /* TodayStepsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606D8B93C812B4D4AA6EEF7E /* TodayStepsWidget.swift */; };
+		03508708D11AC01772204E63 /* DisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FE97011EFA0AB1A7EBFDBB /* DisplayView.swift */; };
+		03D4F45E889DE08821FA275A /* StatWidgetIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C3F16E403A81DC4BC59A32 /* StatWidgetIntent.swift */; };
+		06F86A6404C8E50B3D9B5B09 /* AppGroupDefaultsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073EC42D997CC22D7EDD7CD3 /* AppGroupDefaultsTests.swift */; };
+		0708B78B11001790B9BF14D7 /* NikoNekoWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AEEC4A8FAEFDB9BD90EE2F7 /* NikoNekoWidgetBundle.swift */; };
+		0ABE10C77A10EE34D461EA14 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 494EAAD6F67A3197AFD55CBC /* Lottie */; };
+		1368EC9ECE0E0E36FF4B303C /* MetronomeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F42CF6C52FCCE7C9D5EE995 /* MetronomeService.swift */; };
+		14A3C293E86B4BBAD0BA73A1 /* 404 Error Lottie animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 3D134755028DC161B933CD1D /* 404 Error Lottie animation.json */; };
+		1B7FAAACC515A85B41FA5583 /* ThresholdConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14439AE1DB1F1E9208341651 /* ThresholdConfig.swift */; };
+		1F00A30CF2B01145DB96B77A /* ThemeLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F3722347A5D86AE980C4DFF /* ThemeLibrary.swift */; };
+		202BBEB3A18C0E69454AA071 /* 404 Error Lottie animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 3D134755028DC161B933CD1D /* 404 Error Lottie animation.json */; };
+		229AFD5160DD2B64C0F6A183 /* CharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2083F2C7881F491D203DC430 /* CharacterView.swift */; };
+		230E629961CEE7910A09B3F3 /* TodayDistanceWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1318ACDCBBE687F91F3F2DA5 /* TodayDistanceWidget.swift */; };
+		25DCA0110C09472677F8F7E0 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE56B4A442C67A3F92C2DDEC /* ThemeManager.swift */; };
+		2D71E599E32AF5BB54A72B03 /* NikoNekoLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597CCA5A13B2A44B963406C5 /* NikoNekoLiveActivityAttributes.swift */; };
+		32BB581CAD9892C98F514E97 /* Bad Cat.json in Resources */ = {isa = PBXBuildFile; fileRef = 18F3D0C4C303EE25CE05E5D1 /* Bad Cat.json */; };
+		345D1D388BA3168A9B34C894 /* RunSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 240581FD1E7D0915966D24C4 /* RunSession.swift */; };
+		34C9665A9BC798501529F94D /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867D74EA379E7D40AC574AA4 /* HealthKitService.swift */; };
+		3616CAB82B6FBE153CC5DA8D /* TodayStepsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606D8B93C812B4D4AA6EEF7E /* TodayStepsWidget.swift */; };
+		36266122E8433A7E168FF8C6 /* WidgetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794BBFC86D73BEA2E96E6423 /* WidgetTheme.swift */; };
+		385A314ECAC9F2A1D867215E /* AppearanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8723BB8DB3E6044A5EFBA0 /* AppearanceView.swift */; };
+		39446A8AB5489AAB586174FC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E6FB8CF3AE3DE208C5B83B3F /* Localizable.strings */; };
+		4B4EFFB67935E130E85CC07C /* CharacterPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E8509F10256D89DD44B65 /* CharacterPickerView.swift */; };
+		4F8D70A55717D9BB97D94274 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC5F2B078FFD6B12A66DF98 /* Color+Hex.swift */; };
+		50BED7E902075ADC00EC7D52 /* BPMPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27CEC7E019A6F27484A44DC7 /* BPMPanelView.swift */; };
+		532476B9725E59D2258AA731 /* ReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0B00D0BD01022F870B860A /* ReportViewModel.swift */; };
+		5427604DE03FD360FCA4B750 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65DA448B85C7C62A6046B2F /* SessionDetailView.swift */; };
+		575A6E0A6F74B758F3BBEAB9 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE56B4A442C67A3F92C2DDEC /* ThemeManager.swift */; };
+		5973A20B6396FE89CB1878AB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3F5FE2378FE34F4AECFC5F /* SettingsView.swift */; };
+		59845CF0ABDAB69E86B65CFC /* ReportViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA81960393AABD848F96B250 /* ReportViewModelTests.swift */; };
+		5CB153DF3256EA7E2500C0C0 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DA000BDF804808817A188E3 /* TimerView.swift */; };
+		5D34C5A1DB07A483685128D6 /* WidgetDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E939ADC1B0268AC8E50377A5 /* WidgetDataTests.swift */; };
+		608A538B277628246DC82BE8 /* BarColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70890FC411099E4B4D869D9D /* BarColorTests.swift */; };
+		66DFB63BA79545ACF85C50DF /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFB792DB6970C8D2D3CD216 /* NotificationService.swift */; };
+		68AF989AAD50ECEC12D8276E /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C5078E8D550E5658204098 /* NotificationsView.swift */; };
+		6D22F9C84659A13BEE30A404 /* ThemeLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F3722347A5D86AE980C4DFF /* ThemeLibrary.swift */; };
+		6D4A455696757587BAA61039 /* BarChartWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888DF2FE51B76083773D44DE /* BarChartWidget.swift */; };
+		7450CF5B03020510BD333034 /* TimerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F7BEEC4DB4AC00296F8AC7 /* TimerViewModel.swift */; };
+		74BA2486A0F744A4D2BC4EDA /* TimerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D83A14C11E48C458465529 /* TimerViewModelTests.swift */; };
+		761D6C42B6BA09270FC274A8 /* PlaceholderCharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685210130F4C0CCF3F732C6 /* PlaceholderCharacterView.swift */; };
+		7AEA4392AD645038C5025DF1 /* LottieCharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A60E9F3704F3567458738D1 /* LottieCharacterView.swift */; };
+		7C4575C9F632BC1A7475F7B2 /* AppGroupDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6285D99A97CE0DA2DD79D3E6 /* AppGroupDefaults.swift */; };
+		7F25182494D31FCBBF4292AE /* CharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2083F2C7881F491D203DC430 /* CharacterView.swift */; };
+		7F3368AF6B0E5337011224C8 /* StatWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4593F302764A66A3C1FA2B66 /* StatWidget.swift */; };
+		80F44D5119B01D5001A79B6E /* DrumPickerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC57F16ADC389ACC84ECD4A6 /* DrumPickerTests.swift */; };
+		8146DE555F267430728A45E8 /* BarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 490F883C38011D033F56149B /* BarChartView.swift */; };
+		889D886F62A92E875B0F9740 /* StreakWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CFEA813C5061B04BC312971 /* StreakWidget.swift */; };
+		89651E2E1ADF9AC236986842 /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DEB58B584691F812FCE3FA8 /* LanguageManager.swift */; };
+		8A31BFB8A8A9CC8EC00FD180 /* TotalTimeWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B173454430636F69C0FFC0FA /* TotalTimeWidget.swift */; };
+		8E037163A3619027E622FD9F /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD2A4C04142FCA1D4117C0A /* SegmentedPicker.swift */; };
+		95D0AC64E0C710D38A1DD4B5 /* WidgetSharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9EB5385A57CA0D18406235 /* WidgetSharedData.swift */; };
+		96C282CEEE7FE59B962095BF /* MotionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C13ED6BC9690B8BAD1C293D /* MotionService.swift */; };
+		99F1969F7FB6D94D2FF18C46 /* CalendarWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2CE45F7F70AAF25A84794A /* CalendarWidget.swift */; };
+		9C198317D741685FE404E120 /* StatWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4593F302764A66A3C1FA2B66 /* StatWidget.swift */; };
+		9E382006389F82C5721D44C7 /* SummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A29EB4BAACB55EA0E26E858E /* SummaryViewModel.swift */; };
+		A2F6C8C2FB9AD4E2919FAF77 /* ThemeTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CB002201A3605B5C755D99 /* ThemeTokens.swift */; };
+		A4922B5A40DC2DB2561F1B7C /* AppGroupDefaults+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F91B7FA58805B940A4FA71 /* AppGroupDefaults+App.swift */; };
+		A7329BE307BFCED4BDD64519 /* AllStatsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA556CB27DE171E5AF52A574 /* AllStatsWidget.swift */; };
+		A7921CA6B693A4A61DB0F211 /* CalendarWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2CE45F7F70AAF25A84794A /* CalendarWidget.swift */; };
+		A84CE9E85F562A6C35555C70 /* LottieCharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A60E9F3704F3567458738D1 /* LottieCharacterView.swift */; };
+		A8B25B4ED2F6DB28FC47B7E7 /* MotionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D87DF6AC9A47E748CE8990F /* MotionServiceTests.swift */; };
+		AC3E29B4E3A5CDF27D39C369 /* WidgetSharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9EB5385A57CA0D18406235 /* WidgetSharedData.swift */; };
+		AC9FD8EFC3017B88E02AD46C /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E4FAB3BAB0E0A21C45127B1 /* UserProfile.swift */; };
+		AE148DB7F25BCD270C5B98FB /* AllStatsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA556CB27DE171E5AF52A574 /* AllStatsWidget.swift */; };
+		AE712D985AD43344CF08EA97 /* JogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C104463EF2B987532EF21913 /* JogApp.swift */; };
+		B4F685B2BF54763A3EE53037 /* ReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD874CD72EFA48DB5C1D0D1 /* ReportView.swift */; };
+		B5CC148BBBC4F20AB767DD85 /* SummaryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7CABD957C50D6080EE7E98 /* SummaryViewModelTests.swift */; };
+		B79EDC96B27525B4C53925DE /* WidgetSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA758658B1B7B37F80295A7D /* WidgetSettingsView.swift */; };
+		BA10484D5701FC1978DD7950 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE88681615BBD0A9F257019 /* ContentView.swift */; };
+		BA7EFAC6D2DE53BA7EC75068 /* ThemeLibraryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6F1ADE8F5500415AA9BC836 /* ThemeLibraryTests.swift */; };
+		BAABE729B4FDE8DCDC406AD0 /* LiveActivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54827D3C3293DBBCF93D01C5 /* LiveActivityService.swift */; };
+		BC2893EF356ABA4E4FE42E7F /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D580D84D39F85E90E561B307 /* OnboardingView.swift */; };
+		BEEB47D692384E56453D3165 /* HeartRateServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F128697330A9DCBE0111098 /* HeartRateServiceTests.swift */; };
+		BF0EFB42E021381C6D039F3F /* Loader cat.json in Resources */ = {isa = PBXBuildFile; fileRef = 8B58C26204FD4FB69A1A152E /* Loader cat.json */; };
+		BFDBADF2F7AE939EF6FF2795 /* DrumPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B6343558BD9688E80FDA8B /* DrumPickerView.swift */; };
+		C62D9E9444E788B300DF843B /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13EDCF2C13175A90D6AA2D0 /* SummaryView.swift */; };
+		CB6D16100030855B3165A77A /* StreakWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CFEA813C5061B04BC312971 /* StreakWidget.swift */; };
+		CDD9C89C461C8B39C39F8C2B /* HeatmapWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C42A970F271028A75659A3A /* HeatmapWidget.swift */; };
+		CF96B055ACC8EE3F19C0521E /* TotalTimeWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B173454430636F69C0FFC0FA /* TotalTimeWidget.swift */; };
+		CFFFC8DF6172A2C0E7F643C7 /* AppGroupBridgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5725113E7CFE9D4E45C46BF /* AppGroupBridgeTests.swift */; };
+		D0D4835365A585088CA43771 /* Loader cat.json in Resources */ = {isa = PBXBuildFile; fileRef = 8B58C26204FD4FB69A1A152E /* Loader cat.json */; };
+		D28215F501E45B92A3DF8F24 /* WidgetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794BBFC86D73BEA2E96E6423 /* WidgetTheme.swift */; };
+		D37DDA18BE4A6D4DC8F3E8E7 /* PlaceholderCharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685210130F4C0CCF3F732C6 /* PlaceholderCharacterView.swift */; };
+		D7CC39ED354A43AB3300AB1B /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC5F2B078FFD6B12A66DF98 /* Color+Hex.swift */; };
+		DA11E512CD49341621BAFF4B /* HeatmapWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C42A970F271028A75659A3A /* HeatmapWidget.swift */; };
+		DB80E2661E2EBCA3430DFCA3 /* AppGroupDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6285D99A97CE0DA2DD79D3E6 /* AppGroupDefaults.swift */; };
+		DD98B148CAAE02E056F7CCEF /* BarChartWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888DF2FE51B76083773D44DE /* BarChartWidget.swift */; };
+		E0F8CB7743A868AD7E0B6BCC /* Trophy.json in Resources */ = {isa = PBXBuildFile; fileRef = C3B240D6D780A0A815DFE848 /* Trophy.json */; };
+		E7BA72F670B0C4064FC681EC /* TodayDistanceWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1318ACDCBBE687F91F3F2DA5 /* TodayDistanceWidget.swift */; };
+		E844F28F8569BDEE95DE4054 /* DataSyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92204FB8054C341F2E7DF3E2 /* DataSyncView.swift */; };
+		E9D244A7BEA86CB5760F5AE3 /* StatWidgetIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C3F16E403A81DC4BC59A32 /* StatWidgetIntent.swift */; };
+		EA630C72892046CCADA29665 /* HeartRateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C01E2FED6A6B3BE96A2614 /* HeartRateService.swift */; };
+		ED1FC2FC9E1084EF2EC3D520 /* Trophy.json in Resources */ = {isa = PBXBuildFile; fileRef = C3B240D6D780A0A815DFE848 /* Trophy.json */; };
+		ED63F310493483434753B879 /* DefaultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C45B9DC5D14A6A4894776E /* DefaultsView.swift */; };
+		F093FCA20CAD27AD91DD417E /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825E9C61C670A6E83FA35AB3 /* ShareCardView.swift */; };
+		F0A3ABE5D2BA69C8166827D4 /* Bad Cat.json in Resources */ = {isa = PBXBuildFile; fileRef = 18F3D0C4C303EE25CE05E5D1 /* Bad Cat.json */; };
+		F47CDE88C40A5C3B4814DEFA /* MetronomeServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB512E1E4632A6F46886BC03 /* MetronomeServiceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		4E4325D690ED23E694D12343 /* PBXContainerItemProxy */ = {
+		4A580553328724E8831979A0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 39764C712F7E7B302B3DCF7F /* Project object */;
+			containerPortal = BA6644D57441174F969006AD /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 153FBF27F168F014C2265E0F;
+			remoteGlobalIDString = 1B16E05F2284765C9C4D3B33;
 			remoteInfo = nikoneko;
 		};
-		EMBED004CONTAINERPROXY001 /* PBXContainerItemProxy */ = {
+		5E574AF6C1EE14A3382F7338 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 39764C712F7E7B302B3DCF7F /* Project object */;
+			containerPortal = BA6644D57441174F969006AD /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 552EDB75EC9C1D7554D6E648;
-			remoteInfo = NikoNekoWidgets;
+			remoteGlobalIDString = 1B16E05F2284765C9C4D3B33;
+			remoteInfo = nikoneko;
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		BB000001000000000000EMBED /* Embed App Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				BB000002000000000000FFILE /* NikoNekoWidgets.appex in Embed App Extensions */,
-			);
-			name = "Embed App Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 /* Begin PBXFileReference section */
-		02182D9B92964F53988CE1E8 /* TodayStepsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayStepsWidget.swift; sourceTree = "<group>"; };
-		03D4FF987E86A2ED1BF4CA64 /* ThemeTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeTokens.swift; sourceTree = "<group>"; };
-		0590DDEE163696F0BB7616C5 /* MotionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionServiceTests.swift; sourceTree = "<group>"; };
-		0766CFAF5B8392B7C3B1BA99 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
-		0B27218DDBF5760415222496 /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
-		0F8388470D6412953108A09D /* nikoneko-run.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nikoneko-run.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		15637ACAD2484A82A22BDF92 /* DrumPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrumPickerView.swift; sourceTree = "<group>"; };
-		16D4725502CD58ABA44F5E4B /* DisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayView.swift; sourceTree = "<group>"; };
-		1A80A80A06A255F8197DB14B /* PlaceholderCharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderCharacterView.swift; sourceTree = "<group>"; };
-		1A91EFC02093F13F7835EC07 /* HeatmapWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapWidget.swift; sourceTree = "<group>"; };
-		1BA07617A1ADF8B82799A917 /* CharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterView.swift; sourceTree = "<group>"; };
-		2033754460492D7D77F18039 /* ReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewModel.swift; sourceTree = "<group>"; };
-		276EE26A2EA0588721536ADC /* ThemeLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeLibrary.swift; sourceTree = "<group>"; };
-		33A81F0CC8EA8B77366D5EC9 /* MetronomeServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeServiceTests.swift; sourceTree = "<group>"; };
-		3430F6B294AB76C39EB1E74C /* CalendarWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarWidget.swift; sourceTree = "<group>"; };
-		355E073745B4615EEFEBDD9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		39530A75977A09DA84D2124C /* TimerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewModelTests.swift; sourceTree = "<group>"; };
-		3976078715F6225646B2ACBA /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
-		39EED6F79092D83B426CB8FD /* ReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportView.swift; sourceTree = "<group>"; };
-		3CCED456EC26FF17E1687557 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		3DC93C89ACDC3B32CD28C3F6 /* LottieCharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieCharacterView.swift; sourceTree = "<group>"; };
-		3F3BE25830E57B84BE11522F /* HeartRateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateService.swift; sourceTree = "<group>"; };
-		40B2416199CDA9A73244756D /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
-		41CC69BAD559A35148CE22CE /* AppGroupDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupDefaults.swift; sourceTree = "<group>"; };
-		AA11111111111111111111AA /* AppGroupDefaults+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppGroupDefaults+App.swift"; sourceTree = "<group>"; };
-		47C6C35DB6789D15893E88FB /* ThemeLibraryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeLibraryTests.swift; sourceTree = "<group>"; };
-		4B479A6B08DA7AF4D6DF0489 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
-		4B96B25A530CAD4829826F8B /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
-		55E4AF6D353E4E702654D308 /* StreakWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakWidget.swift; sourceTree = "<group>"; };
-		5E2557D24257006B3A70623E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		5E52428AFEA5830C9CA70441 /* SummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryView.swift; sourceTree = "<group>"; };
-		61118AA292061AB685874C87 /* AppGroupDefaultsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupDefaultsTests.swift; sourceTree = "<group>"; };
-		6122A3593C727B79F42BC445 /* DefaultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsView.swift; sourceTree = "<group>"; };
-		61A73F6EE18AB3CDBB78EDEB /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
-		64A139D04CE594B0310B390D /* MetronomeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeService.swift; sourceTree = "<group>"; };
-		64E1975F41354C5FAA3B067C /* BarChartWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartWidget.swift; sourceTree = "<group>"; };
-		65694CB94D934A70A14FBA1D /* AllStatsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllStatsWidget.swift; sourceTree = "<group>"; };
-		683561C28DAAD36040FC64B6 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
-		692A4CE44C4629742DF29CB4 /* WidgetSharedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSharedData.swift; sourceTree = "<group>"; };
-		6C9700B55E207C8421EF31FF /* JogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JogApp.swift; sourceTree = "<group>"; };
-		6FC6EC592FDFCB451D671B50 /* TotalTimeWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalTimeWidget.swift; sourceTree = "<group>"; };
-		723CA97A98DB13E1FC5D6DA2 /* BarColorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarColorTests.swift; sourceTree = "<group>"; };
-		75A951D7D67AA0736CC5EE18 /* AppearanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceView.swift; sourceTree = "<group>"; };
-		80F008EC514575F3D6BEE87C /* NikoNekoLiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NikoNekoLiveActivityAttributes.swift; sourceTree = "<group>"; };
-		83F9DCA77BE44839B071ADB6 /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
-		88C0C5D0756AB6633FABFC4D /* SummaryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryViewModelTests.swift; sourceTree = "<group>"; };
-		8BC965E669918E66458C20DA /* nikoneko-runTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "nikoneko-runTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		9118A77F59F326480E2C1664 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		936762368324ECC658B74C0F /* HeartRateServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateServiceTests.swift; sourceTree = "<group>"; };
-		93C4C9329B6E813CD1FFF321 /* BLEHeartRateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEHeartRateManager.swift; sourceTree = "<group>"; };
-		99EFA2C278A02AF7C6A03F91 /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
-		9B6E57BB9AB171C43795D8D3 /* ThresholdConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdConfig.swift; sourceTree = "<group>"; };
-		9BE1A57D985D42E58F16F21A /* WidgetSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSettingsView.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60001 /* SegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
-		A31A4722E86CCC15FEF8A34E /* CharacterPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterPickerView.swift; sourceTree = "<group>"; };
-		A36846EE06F8E6FA0E23F62F /* AppGroupBridgeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupBridgeTests.swift; sourceTree = "<group>"; };
-		A773C14EF9E00ACA62E02764 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		AA00000000000001 /* StatWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatWidget.swift; sourceTree = "<group>"; };
-		AA2001001001001001001001 /* Bad Cat.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Bad Cat.json"; sourceTree = "<group>"; };
-		AA2001001001001001001002 /* Trophy.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Trophy.json; sourceTree = "<group>"; };
-		AA2001001001001001001003 /* 404 Error Lottie animation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "404 Error Lottie animation.json"; sourceTree = "<group>"; };
-		AE1027956259A50017675FD5 /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
-		AFD482BE3F0359120522BC4B /* DrumPickerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrumPickerTests.swift; sourceTree = "<group>"; };
-		B3D721D963CCB92F5122648C /* LiveActivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityService.swift; sourceTree = "<group>"; };
-		B651FBED4DA2547C58BDD0AF /* ReportViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewModelTests.swift; sourceTree = "<group>"; };
-		BAFF643108FF44CE0A575F9B /* BPMPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPMPanelView.swift; sourceTree = "<group>"; };
-		BC3857EA2107D24479B6F4A4 /* Loader cat.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Loader cat.json"; sourceTree = "<group>"; };
-		BD49913BE73D4F229C730940 /* WidgetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTheme.swift; sourceTree = "<group>"; };
-		C47A41CB5A0DCC8540B92790 /* RunSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunSession.swift; sourceTree = "<group>"; };
-		C8E0F352C37B73F692CC63D0 /* WidgetDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataTests.swift; sourceTree = "<group>"; };
-		CE70810786A82B53399969C0 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
-		D23B0F4EDAB5707630CF45A9 /* TimerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewModel.swift; sourceTree = "<group>"; };
-		DA30BB7EC8E9C43340904825 /* DataSyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSyncView.swift; sourceTree = "<group>"; };
-		DA4AE07ADAB1DDD5531BB1A2 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
-		DE50936AB69144CBBD516119 /* TodayDistanceWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayDistanceWidget.swift; sourceTree = "<group>"; };
-		E3C6394E4CA30F033907F733 /* SummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryViewModel.swift; sourceTree = "<group>"; };
-		ECB4FFF4351D6AEBD495C876 /* NikoNekoLiveActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NikoNekoLiveActivityView.swift; sourceTree = "<group>"; };
-		BB000002000000000000FFILE /* NikoNekoWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F32F0C166D5DDA3A539EF0ED /* NikoNekoWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		F32F0C166D5DDA3A539EF0ED /* NikoNekoWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NikoNekoWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		F60A930852793A1E55F271E4 /* StatWidgetIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatWidgetIntent.swift; sourceTree = "<group>"; };
-		F62191EE7B8EE56F062463D2 /* MotionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionService.swift; sourceTree = "<group>"; };
-		FB679D1A96C74C6D9ECC5CB0 /* NikoNekoWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NikoNekoWidgetBundle.swift; sourceTree = "<group>"; };
-		FE2FB9352036C37A85C1E358 /* WidgetSharedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSharedData.swift; sourceTree = "<group>"; };
-		FF7B559E3D5EF803936C4B5F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		01CB002201A3605B5C755D99 /* ThemeTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeTokens.swift; sourceTree = "<group>"; };
+		03D83A14C11E48C458465529 /* TimerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewModelTests.swift; sourceTree = "<group>"; };
+		073EC42D997CC22D7EDD7CD3 /* AppGroupDefaultsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupDefaultsTests.swift; sourceTree = "<group>"; };
+		07C3F16E403A81DC4BC59A32 /* StatWidgetIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatWidgetIntent.swift; sourceTree = "<group>"; };
+		08C45B9DC5D14A6A4894776E /* DefaultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsView.swift; sourceTree = "<group>"; };
+		0B3F5FE2378FE34F4AECFC5F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		0D87DF6AC9A47E748CE8990F /* MotionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionServiceTests.swift; sourceTree = "<group>"; };
+		1318ACDCBBE687F91F3F2DA5 /* TodayDistanceWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayDistanceWidget.swift; sourceTree = "<group>"; };
+		14439AE1DB1F1E9208341651 /* ThresholdConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdConfig.swift; sourceTree = "<group>"; };
+		18F3D0C4C303EE25CE05E5D1 /* Bad Cat.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Bad Cat.json"; sourceTree = "<group>"; };
+		1A8723BB8DB3E6044A5EFBA0 /* AppearanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceView.swift; sourceTree = "<group>"; };
+		2083F2C7881F491D203DC430 /* CharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterView.swift; sourceTree = "<group>"; };
+		240581FD1E7D0915966D24C4 /* RunSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunSession.swift; sourceTree = "<group>"; };
+		2685210130F4C0CCF3F732C6 /* PlaceholderCharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderCharacterView.swift; sourceTree = "<group>"; };
+		27CEC7E019A6F27484A44DC7 /* BPMPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPMPanelView.swift; sourceTree = "<group>"; };
+		2DD2A4C04142FCA1D4117C0A /* SegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
+		2E4FAB3BAB0E0A21C45127B1 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		2F3722347A5D86AE980C4DFF /* ThemeLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeLibrary.swift; sourceTree = "<group>"; };
+		3D134755028DC161B933CD1D /* 404 Error Lottie animation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "404 Error Lottie animation.json"; sourceTree = "<group>"; };
+		3DD874CD72EFA48DB5C1D0D1 /* ReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportView.swift; sourceTree = "<group>"; };
+		3DEB58B584691F812FCE3FA8 /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
+		3F128697330A9DCBE0111098 /* HeartRateServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateServiceTests.swift; sourceTree = "<group>"; };
+		3F42CF6C52FCCE7C9D5EE995 /* MetronomeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeService.swift; sourceTree = "<group>"; };
+		4092B86F4B9838A42CB4EC87 /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
+		4593F302764A66A3C1FA2B66 /* StatWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatWidget.swift; sourceTree = "<group>"; };
+		490F883C38011D033F56149B /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
+		495B748BA95AA1C38AE0ACC2 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		4AEEC4A8FAEFDB9BD90EE2F7 /* NikoNekoWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NikoNekoWidgetBundle.swift; sourceTree = "<group>"; };
+		4CFEA813C5061B04BC312971 /* StreakWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakWidget.swift; sourceTree = "<group>"; };
+		4FE88681615BBD0A9F257019 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		52C5078E8D550E5658204098 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
+		54827D3C3293DBBCF93D01C5 /* LiveActivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityService.swift; sourceTree = "<group>"; };
+		54E198C49902F32FF5A4C39E /* NikoNekoLiveActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NikoNekoLiveActivityView.swift; sourceTree = "<group>"; };
+		56F7BEEC4DB4AC00296F8AC7 /* TimerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewModel.swift; sourceTree = "<group>"; };
+		597CCA5A13B2A44B963406C5 /* NikoNekoLiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NikoNekoLiveActivityAttributes.swift; sourceTree = "<group>"; };
+		606D8B93C812B4D4AA6EEF7E /* TodayStepsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayStepsWidget.swift; sourceTree = "<group>"; };
+		6285D99A97CE0DA2DD79D3E6 /* AppGroupDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupDefaults.swift; sourceTree = "<group>"; };
+		6B2CE45F7F70AAF25A84794A /* CalendarWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarWidget.swift; sourceTree = "<group>"; };
+		6C13ED6BC9690B8BAD1C293D /* MotionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionService.swift; sourceTree = "<group>"; };
+		6DA000BDF804808817A188E3 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
+		70890FC411099E4B4D869D9D /* BarColorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarColorTests.swift; sourceTree = "<group>"; };
+		71D2FA86F770B4C318865C59 /* nikoneko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nikoneko.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		78B6343558BD9688E80FDA8B /* DrumPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrumPickerView.swift; sourceTree = "<group>"; };
+		794BBFC86D73BEA2E96E6423 /* WidgetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTheme.swift; sourceTree = "<group>"; };
+		804E8509F10256D89DD44B65 /* CharacterPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterPickerView.swift; sourceTree = "<group>"; };
+		825E9C61C670A6E83FA35AB3 /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
+		851219F02A5812D69C0A0F7D /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
+		867D74EA379E7D40AC574AA4 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
+		86F91B7FA58805B940A4FA71 /* AppGroupDefaults+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppGroupDefaults+App.swift"; sourceTree = "<group>"; };
+		888DF2FE51B76083773D44DE /* BarChartWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartWidget.swift; sourceTree = "<group>"; };
+		8B58C26204FD4FB69A1A152E /* Loader cat.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Loader cat.json"; sourceTree = "<group>"; };
+		8C42A970F271028A75659A3A /* HeatmapWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapWidget.swift; sourceTree = "<group>"; };
+		92204FB8054C341F2E7DF3E2 /* DataSyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSyncView.swift; sourceTree = "<group>"; };
+		961CB9E3CB2ADE59EA7511F6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		9A60E9F3704F3567458738D1 /* LottieCharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieCharacterView.swift; sourceTree = "<group>"; };
+		A29EB4BAACB55EA0E26E858E /* SummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryViewModel.swift; sourceTree = "<group>"; };
+		AC57F16ADC389ACC84ECD4A6 /* DrumPickerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrumPickerTests.swift; sourceTree = "<group>"; };
+		AEC5F2B078FFD6B12A66DF98 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
+		B173454430636F69C0FFC0FA /* TotalTimeWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalTimeWidget.swift; sourceTree = "<group>"; };
+		B5725113E7CFE9D4E45C46BF /* AppGroupBridgeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupBridgeTests.swift; sourceTree = "<group>"; };
+		BA758658B1B7B37F80295A7D /* WidgetSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSettingsView.swift; sourceTree = "<group>"; };
+		BD0B00D0BD01022F870B860A /* ReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewModel.swift; sourceTree = "<group>"; };
+		BD9EB5385A57CA0D18406235 /* WidgetSharedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSharedData.swift; sourceTree = "<group>"; };
+		C104463EF2B987532EF21913 /* JogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JogApp.swift; sourceTree = "<group>"; };
+		C3B240D6D780A0A815DFE848 /* Trophy.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Trophy.json; sourceTree = "<group>"; };
+		CB512E1E4632A6F46886BC03 /* MetronomeServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeServiceTests.swift; sourceTree = "<group>"; };
+		D13EDCF2C13175A90D6AA2D0 /* SummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryView.swift; sourceTree = "<group>"; };
+		D580D84D39F85E90E561B307 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		D6F1ADE8F5500415AA9BC836 /* ThemeLibraryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeLibraryTests.swift; sourceTree = "<group>"; };
+		DD7CABD957C50D6080EE7E98 /* SummaryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryViewModelTests.swift; sourceTree = "<group>"; };
+		DE56B4A442C67A3F92C2DDEC /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
+		E65DA448B85C7C62A6046B2F /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
+		E8FE97011EFA0AB1A7EBFDBB /* DisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayView.swift; sourceTree = "<group>"; };
+		E939ADC1B0268AC8E50377A5 /* WidgetDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataTests.swift; sourceTree = "<group>"; };
+		EA556CB27DE171E5AF52A574 /* AllStatsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllStatsWidget.swift; sourceTree = "<group>"; };
+		EF6BB0A991786AD0E16AE83A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F567944097222D55D480FC97 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F5ACA898D10E63F11A54F135 /* nikonekoTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = nikonekoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F6C01E2FED6A6B3BE96A2614 /* HeartRateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateService.swift; sourceTree = "<group>"; };
+		FA81960393AABD848F96B250 /* ReportViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewModelTests.swift; sourceTree = "<group>"; };
+		FBCAFB33A48D239106A8391D /* NikoNekoWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = NikoNekoWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		FCFB792DB6970C8D2D3CD216 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		E98D881927F50B0E1BCDC2ED /* Frameworks */ = {
+		629606A9C4A03A230E3F1432 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE3EC2A2BB072C0AD7FE7B34 /* Lottie in Frameworks */,
+				0ABE10C77A10EE34D461EA14 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1055F723C307BC1DAA3992BE /* Models */ = {
+		059BA0DB3E038FC419AF83AF /* Timer */ = {
 			isa = PBXGroup;
 			children = (
-				C47A41CB5A0DCC8540B92790 /* RunSession.swift */,
-				9B6E57BB9AB171C43795D8D3 /* ThresholdConfig.swift */,
-				0766CFAF5B8392B7C3B1BA99 /* UserProfile.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		143871248E2FF0577B88FA07 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				AA1F8AB125C283D0BAB09631 /* Extensions */,
-				1055F723C307BC1DAA3992BE /* Models */,
-				A03140EC013430FCCDB1065A /* Theme */,
-				41CC69BAD559A35148CE22CE /* AppGroupDefaults.swift */,
-				AA11111111111111111111AA /* AppGroupDefaults+App.swift */,
-				0B27218DDBF5760415222496 /* LanguageManager.swift */,
-				692A4CE44C4629742DF29CB4 /* WidgetSharedData.swift */,
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
-		3A94E9989EB0B6316DD6075B /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				93C4C9329B6E813CD1FFF321 /* BLEHeartRateManager.swift */,
-				4B479A6B08DA7AF4D6DF0489 /* HealthKitService.swift */,
-				3F3BE25830E57B84BE11522F /* HeartRateService.swift */,
-				B3D721D963CCB92F5122648C /* LiveActivityService.swift */,
-				64A139D04CE594B0310B390D /* MetronomeService.swift */,
-				F62191EE7B8EE56F062463D2 /* MotionService.swift */,
-				4B96B25A530CAD4829826F8B /* NotificationService.swift */,
-			);
-			path = Services;
-			sourceTree = "<group>";
-		};
-		50865C69F40BED41C96951AB /* App */ = {
-			isa = PBXGroup;
-			children = (
-				5E2557D24257006B3A70623E /* ContentView.swift */,
-				355E073745B4615EEFEBDD9F /* Info.plist */,
-				6C9700B55E207C8421EF31FF /* JogApp.swift */,
-			);
-			path = App;
-			sourceTree = "<group>";
-		};
-		50DD77A67A66347DD0654BA7 /* Lottie */ = {
-			isa = PBXGroup;
-			children = (
-				AE1027956259A50017675FD5 /* .gitkeep */,
-				BC3857EA2107D24479B6F4A4 /* Loader cat.json */,
-				AA2001001001001001001001 /* Bad Cat.json */,
-				AA2001001001001001001002 /* Trophy.json */,
-				AA2001001001001001001003 /* 404 Error Lottie animation.json */,
-			);
-			path = Lottie;
-			sourceTree = "<group>";
-		};
-		52EF4A1F3A4C0729480C10C0 /* LiveActivity */ = {
-			isa = PBXGroup;
-			children = (
-				80F008EC514575F3D6BEE87C /* NikoNekoLiveActivityAttributes.swift */,
-				ECB4FFF4351D6AEBD495C876 /* NikoNekoLiveActivityView.swift */,
-			);
-			path = LiveActivity;
-			sourceTree = "<group>";
-		};
-		5FCE3792D669DD58AF736091 = {
-			isa = PBXGroup;
-			children = (
-				7F22622DD5D8311C93AF7291 /* nikoneko */,
-				AE62125485B3DC3B898BC020 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		67078DCA44469CD77CD01CCA /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-				A2FC1D84DC363E72A632F72E /* IntegrationTests */,
-				D4B5397D1A474F610B592EB2 /* UnitTests */,
-			);
-			path = Tests;
-			sourceTree = "<group>";
-		};
-		6B8EA27D4F2A25635F37A53A /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				F2C3B82D860DBEAE46000161 /* Localizable.strings */,
-				EC857D7B90F7F55865B446B8 /* Sounds */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
-		7F22622DD5D8311C93AF7291 /* nikoneko */ = {
-			isa = PBXGroup;
-			children = (
-				50865C69F40BED41C96951AB /* App */,
-				E3C0318861C43519E75DE61B /* Characters */,
-				143871248E2FF0577B88FA07 /* Core */,
-				863EAC55D8A89E0182F26D2E /* Features */,
-				52EF4A1F3A4C0729480C10C0 /* LiveActivity */,
-				6B8EA27D4F2A25635F37A53A /* Resources */,
-				3A94E9989EB0B6316DD6075B /* Services */,
-				67078DCA44469CD77CD01CCA /* Tests */,
-				FB9AAFF4DA062BEB283F2593 /* Widgets */,
-			);
-			path = nikoneko;
-			sourceTree = "<group>";
-		};
-		863EAC55D8A89E0182F26D2E /* Features */ = {
-			isa = PBXGroup;
-			children = (
-				9A14851F7C908DE0C751BBDA /* Report */,
-				CFE742941A1BCCCAE7D2A1B0 /* Settings */,
-				CCA5076C5102527D15E08917 /* Summary */,
-				B2AB15218B366A80A051A394 /* Timer */,
-			);
-			path = Features;
-			sourceTree = "<group>";
-		};
-		9A14851F7C908DE0C751BBDA /* Report */ = {
-			isa = PBXGroup;
-			children = (
-				83F9DCA77BE44839B071ADB6 /* BarChartView.swift */,
-				39EED6F79092D83B426CB8FD /* ReportView.swift */,
-				2033754460492D7D77F18039 /* ReportViewModel.swift */,
-				40B2416199CDA9A73244756D /* SessionDetailView.swift */,
-			);
-			path = Report;
-			sourceTree = "<group>";
-		};
-		A03140EC013430FCCDB1065A /* Theme */ = {
-			isa = PBXGroup;
-			children = (
-				276EE26A2EA0588721536ADC /* ThemeLibrary.swift */,
-				3976078715F6225646B2ACBA /* ThemeManager.swift */,
-				03D4FF987E86A2ED1BF4CA64 /* ThemeTokens.swift */,
-			);
-			path = Theme;
-			sourceTree = "<group>";
-		};
-		A2FC1D84DC363E72A632F72E /* IntegrationTests */ = {
-			isa = PBXGroup;
-			children = (
-				A36846EE06F8E6FA0E23F62F /* AppGroupBridgeTests.swift */,
-				C8E0F352C37B73F692CC63D0 /* WidgetDataTests.swift */,
-			);
-			path = IntegrationTests;
-			sourceTree = "<group>";
-		};
-		AA1F8AB125C283D0BAB09631 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				CE70810786A82B53399969C0 /* Color+Hex.swift */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		AE62125485B3DC3B898BC020 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				0F8388470D6412953108A09D /* nikoneko-run.app */,
-				8BC965E669918E66458C20DA /* nikoneko-runTests.xctest */,
-				F32F0C166D5DDA3A539EF0ED /* NikoNekoWidgets.appex */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		B2AB15218B366A80A051A394 /* Timer */ = {
-			isa = PBXGroup;
-			children = (
-				BAFF643108FF44CE0A575F9B /* BPMPanelView.swift */,
-				A31A4722E86CCC15FEF8A34E /* CharacterPickerView.swift */,
-				15637ACAD2484A82A22BDF92 /* DrumPickerView.swift */,
-				A1B2C3D4E5F60001 /* SegmentedPicker.swift */,
-				683561C28DAAD36040FC64B6 /* TimerView.swift */,
-				D23B0F4EDAB5707630CF45A9 /* TimerViewModel.swift */,
+				27CEC7E019A6F27484A44DC7 /* BPMPanelView.swift */,
+				804E8509F10256D89DD44B65 /* CharacterPickerView.swift */,
+				78B6343558BD9688E80FDA8B /* DrumPickerView.swift */,
+				2DD2A4C04142FCA1D4117C0A /* SegmentedPicker.swift */,
+				6DA000BDF804808817A188E3 /* TimerView.swift */,
+				56F7BEEC4DB4AC00296F8AC7 /* TimerViewModel.swift */,
 			);
 			path = Timer;
 			sourceTree = "<group>";
 		};
-		CCA5076C5102527D15E08917 /* Summary */ = {
+		15F1F70A9E44E17EAB64C563 /* UnitTests */ = {
 			isa = PBXGroup;
 			children = (
-				99EFA2C278A02AF7C6A03F91 /* ShareCardView.swift */,
-				5E52428AFEA5830C9CA70441 /* SummaryView.swift */,
-				E3C6394E4CA30F033907F733 /* SummaryViewModel.swift */,
-			);
-			path = Summary;
-			sourceTree = "<group>";
-		};
-		CFE742941A1BCCCAE7D2A1B0 /* Settings */ = {
-			isa = PBXGroup;
-			children = (
-				75A951D7D67AA0736CC5EE18 /* AppearanceView.swift */,
-				DA30BB7EC8E9C43340904825 /* DataSyncView.swift */,
-				6122A3593C727B79F42BC445 /* DefaultsView.swift */,
-				16D4725502CD58ABA44F5E4B /* DisplayView.swift */,
-				DA4AE07ADAB1DDD5531BB1A2 /* NotificationsView.swift */,
-				3CCED456EC26FF17E1687557 /* SettingsView.swift */,
-				9BE1A57D985D42E58F16F21A /* WidgetSettingsView.swift */,
-			);
-			path = Settings;
-			sourceTree = "<group>";
-		};
-		D4B5397D1A474F610B592EB2 /* UnitTests */ = {
-			isa = PBXGroup;
-			children = (
-				61118AA292061AB685874C87 /* AppGroupDefaultsTests.swift */,
-				723CA97A98DB13E1FC5D6DA2 /* BarColorTests.swift */,
-				AFD482BE3F0359120522BC4B /* DrumPickerTests.swift */,
-				936762368324ECC658B74C0F /* HeartRateServiceTests.swift */,
-				33A81F0CC8EA8B77366D5EC9 /* MetronomeServiceTests.swift */,
-				0590DDEE163696F0BB7616C5 /* MotionServiceTests.swift */,
-				B651FBED4DA2547C58BDD0AF /* ReportViewModelTests.swift */,
-				88C0C5D0756AB6633FABFC4D /* SummaryViewModelTests.swift */,
-				47C6C35DB6789D15893E88FB /* ThemeLibraryTests.swift */,
-				39530A75977A09DA84D2124C /* TimerViewModelTests.swift */,
+				073EC42D997CC22D7EDD7CD3 /* AppGroupDefaultsTests.swift */,
+				70890FC411099E4B4D869D9D /* BarColorTests.swift */,
+				AC57F16ADC389ACC84ECD4A6 /* DrumPickerTests.swift */,
+				3F128697330A9DCBE0111098 /* HeartRateServiceTests.swift */,
+				CB512E1E4632A6F46886BC03 /* MetronomeServiceTests.swift */,
+				0D87DF6AC9A47E748CE8990F /* MotionServiceTests.swift */,
+				FA81960393AABD848F96B250 /* ReportViewModelTests.swift */,
+				DD7CABD957C50D6080EE7E98 /* SummaryViewModelTests.swift */,
+				D6F1ADE8F5500415AA9BC836 /* ThemeLibraryTests.swift */,
+				03D83A14C11E48C458465529 /* TimerViewModelTests.swift */,
 			);
 			path = UnitTests;
 			sourceTree = "<group>";
 		};
-		E3C0318861C43519E75DE61B /* Characters */ = {
+		1EBCCAD28E34FF6EBB32BE27 /* nikoneko_run */ = {
 			isa = PBXGroup;
 			children = (
-				50DD77A67A66347DD0654BA7 /* Lottie */,
-				1BA07617A1ADF8B82799A917 /* CharacterView.swift */,
-				3DC93C89ACDC3B32CD28C3F6 /* LottieCharacterView.swift */,
-				1A80A80A06A255F8197DB14B /* PlaceholderCharacterView.swift */,
+				49D662B1389CB9D7B1D97139 /* App */,
+				EF5D12FF9337D43C0865599C /* Characters */,
+				4F89013FD980AACC9744B588 /* Core */,
+				206CB52D73FC281ED6514702 /* Features */,
+				D12E1AB889E777F4E9165ACE /* LiveActivity */,
+				E725A9A81F28CD419BEA9389 /* Resources */,
+				2A21E3DC8CD2453FEA4EBC09 /* Services */,
+				EA332CFF4CE040FBDFFEAC5C /* Tests */,
+				B3EDA710EE363125B3D42F42 /* Widgets */,
 			);
-			path = Characters;
+			path = nikoneko_run;
 			sourceTree = "<group>";
 		};
-		EC857D7B90F7F55865B446B8 /* Sounds */ = {
+		206CB52D73FC281ED6514702 /* Features */ = {
 			isa = PBXGroup;
 			children = (
-				61A73F6EE18AB3CDBB78EDEB /* .gitkeep */,
+				3C05A3C727F719170E51825E /* Onboarding */,
+				289B3C7E94AC664097E789EA /* Report */,
+				43FA3CFA3525C05583FC7C0E /* Settings */,
+				D8D50C0F32FBCC076DA25704 /* Summary */,
+				059BA0DB3E038FC419AF83AF /* Timer */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		289B3C7E94AC664097E789EA /* Report */ = {
+			isa = PBXGroup;
+			children = (
+				490F883C38011D033F56149B /* BarChartView.swift */,
+				3DD874CD72EFA48DB5C1D0D1 /* ReportView.swift */,
+				BD0B00D0BD01022F870B860A /* ReportViewModel.swift */,
+				E65DA448B85C7C62A6046B2F /* SessionDetailView.swift */,
+			);
+			path = Report;
+			sourceTree = "<group>";
+		};
+		2A21E3DC8CD2453FEA4EBC09 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				867D74EA379E7D40AC574AA4 /* HealthKitService.swift */,
+				F6C01E2FED6A6B3BE96A2614 /* HeartRateService.swift */,
+				54827D3C3293DBBCF93D01C5 /* LiveActivityService.swift */,
+				3F42CF6C52FCCE7C9D5EE995 /* MetronomeService.swift */,
+				6C13ED6BC9690B8BAD1C293D /* MotionService.swift */,
+				FCFB792DB6970C8D2D3CD216 /* NotificationService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		3C05A3C727F719170E51825E /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				D580D84D39F85E90E561B307 /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		3FA2DC6B3508D1CB5479EC09 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				71D2FA86F770B4C318865C59 /* nikoneko.app */,
+				F5ACA898D10E63F11A54F135 /* nikonekoTests.xctest */,
+				FBCAFB33A48D239106A8391D /* NikoNekoWidgets.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		41EE431E056C521073912EA5 = {
+			isa = PBXGroup;
+			children = (
+				1EBCCAD28E34FF6EBB32BE27 /* nikoneko_run */,
+				3FA2DC6B3508D1CB5479EC09 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		43FA3CFA3525C05583FC7C0E /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				1A8723BB8DB3E6044A5EFBA0 /* AppearanceView.swift */,
+				92204FB8054C341F2E7DF3E2 /* DataSyncView.swift */,
+				08C45B9DC5D14A6A4894776E /* DefaultsView.swift */,
+				E8FE97011EFA0AB1A7EBFDBB /* DisplayView.swift */,
+				52C5078E8D550E5658204098 /* NotificationsView.swift */,
+				0B3F5FE2378FE34F4AECFC5F /* SettingsView.swift */,
+				BA758658B1B7B37F80295A7D /* WidgetSettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		4444F392D5739A0CB1E303FE /* Lottie */ = {
+			isa = PBXGroup;
+			children = (
+				4092B86F4B9838A42CB4EC87 /* .gitkeep */,
+				3D134755028DC161B933CD1D /* 404 Error Lottie animation.json */,
+				18F3D0C4C303EE25CE05E5D1 /* Bad Cat.json */,
+				8B58C26204FD4FB69A1A152E /* Loader cat.json */,
+				C3B240D6D780A0A815DFE848 /* Trophy.json */,
+			);
+			path = Lottie;
+			sourceTree = "<group>";
+		};
+		49D662B1389CB9D7B1D97139 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				4FE88681615BBD0A9F257019 /* ContentView.swift */,
+				F567944097222D55D480FC97 /* Info.plist */,
+				C104463EF2B987532EF21913 /* JogApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		4F89013FD980AACC9744B588 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				A1324E01FB4226F9DB85C5DC /* Extensions */,
+				9E57094A01BE443BFA8B7494 /* Models */,
+				AF3ED4667317E314A67E2F09 /* Theme */,
+				6285D99A97CE0DA2DD79D3E6 /* AppGroupDefaults.swift */,
+				86F91B7FA58805B940A4FA71 /* AppGroupDefaults+App.swift */,
+				3DEB58B584691F812FCE3FA8 /* LanguageManager.swift */,
+				BD9EB5385A57CA0D18406235 /* WidgetSharedData.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		6E3FDF37EA52A96A942C9169 /* IntegrationTests */ = {
+			isa = PBXGroup;
+			children = (
+				B5725113E7CFE9D4E45C46BF /* AppGroupBridgeTests.swift */,
+				E939ADC1B0268AC8E50377A5 /* WidgetDataTests.swift */,
+			);
+			path = IntegrationTests;
+			sourceTree = "<group>";
+		};
+		9E57094A01BE443BFA8B7494 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				240581FD1E7D0915966D24C4 /* RunSession.swift */,
+				14439AE1DB1F1E9208341651 /* ThresholdConfig.swift */,
+				2E4FAB3BAB0E0A21C45127B1 /* UserProfile.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A1324E01FB4226F9DB85C5DC /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				AEC5F2B078FFD6B12A66DF98 /* Color+Hex.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		AF3ED4667317E314A67E2F09 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				2F3722347A5D86AE980C4DFF /* ThemeLibrary.swift */,
+				DE56B4A442C67A3F92C2DDEC /* ThemeManager.swift */,
+				01CB002201A3605B5C755D99 /* ThemeTokens.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		B3EDA710EE363125B3D42F42 /* Widgets */ = {
+			isa = PBXGroup;
+			children = (
+				EA556CB27DE171E5AF52A574 /* AllStatsWidget.swift */,
+				888DF2FE51B76083773D44DE /* BarChartWidget.swift */,
+				6B2CE45F7F70AAF25A84794A /* CalendarWidget.swift */,
+				8C42A970F271028A75659A3A /* HeatmapWidget.swift */,
+				EF6BB0A991786AD0E16AE83A /* Info.plist */,
+				4AEEC4A8FAEFDB9BD90EE2F7 /* NikoNekoWidgetBundle.swift */,
+				4593F302764A66A3C1FA2B66 /* StatWidget.swift */,
+				07C3F16E403A81DC4BC59A32 /* StatWidgetIntent.swift */,
+				4CFEA813C5061B04BC312971 /* StreakWidget.swift */,
+				1318ACDCBBE687F91F3F2DA5 /* TodayDistanceWidget.swift */,
+				606D8B93C812B4D4AA6EEF7E /* TodayStepsWidget.swift */,
+				B173454430636F69C0FFC0FA /* TotalTimeWidget.swift */,
+				794BBFC86D73BEA2E96E6423 /* WidgetTheme.swift */,
+			);
+			path = Widgets;
+			sourceTree = "<group>";
+		};
+		D12E1AB889E777F4E9165ACE /* LiveActivity */ = {
+			isa = PBXGroup;
+			children = (
+				597CCA5A13B2A44B963406C5 /* NikoNekoLiveActivityAttributes.swift */,
+				54E198C49902F32FF5A4C39E /* NikoNekoLiveActivityView.swift */,
+			);
+			path = LiveActivity;
+			sourceTree = "<group>";
+		};
+		D8D50C0F32FBCC076DA25704 /* Summary */ = {
+			isa = PBXGroup;
+			children = (
+				825E9C61C670A6E83FA35AB3 /* ShareCardView.swift */,
+				D13EDCF2C13175A90D6AA2D0 /* SummaryView.swift */,
+				A29EB4BAACB55EA0E26E858E /* SummaryViewModel.swift */,
+			);
+			path = Summary;
+			sourceTree = "<group>";
+		};
+		E725A9A81F28CD419BEA9389 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E6FB8CF3AE3DE208C5B83B3F /* Localizable.strings */,
+				EC4420B32D4A211542B302B2 /* Sounds */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		EA332CFF4CE040FBDFFEAC5C /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				6E3FDF37EA52A96A942C9169 /* IntegrationTests */,
+				15F1F70A9E44E17EAB64C563 /* UnitTests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		EC4420B32D4A211542B302B2 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				851219F02A5812D69C0A0F7D /* .gitkeep */,
 			);
 			path = Sounds;
 			sourceTree = "<group>";
 		};
-		FB9AAFF4DA062BEB283F2593 /* Widgets */ = {
+		EF5D12FF9337D43C0865599C /* Characters */ = {
 			isa = PBXGroup;
 			children = (
-				3430F6B294AB76C39EB1E74C /* CalendarWidget.swift */,
-				65694CB94D934A70A14FBA1D /* AllStatsWidget.swift */,
-				64E1975F41354C5FAA3B067C /* BarChartWidget.swift */,
-				1A91EFC02093F13F7835EC07 /* HeatmapWidget.swift */,
-				A773C14EF9E00ACA62E02764 /* Info.plist */,
-				FB679D1A96C74C6D9ECC5CB0 /* NikoNekoWidgetBundle.swift */,
-				55E4AF6D353E4E702654D308 /* StreakWidget.swift */,
-				DE50936AB69144CBBD516119 /* TodayDistanceWidget.swift */,
-				02182D9B92964F53988CE1E8 /* TodayStepsWidget.swift */,
-				6FC6EC592FDFCB451D671B50 /* TotalTimeWidget.swift */,
-				F60A930852793A1E55F271E4 /* StatWidgetIntent.swift */,
-				AA00000000000001 /* StatWidget.swift */,
-				FE2FB9352036C37A85C1E358 /* WidgetSharedData.swift */,
-				BD49913BE73D4F229C730940 /* WidgetTheme.swift */,
+				4444F392D5739A0CB1E303FE /* Lottie */,
+				2083F2C7881F491D203DC430 /* CharacterView.swift */,
+				9A60E9F3704F3567458738D1 /* LottieCharacterView.swift */,
+				2685210130F4C0CCF3F732C6 /* PlaceholderCharacterView.swift */,
 			);
-			path = Widgets;
+			path = Characters;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		153FBF27F168F014C2265E0F /* nikoneko-run */ = {
+		1B16E05F2284765C9C4D3B33 /* nikoneko */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 815F190338B285BE71AFD777 /* Build configuration list for PBXNativeTarget "nikoneko-run" */;
+			buildConfigurationList = DF1DA5C4CC99F4499A10DAB9 /* Build configuration list for PBXNativeTarget "nikoneko" */;
 			buildPhases = (
-				0A466BAC5D74639CE605EB89 /* Sources */,
-				071EF46E49AACDA97808A030 /* Resources */,
-				E98D881927F50B0E1BCDC2ED /* Frameworks */,
-				BB000001000000000000EMBED /* Embed App Extensions */,
+				D9FAD534F7A829A8E9F596A0 /* Sources */,
+				2F85F3EB79944C2BFF06BCD6 /* Resources */,
+				629606A9C4A03A230E3F1432 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				EMBED003TARGETDEP001 /* PBXTargetDependency */,
 			);
-			name = "nikoneko-run";
+			name = nikoneko;
 			packageProductDependencies = (
-				E2E7458600F715689DA8114C /* Lottie */,
+				494EAAD6F67A3197AFD55CBC /* Lottie */,
 			);
 			productName = nikoneko;
-			productReference = 0F8388470D6412953108A09D /* nikoneko-run.app */;
+			productReference = 71D2FA86F770B4C318865C59 /* nikoneko.app */;
 			productType = "com.apple.product-type.application";
 		};
-		552EDB75EC9C1D7554D6E648 /* NikoNekoWidgets */ = {
+		65A79B967CF501C538F52FDB /* nikonekoTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9366B9038FB8A849D26EDE31 /* Build configuration list for PBXNativeTarget "NikoNekoWidgets" */;
+			buildConfigurationList = 063CBD70978F60B78F22A4EF /* Build configuration list for PBXNativeTarget "nikonekoTests" */;
 			buildPhases = (
-				71068C11E3E6F4DB050EF0D4 /* Sources */,
+				E6906733B14EEBBA362FFD6B /* Sources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				BCFE38B4DDA88BFD50C4139A /* PBXTargetDependency */,
+			);
+			name = nikonekoTests;
+			packageProductDependencies = (
+			);
+			productName = nikonekoTests;
+			productReference = F5ACA898D10E63F11A54F135 /* nikonekoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F921734759AD1F9E6466177E /* NikoNekoWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DD74EB91E4CA4EEC5ADE0991 /* Build configuration list for PBXNativeTarget "NikoNekoWidgets" */;
+			buildPhases = (
+				1E4D8827D6699441809FF5E9 /* Sources */,
+				B343D76CA71FBD85E284326A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				79266D642F146B5BC70AF7AF /* PBXTargetDependency */,
 			);
 			name = NikoNekoWidgets;
 			packageProductDependencies = (
 			);
 			productName = NikoNekoWidgets;
-			productReference = F32F0C166D5DDA3A539EF0ED /* NikoNekoWidgets.appex */;
+			productReference = FBCAFB33A48D239106A8391D /* NikoNekoWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
-		};
-		77C2074F5C5F1717DAA22D52 /* nikoneko-runTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 3926EF852E698397AA4CD9DB /* Build configuration list for PBXNativeTarget "nikoneko-runTests" */;
-			buildPhases = (
-				40738FF023B517AC55ABC402 /* Sources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				E455C0732CED32DBB7EA6994 /* PBXTargetDependency */,
-			);
-			name = "nikoneko-runTests";
-			packageProductDependencies = (
-			);
-			productName = nikonekoTests;
-			productReference = 8BC965E669918E66458C20DA /* nikoneko-runTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		39764C712F7E7B302B3DCF7F /* Project object */ = {
+		BA6644D57441174F969006AD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					65A79B967CF501C538F52FDB = {
+						DevelopmentTeam = RD7PKRJWKK;
+					};
+					F921734759AD1F9E6466177E = {
+						DevelopmentTeam = RD7PKRJWKK;
+					};
+				};
 			};
-			buildConfigurationList = 79B16ECA7510F2F43ABF5E81 /* Build configuration list for PBXProject "nikoneko-run" */;
+			buildConfigurationList = 162A602F4443F98004B067E1 /* Build configuration list for PBXProject "nikoneko-run" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -560,156 +578,181 @@
 				en,
 				"zh-Hant",
 			);
-			mainGroup = 5FCE3792D669DD58AF736091;
+			mainGroup = 41EE431E056C521073912EA5;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				7B17D802B95791668061CDDC /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				22BCE48112F52505C70D5275 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = AE62125485B3DC3B898BC020 /* Products */;
+			productRefGroup = 3FA2DC6B3508D1CB5479EC09 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				552EDB75EC9C1D7554D6E648 /* NikoNekoWidgets */,
-				153FBF27F168F014C2265E0F /* nikoneko-run */,
-				77C2074F5C5F1717DAA22D52 /* nikoneko-runTests */,
+				F921734759AD1F9E6466177E /* NikoNekoWidgets */,
+				1B16E05F2284765C9C4D3B33 /* nikoneko */,
+				65A79B967CF501C538F52FDB /* nikonekoTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		071EF46E49AACDA97808A030 /* Resources */ = {
+		2F85F3EB79944C2BFF06BCD6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				15904655350632AEA9D4E6BA /* Loader cat.json in Resources */,
-				AA1001001001001001001001 /* Bad Cat.json in Resources */,
-				AA1001001001001001001002 /* Trophy.json in Resources */,
-				AA1001001001001001001003 /* 404 Error Lottie animation.json in Resources */,
-				084EA4DF5B4146D0B3B9E224 /* Localizable.strings in Resources */,
+				14A3C293E86B4BBAD0BA73A1 /* 404 Error Lottie animation.json in Resources */,
+				32BB581CAD9892C98F514E97 /* Bad Cat.json in Resources */,
+				D0D4835365A585088CA43771 /* Loader cat.json in Resources */,
+				39446A8AB5489AAB586174FC /* Localizable.strings in Resources */,
+				ED1FC2FC9E1084EF2EC3D520 /* Trophy.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B343D76CA71FBD85E284326A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				202BBEB3A18C0E69454AA071 /* 404 Error Lottie animation.json in Resources */,
+				F0A3ABE5D2BA69C8166827D4 /* Bad Cat.json in Resources */,
+				BF0EFB42E021381C6D039F3F /* Loader cat.json in Resources */,
+				E0F8CB7743A868AD7E0B6BCC /* Trophy.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		0A466BAC5D74639CE605EB89 /* Sources */ = {
+		1E4D8827D6699441809FF5E9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CF9744269F992B9BDEF28D98 /* AppGroupDefaults.swift in Sources */,
-				AA22222222222222222222AA /* AppGroupDefaults+App.swift in Sources */,
-				224AA6750F55AB20626DDC1E /* AppearanceView.swift in Sources */,
-				5C01188090135C0BDA392DBF /* BLEHeartRateManager.swift in Sources */,
-				7A04A782CED3C8A5FDE59A68 /* BPMPanelView.swift in Sources */,
-				6075677081CE64D0432D1B04 /* BarChartView.swift in Sources */,
-				5FADD0201D1B6E8E31B9B79E /* CharacterPickerView.swift in Sources */,
-				45C61964C4251AD7FDD870E9 /* CharacterView.swift in Sources */,
-				3B70160644FA316EE67E9F24 /* Color+Hex.swift in Sources */,
-				11D640EC8A8243985ED5C6B4 /* ContentView.swift in Sources */,
-				CFDAE6CC1A46F86B8C113FB0 /* DataSyncView.swift in Sources */,
-				7D2D06F23FD23EDD46FC449C /* DefaultsView.swift in Sources */,
-				FFAF81159DD3F1F71B9FD84C /* DisplayView.swift in Sources */,
-				1FE862B862923F545FBB6999 /* DrumPickerView.swift in Sources */,
-				A1B2C3D4E5F60002 /* SegmentedPicker.swift in Sources */,
-				A21530874B4CE5255B0B71EF /* HealthKitService.swift in Sources */,
-				C50EE854F60BBD3C0005656F /* HeartRateService.swift in Sources */,
-				32CBC192B0462D0A929B6279 /* JogApp.swift in Sources */,
-				ED783424F7C4AFE59C4C4465 /* LanguageManager.swift in Sources */,
-				5BB77C26A163FFD28DB3C047 /* LiveActivityService.swift in Sources */,
-				A5B6D967C59FA96ADD3304FD /* LottieCharacterView.swift in Sources */,
-				D6501BC66A4A5476CA4F2E3A /* MetronomeService.swift in Sources */,
-				8AB8674DE987BB6124193A2D /* MotionService.swift in Sources */,
-				4FB72CB5628303C7F508576D /* NikoNekoLiveActivityAttributes.swift in Sources */,
-				E4DFBCC46CFC50B78E09F947 /* NikoNekoLiveActivityView.swift in Sources */,
-				9A7DED754E0D45F4F30FE23C /* NotificationService.swift in Sources */,
-				2AACC927B60CDFC431B51819 /* NotificationsView.swift in Sources */,
-				A9D26887E563CFFD485F6AFE /* PlaceholderCharacterView.swift in Sources */,
-				150770602ED1172F1DFC11AD /* ReportView.swift in Sources */,
-				001E3A9E2863961477057DA2 /* ReportViewModel.swift in Sources */,
-				1C22AFA84D6C0A451062471B /* RunSession.swift in Sources */,
-				C1135C0C4DBE8D721A2B0108 /* SessionDetailView.swift in Sources */,
-				70F76358B48AD7AC047E9A78 /* SettingsView.swift in Sources */,
-				ACBB147C11F9E8DC31BA296F /* ShareCardView.swift in Sources */,
-				3BC28031D6E58F2A5769B129 /* SummaryView.swift in Sources */,
-				88B84CC75AACE3C5594864C2 /* SummaryViewModel.swift in Sources */,
-				C2FCE20EFCD323FC9BF7E362 /* ThemeLibrary.swift in Sources */,
-				82215704DC246B9BB13ECD1A /* ThemeManager.swift in Sources */,
-				683D451A170E65E6C8AE53DB /* ThemeTokens.swift in Sources */,
-				C53DF6D8656AD38A847A78B4 /* ThresholdConfig.swift in Sources */,
-				245588D9C10C8D3D4CDEF8F9 /* TimerView.swift in Sources */,
-				F7173C25F57435EC47C9A812 /* TimerViewModel.swift in Sources */,
-				7CB244948A1DA1DE6C73A710 /* UserProfile.swift in Sources */,
-				A00CD2EFAD44BA1062193307 /* WidgetSettingsView.swift in Sources */,
-				116B897AF98886EBC20E141B /* WidgetSharedData.swift in Sources */,
+				AE148DB7F25BCD270C5B98FB /* AllStatsWidget.swift in Sources */,
+				7C4575C9F632BC1A7475F7B2 /* AppGroupDefaults.swift in Sources */,
+				DD98B148CAAE02E056F7CCEF /* BarChartWidget.swift in Sources */,
+				A7921CA6B693A4A61DB0F211 /* CalendarWidget.swift in Sources */,
+				229AFD5160DD2B64C0F6A183 /* CharacterView.swift in Sources */,
+				4F8D70A55717D9BB97D94274 /* Color+Hex.swift in Sources */,
+				DA11E512CD49341621BAFF4B /* HeatmapWidget.swift in Sources */,
+				A84CE9E85F562A6C35555C70 /* LottieCharacterView.swift in Sources */,
+				0708B78B11001790B9BF14D7 /* NikoNekoWidgetBundle.swift in Sources */,
+				D37DDA18BE4A6D4DC8F3E8E7 /* PlaceholderCharacterView.swift in Sources */,
+				9C198317D741685FE404E120 /* StatWidget.swift in Sources */,
+				03D4F45E889DE08821FA275A /* StatWidgetIntent.swift in Sources */,
+				889D886F62A92E875B0F9740 /* StreakWidget.swift in Sources */,
+				6D22F9C84659A13BEE30A404 /* ThemeLibrary.swift in Sources */,
+				25DCA0110C09472677F8F7E0 /* ThemeManager.swift in Sources */,
+				02D489707433C2A1DA530C47 /* ThemeTokens.swift in Sources */,
+				230E629961CEE7910A09B3F3 /* TodayDistanceWidget.swift in Sources */,
+				0333531A6175034DA8AA0A93 /* TodayStepsWidget.swift in Sources */,
+				CF96B055ACC8EE3F19C0521E /* TotalTimeWidget.swift in Sources */,
+				95D0AC64E0C710D38A1DD4B5 /* WidgetSharedData.swift in Sources */,
+				D28215F501E45B92A3DF8F24 /* WidgetTheme.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		40738FF023B517AC55ABC402 /* Sources */ = {
+		D9FAD534F7A829A8E9F596A0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4B023B6203D09F52D11F361E /* AppGroupBridgeTests.swift in Sources */,
-				F7BC978AD298CDA3A6841412 /* AppGroupDefaultsTests.swift in Sources */,
-				698005F3EEAB77449C607BA9 /* BarColorTests.swift in Sources */,
-				0E9FA4ACAB221DC27926DC81 /* DrumPickerTests.swift in Sources */,
-				8005265A02D7F322507CB587 /* HeartRateServiceTests.swift in Sources */,
-				262AB533D5E709E8DDC51585 /* MetronomeServiceTests.swift in Sources */,
-				6FA05A34D35CF0FD79085EEB /* MotionServiceTests.swift in Sources */,
-				D7AF75D6579CFCBF3B87363A /* ReportViewModelTests.swift in Sources */,
-				B9CC082CDCC8698CFD62C27F /* SummaryViewModelTests.swift in Sources */,
-				CB0D7B65CA278F3FCD8E67CD /* ThemeLibraryTests.swift in Sources */,
-				FA096AF93CDA70DEE91A3501 /* TimerViewModelTests.swift in Sources */,
-				97B761E1E11BA02B234FB2C8 /* WidgetDataTests.swift in Sources */,
+				A7329BE307BFCED4BDD64519 /* AllStatsWidget.swift in Sources */,
+				A4922B5A40DC2DB2561F1B7C /* AppGroupDefaults+App.swift in Sources */,
+				DB80E2661E2EBCA3430DFCA3 /* AppGroupDefaults.swift in Sources */,
+				385A314ECAC9F2A1D867215E /* AppearanceView.swift in Sources */,
+				50BED7E902075ADC00EC7D52 /* BPMPanelView.swift in Sources */,
+				8146DE555F267430728A45E8 /* BarChartView.swift in Sources */,
+				6D4A455696757587BAA61039 /* BarChartWidget.swift in Sources */,
+				99F1969F7FB6D94D2FF18C46 /* CalendarWidget.swift in Sources */,
+				4B4EFFB67935E130E85CC07C /* CharacterPickerView.swift in Sources */,
+				7F25182494D31FCBBF4292AE /* CharacterView.swift in Sources */,
+				D7CC39ED354A43AB3300AB1B /* Color+Hex.swift in Sources */,
+				BA10484D5701FC1978DD7950 /* ContentView.swift in Sources */,
+				E844F28F8569BDEE95DE4054 /* DataSyncView.swift in Sources */,
+				ED63F310493483434753B879 /* DefaultsView.swift in Sources */,
+				03508708D11AC01772204E63 /* DisplayView.swift in Sources */,
+				BFDBADF2F7AE939EF6FF2795 /* DrumPickerView.swift in Sources */,
+				34C9665A9BC798501529F94D /* HealthKitService.swift in Sources */,
+				EA630C72892046CCADA29665 /* HeartRateService.swift in Sources */,
+				CDD9C89C461C8B39C39F8C2B /* HeatmapWidget.swift in Sources */,
+				AE712D985AD43344CF08EA97 /* JogApp.swift in Sources */,
+				89651E2E1ADF9AC236986842 /* LanguageManager.swift in Sources */,
+				BAABE729B4FDE8DCDC406AD0 /* LiveActivityService.swift in Sources */,
+				7AEA4392AD645038C5025DF1 /* LottieCharacterView.swift in Sources */,
+				1368EC9ECE0E0E36FF4B303C /* MetronomeService.swift in Sources */,
+				96C282CEEE7FE59B962095BF /* MotionService.swift in Sources */,
+				2D71E599E32AF5BB54A72B03 /* NikoNekoLiveActivityAttributes.swift in Sources */,
+				0043CABED0591E062ED9976C /* NikoNekoLiveActivityView.swift in Sources */,
+				66DFB63BA79545ACF85C50DF /* NotificationService.swift in Sources */,
+				68AF989AAD50ECEC12D8276E /* NotificationsView.swift in Sources */,
+				BC2893EF356ABA4E4FE42E7F /* OnboardingView.swift in Sources */,
+				761D6C42B6BA09270FC274A8 /* PlaceholderCharacterView.swift in Sources */,
+				B4F685B2BF54763A3EE53037 /* ReportView.swift in Sources */,
+				532476B9725E59D2258AA731 /* ReportViewModel.swift in Sources */,
+				345D1D388BA3168A9B34C894 /* RunSession.swift in Sources */,
+				8E037163A3619027E622FD9F /* SegmentedPicker.swift in Sources */,
+				5427604DE03FD360FCA4B750 /* SessionDetailView.swift in Sources */,
+				5973A20B6396FE89CB1878AB /* SettingsView.swift in Sources */,
+				F093FCA20CAD27AD91DD417E /* ShareCardView.swift in Sources */,
+				7F3368AF6B0E5337011224C8 /* StatWidget.swift in Sources */,
+				E9D244A7BEA86CB5760F5AE3 /* StatWidgetIntent.swift in Sources */,
+				CB6D16100030855B3165A77A /* StreakWidget.swift in Sources */,
+				C62D9E9444E788B300DF843B /* SummaryView.swift in Sources */,
+				9E382006389F82C5721D44C7 /* SummaryViewModel.swift in Sources */,
+				1F00A30CF2B01145DB96B77A /* ThemeLibrary.swift in Sources */,
+				575A6E0A6F74B758F3BBEAB9 /* ThemeManager.swift in Sources */,
+				A2F6C8C2FB9AD4E2919FAF77 /* ThemeTokens.swift in Sources */,
+				1B7FAAACC515A85B41FA5583 /* ThresholdConfig.swift in Sources */,
+				5CB153DF3256EA7E2500C0C0 /* TimerView.swift in Sources */,
+				7450CF5B03020510BD333034 /* TimerViewModel.swift in Sources */,
+				E7BA72F670B0C4064FC681EC /* TodayDistanceWidget.swift in Sources */,
+				3616CAB82B6FBE153CC5DA8D /* TodayStepsWidget.swift in Sources */,
+				8A31BFB8A8A9CC8EC00FD180 /* TotalTimeWidget.swift in Sources */,
+				AC9FD8EFC3017B88E02AD46C /* UserProfile.swift in Sources */,
+				B79EDC96B27525B4C53925DE /* WidgetSettingsView.swift in Sources */,
+				AC3E29B4E3A5CDF27D39C369 /* WidgetSharedData.swift in Sources */,
+				36266122E8433A7E168FF8C6 /* WidgetTheme.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		71068C11E3E6F4DB050EF0D4 /* Sources */ = {
+		E6906733B14EEBBA362FFD6B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E53331D1075FDC6ABF7DBFC /* CalendarWidget.swift in Sources */,
-				2A04A0BDC70340CF96700732 /* AllStatsWidget.swift in Sources */,
-				E64BAB1BB40D47958483A016 /* BarChartWidget.swift in Sources */,
-				0A4CA9A149DCC196B6299F53 /* HeatmapWidget.swift in Sources */,
-				38A20A6739EC0EC32EDDAF9F /* NikoNekoWidgetBundle.swift in Sources */,
-				E93A8C7AB9AE9AEA912AF603 /* StreakWidget.swift in Sources */,
-				75DA61462FD64D9CB669BCF8 /* TodayDistanceWidget.swift in Sources */,
-				8CCFF715BB804B23B02EFC87 /* TodayStepsWidget.swift in Sources */,
-				BB647FE5566A775E8EBEA2DB /* TotalTimeWidget.swift in Sources */,
-				1857C99985D7E5823A797986 /* StatWidgetIntent.swift in Sources */,
-				AA00000000000002 /* StatWidget.swift in Sources */,
-				4678815D9F5F462DF49F11BE /* WidgetSharedData.swift in Sources */,
-				ADE725D25D31481DB7C2389A /* WidgetTheme.swift in Sources */,
-				WGT0000000000000000000001 /* ThemeTokens.swift in Sources */,
-				WGT0000000000000000000002 /* ThemeLibrary.swift in Sources */,
-				WGT0000000000000000000003 /* RunSession.swift in Sources */,
-				WGT0000000000000000000004 /* Color+Hex.swift in Sources */,
-				WGT0000000000000000000005 /* AppGroupDefaults.swift in Sources */,
+				CFFFC8DF6172A2C0E7F643C7 /* AppGroupBridgeTests.swift in Sources */,
+				06F86A6404C8E50B3D9B5B09 /* AppGroupDefaultsTests.swift in Sources */,
+				608A538B277628246DC82BE8 /* BarColorTests.swift in Sources */,
+				80F44D5119B01D5001A79B6E /* DrumPickerTests.swift in Sources */,
+				BEEB47D692384E56453D3165 /* HeartRateServiceTests.swift in Sources */,
+				F47CDE88C40A5C3B4814DEFA /* MetronomeServiceTests.swift in Sources */,
+				A8B25B4ED2F6DB28FC47B7E7 /* MotionServiceTests.swift in Sources */,
+				59845CF0ABDAB69E86B65CFC /* ReportViewModelTests.swift in Sources */,
+				B5CC148BBBC4F20AB767DD85 /* SummaryViewModelTests.swift in Sources */,
+				BA7EFAC6D2DE53BA7EC75068 /* ThemeLibraryTests.swift in Sources */,
+				74BA2486A0F744A4D2BC4EDA /* TimerViewModelTests.swift in Sources */,
+				5D34C5A1DB07A483685128D6 /* WidgetDataTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		E455C0732CED32DBB7EA6994 /* PBXTargetDependency */ = {
+		79266D642F146B5BC70AF7AF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 153FBF27F168F014C2265E0F /* nikoneko-run */;
-			targetProxy = 4E4325D690ED23E694D12343 /* PBXContainerItemProxy */;
+			target = 1B16E05F2284765C9C4D3B33 /* nikoneko */;
+			targetProxy = 5E574AF6C1EE14A3382F7338 /* PBXContainerItemProxy */;
 		};
-		EMBED003TARGETDEP001 /* PBXTargetDependency */ = {
+		BCFE38B4DDA88BFD50C4139A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 552EDB75EC9C1D7554D6E648 /* NikoNekoWidgets */;
-			targetProxy = EMBED004CONTAINERPROXY001 /* PBXContainerItemProxy */;
+			target = 1B16E05F2284765C9C4D3B33 /* nikoneko */;
+			targetProxy = 4A580553328724E8831979A0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		F2C3B82D860DBEAE46000161 /* Localizable.strings */ = {
+		E6FB8CF3AE3DE208C5B83B3F /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				FF7B559E3D5EF803936C4B5F /* en */,
-				9118A77F59F326480E2C1664 /* zh-Hant */,
+				961CB9E3CB2ADE59EA7511F6 /* en */,
+				495B748BA95AA1C38AE0ACC2 /* zh-Hant */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -717,11 +760,10 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		1D146F3EC9DD13A9137ACABF /* Release */ = {
+		119BC2DC36BFA148BBB587EF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = W3L4T944MU;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -730,20 +772,18 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko.tests;
-				PRODUCT_NAME = "nikoneko-runTests";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/nikoneko-run.app/nikoneko-run";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/nikoneko.app/nikoneko";
 			};
-			name = Release;
+			name = Debug;
 		};
-		289BD2DA3E0179ABDB18F557 /* Release */ = {
+		1838392846B2236D50A5095A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = nikoneko/NikoNekoWidgets.entitlements;
-				DEVELOPMENT_TEAM = W3L4T944MU;
-				INFOPLIST_FILE = nikoneko/Widgets/Info.plist;
+				CODE_SIGN_ENTITLEMENTS = nikoneko_run/NikoNekoWidgets.entitlements;
+				INFOPLIST_FILE = nikoneko_run/Widgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -751,58 +791,53 @@
 					"@executable_path/../../Frameworks",
 				);
 				NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run.widgets";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko.widgets;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2DA2B65D24B63FEFBF67881F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = nikoneko_run/NikoNekoWidgets.entitlements;
+				INFOPLIST_FILE = nikoneko_run/Widgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko.widgets;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
-		3E43AAF97FB4FCF06420B9DF /* Debug */ = {
+		37D5F17953904EAACFDF6C93 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = nikoneko/nikoneko.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = nikoneko_run/nikoneko.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = W3L4T944MU;
-				INFOPLIST_FILE = nikoneko/App/Info.plist;
+				INFOPLIST_FILE = nikoneko_run/App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run";
-				PRODUCT_NAME = "nikoneko-run";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		4CEA3CB4ABE5EA31F163F370 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = W3L4T944MU;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko.tests;
-				PRODUCT_NAME = "nikoneko-runTests";
-				SDKROOT = iphoneos;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/nikoneko-run.app/nikoneko-run";
-			};
-			name = Debug;
-		};
-		51D3C17247E282224CBBEC4A /* Debug */ = {
+		542396679A9882D7C0460428 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -837,7 +872,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = B58R97M2WC;
+				DEVELOPMENT_TEAM = RD7PKRJWKK;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -866,30 +901,46 @@
 			};
 			name = Debug;
 		};
-		591D8489D91C53D9720CCD1E /* Release */ = {
+		61E55968235CA2A616AF9217 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = nikoneko/nikoneko.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = nikoneko_run/nikoneko.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = W3L4T944MU;
-				INFOPLIST_FILE = nikoneko/App/Info.plist;
+				INFOPLIST_FILE = nikoneko_run/App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run";
-				PRODUCT_NAME = "nikoneko-run";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
-		69A38E91887AFA9F7A0E5286 /* Release */ = {
+		A8B7AFEB09B8ADE6BBCCDDD8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko.tests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/nikoneko.app/nikoneko";
+			};
+			name = Release;
+		};
+		C066C5EB7346CEB7B4469E29 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -924,7 +975,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = B58R97M2WC;
+				DEVELOPMENT_TEAM = RD7PKRJWKK;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -946,61 +997,41 @@
 			};
 			name = Release;
 		};
-		977CB5F7A645CB92AF436D72 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = nikoneko/NikoNekoWidgets.entitlements;
-				DEVELOPMENT_TEAM = W3L4T944MU;
-				INFOPLIST_FILE = nikoneko/Widgets/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run.widgets";
-				SDKROOT = iphoneos;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3926EF852E698397AA4CD9DB /* Build configuration list for PBXNativeTarget "nikoneko-runTests" */ = {
+		063CBD70978F60B78F22A4EF /* Build configuration list for PBXNativeTarget "nikonekoTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4CEA3CB4ABE5EA31F163F370 /* Debug */,
-				1D146F3EC9DD13A9137ACABF /* Release */,
+				119BC2DC36BFA148BBB587EF /* Debug */,
+				A8B7AFEB09B8ADE6BBCCDDD8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		79B16ECA7510F2F43ABF5E81 /* Build configuration list for PBXProject "nikoneko-run" */ = {
+		162A602F4443F98004B067E1 /* Build configuration list for PBXProject "nikoneko-run" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				51D3C17247E282224CBBEC4A /* Debug */,
-				69A38E91887AFA9F7A0E5286 /* Release */,
+				542396679A9882D7C0460428 /* Debug */,
+				C066C5EB7346CEB7B4469E29 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		815F190338B285BE71AFD777 /* Build configuration list for PBXNativeTarget "nikoneko-run" */ = {
+		DD74EB91E4CA4EEC5ADE0991 /* Build configuration list for PBXNativeTarget "NikoNekoWidgets" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				3E43AAF97FB4FCF06420B9DF /* Debug */,
-				591D8489D91C53D9720CCD1E /* Release */,
+				1838392846B2236D50A5095A /* Debug */,
+				2DA2B65D24B63FEFBF67881F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		9366B9038FB8A849D26EDE31 /* Build configuration list for PBXNativeTarget "NikoNekoWidgets" */ = {
+		DF1DA5C4CC99F4499A10DAB9 /* Build configuration list for PBXNativeTarget "nikoneko" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				977CB5F7A645CB92AF436D72 /* Debug */,
-				289BD2DA3E0179ABDB18F557 /* Release */,
+				37D5F17953904EAACFDF6C93 /* Debug */,
+				61E55968235CA2A616AF9217 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -1008,7 +1039,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7B17D802B95791668061CDDC /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+		22BCE48112F52505C70D5275 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/airbnb/lottie-ios";
 			requirement = {
@@ -1019,12 +1050,12 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		E2E7458600F715689DA8114C /* Lottie */ = {
+		494EAAD6F67A3197AFD55CBC /* Lottie */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7B17D802B95791668061CDDC /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			package = 22BCE48112F52505C70D5275 /* XCRemoteSwiftPackageReference "lottie-ios" */;
 			productName = Lottie;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = 39764C712F7E7B302B3DCF7F /* Project object */;
+	rootObject = BA6644D57441174F969006AD /* Project object */;
 }
