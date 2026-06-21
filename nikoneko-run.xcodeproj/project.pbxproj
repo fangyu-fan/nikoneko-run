@@ -64,6 +64,7 @@
 		99F1969F7FB6D94D2FF18C46 /* CalendarWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2CE45F7F70AAF25A84794A /* CalendarWidget.swift */; };
 		9C198317D741685FE404E120 /* StatWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4593F302764A66A3C1FA2B66 /* StatWidget.swift */; };
 		9E382006389F82C5721D44C7 /* SummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A29EB4BAACB55EA0E26E858E /* SummaryViewModel.swift */; };
+		9E8CEFC9892253A7A888A759 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 551D664DE14BA5794E10C5C3 /* Assets.xcassets */; };
 		A2F6C8C2FB9AD4E2919FAF77 /* ThemeTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CB002201A3605B5C755D99 /* ThemeTokens.swift */; };
 		A4922B5A40DC2DB2561F1B7C /* AppGroupDefaults+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F91B7FA58805B940A4FA71 /* AppGroupDefaults+App.swift */; };
 		A7329BE307BFCED4BDD64519 /* AllStatsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA556CB27DE171E5AF52A574 /* AllStatsWidget.swift */; };
@@ -160,6 +161,7 @@
 		52C5078E8D550E5658204098 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		54827D3C3293DBBCF93D01C5 /* LiveActivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityService.swift; sourceTree = "<group>"; };
 		54E198C49902F32FF5A4C39E /* NikoNekoLiveActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NikoNekoLiveActivityView.swift; sourceTree = "<group>"; };
+		551D664DE14BA5794E10C5C3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		56F7BEEC4DB4AC00296F8AC7 /* TimerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewModel.swift; sourceTree = "<group>"; };
 		597CCA5A13B2A44B963406C5 /* NikoNekoLiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NikoNekoLiveActivityAttributes.swift; sourceTree = "<group>"; };
 		606D8B93C812B4D4AA6EEF7E /* TodayStepsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayStepsWidget.swift; sourceTree = "<group>"; };
@@ -362,6 +364,7 @@
 		49D662B1389CB9D7B1D97139 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				551D664DE14BA5794E10C5C3 /* Assets.xcassets */,
 				4FE88681615BBD0A9F257019 /* ContentView.swift */,
 				F567944097222D55D480FC97 /* Info.plist */,
 				C104463EF2B987532EF21913 /* JogApp.swift */,
@@ -615,6 +618,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				14A3C293E86B4BBAD0BA73A1 /* 404 Error Lottie animation.json in Resources */,
+				9E8CEFC9892253A7A888A759 /* Assets.xcassets in Resources */,
 				32BB581CAD9892C98F514E97 /* Bad Cat.json in Resources */,
 				D0D4835365A585088CA43771 /* Loader cat.json in Resources */,
 				39446A8AB5489AAB586174FC /* Localizable.strings in Resources */,
