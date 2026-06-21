@@ -59,7 +59,8 @@ targets:
       properties:
         CFBundleDisplayName: "Niconeko Run"
         UILaunchScreen:
-          UIColorName: "LaunchBackground"
+          UIImageName: "LaunchImage"
+          UIImageRespectsSafeAreaInsets: false
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         NSHealthShareUsageDescription: "Niconeko Run reads heart rate during runs."
@@ -67,6 +68,7 @@ targets:
         NSMotionUsageDescription: "Niconeko Run tracks steps and distance."
         UIBackgroundModes:
           - audio
+          - remote-notification
     capabilities:
       healthKit: {}
       backgroundModes:

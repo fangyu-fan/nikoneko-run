@@ -42,10 +42,8 @@ struct LaunchScreenView: View {
             }
         }
         .task {
-            // Start animation after one render pass so the static frame is visible first
             try? await Task.sleep(for: .milliseconds(50))
             isAnimating = true
-            // Animate for ~1 full loop then hand off
             try? await Task.sleep(for: .milliseconds(1000))
             onComplete()
         }

@@ -147,6 +147,7 @@ struct OnboardingView: View {
 
     private let cardSide: CGFloat = 96    // square card
     private let cardGap: CGFloat  = 16
+    private let labelAreaHeight: CGFloat = 22  // name label below the square
     private var cardStep: CGFloat { cardSide + cardGap }
 
     private var themePage: some View {
@@ -197,22 +198,21 @@ struct OnboardingView: View {
             let sideCount = Int(ceil(w / cardStep / 2)) + 1
 
             ZStack {
-                // Fixed ring in screen centre — never moves
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(theme.accent.opacity(0.8), lineWidth: 2)
-                    .frame(width: cardSide, height: cardSide + 20)
-
-                // Cards: each card's position is determined by its absolute index offset
+                // Cards slide behind the ring
                 ForEach(-sideCount...sideCount, id: \.self) { offset in
                     let idx = ((selectedThemeIndex + offset) % count + count) % count
                     let t = ThemeLibrary.all[idx]
-                    // x relative to centre: offset × step + live drag
                     let x = CGFloat(offset) * cardStep + liveOffset
                     themeCard(t)
                         .offset(x: x)
                 }
+                // Fixed SQUARE ring — sits on top, never moves, covers only the card square
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(theme.accent, lineWidth: 1.5)
+                    .frame(width: cardSide, height: cardSide)
+                    .offset(y: -(labelAreaHeight / 2))  // shift up to align with card square
             }
-            .frame(width: w, height: cardSide + 20)
+            .frame(width: w, height: cardSide + labelAreaHeight)
             .clipped()
             .contentShape(Rectangle())
             .gesture(
@@ -246,40 +246,37 @@ struct OnboardingView: View {
                     }
             )
         }
-        .frame(height: cardSide + 36)
+        .frame(height: cardSide + labelAreaHeight + 20)  // +20 for dots
         .padding(.bottom, 16)
         .overlay(alignment: .bottom) { themeDots }
     }
 
     private func themeCard(_ t: ThemeTokens) -> some View {
         VStack(spacing: 0) {
-            // Square card — fixed width and height
+            // Square card
             ZStack(alignment: .bottom) {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .fill(t.bg)
-                // Colour bar pinned to bottom, constrained to card width
-                VStack(spacing: 0) {
-                    Spacer()
-                    HStack(spacing: 1) {
-                        ForEach(t.bar.indices, id: \.self) { i in
-                            t.bar[i]
-                        }
+                HStack(spacing: 1) {
+                    ForEach(t.bar.indices, id: \.self) { i in
+                        t.bar[i]
                     }
-                    .frame(height: 14)
-                    .padding(.horizontal, 10)
-                    .padding(.bottom, 10)
                 }
+                .frame(height: 12)
+                .clipShape(RoundedRectangle(cornerRadius: 0))
+                .padding(.horizontal, 10)
+                .padding(.bottom, 10)
             }
             .frame(width: cardSide, height: cardSide)
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-            // Name label — same width as card, uses card's own text colour
+
+            // Name label below square — uses this card's text colour
             Text(themeDisplayName(t.id))
                 .font(.system(size: 10, weight: .medium))
                 .foregroundColor(t.text)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
-                .frame(width: cardSide, alignment: .center)
-                .padding(.top, 4)
+                .frame(width: cardSide, height: labelAreaHeight, alignment: .center)
         }
     }
 
@@ -354,28 +351,6 @@ struct OnboardingView: View {
     private var pacePage: some View {
         VStack(spacing: 0) {
             Spacer()
-
-            // Mute toggle top-right
-            HStack {
-                Spacer()
-                Button {
-                    metronomeOn.toggle()
-                    if metronomeOn {
-                        playPreviewClick(sound: selectedSound)
-                    } else {
-                        previewMetronome.stop()
-                    }
-                } label: {
-                    Image(systemName: metronomeOn ? "speaker.wave.2" : "speaker.slash")
-                        .font(.system(size: 16, weight: .light))
-                        .foregroundColor(metronomeOn ? theme.accent : theme.textMid)
-                        .frame(width: 44, height: 44)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-            }
-            .padding(.horizontal, 20)
-            .padding(.top, -8)
 
             Text(lm.L("onboarding.pace.title"))
                 .font(.system(size: 28, weight: .ultraLight))
@@ -623,10 +598,7 @@ struct OnboardingView: View {
                             }
                     }
 
-                    if notifStatus == .denied {
-                        Rectangle().fill(theme.accentDim).frame(height: 0.5)
-                        settingsLink(text: lm.L("onboarding.notif2.enableInSettings"))
-                    }
+                    // When denied, toggle back on will re-trigger the system prompt — no hint needed
                 }
                 .background(theme.surface)
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
@@ -737,9 +709,7 @@ struct OnboardingView: View {
             .padding(.vertical, 14)
             .padding(.horizontal, 16)
 
-            if motionStatus == .denied {
-                settingsLink(text: lm.L("onboarding.perms.motion.hint"))
-            }
+            // When denied, toggle back on will re-trigger — no hint needed
         }
         .animation(.easeInOut(duration: 0.25), value: motionStatus)
     }
