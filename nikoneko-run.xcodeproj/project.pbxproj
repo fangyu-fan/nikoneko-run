@@ -98,6 +98,7 @@
 		DD98B148CAAE02E056F7CCEF /* BarChartWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888DF2FE51B76083773D44DE /* BarChartWidget.swift */; };
 		E0F8CB7743A868AD7E0B6BCC /* Trophy.json in Resources */ = {isa = PBXBuildFile; fileRef = C3B240D6D780A0A815DFE848 /* Trophy.json */; };
 		E7BA72F670B0C4064FC681EC /* TodayDistanceWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1318ACDCBBE687F91F3F2DA5 /* TodayDistanceWidget.swift */; };
+		E80870FBAC856EE66E5600B3 /* LaunchScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0B669CEC671B53395D8193 /* LaunchScreenView.swift */; };
 		E844F28F8569BDEE95DE4054 /* DataSyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92204FB8054C341F2E7DF3E2 /* DataSyncView.swift */; };
 		E9D244A7BEA86CB5760F5AE3 /* StatWidgetIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C3F16E403A81DC4BC59A32 /* StatWidgetIntent.swift */; };
 		EA630C72892046CCADA29665 /* HeartRateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C01E2FED6A6B3BE96A2614 /* HeartRateService.swift */; };
@@ -149,7 +150,7 @@
 		3DEB58B584691F812FCE3FA8 /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
 		3F128697330A9DCBE0111098 /* HeartRateServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateServiceTests.swift; sourceTree = "<group>"; };
 		3F42CF6C52FCCE7C9D5EE995 /* MetronomeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeService.swift; sourceTree = "<group>"; };
-		4092B86F4B9838A42CB4EC87 /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
+		4092B86F4B9838A42CB4EC87 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		4593F302764A66A3C1FA2B66 /* StatWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatWidget.swift; sourceTree = "<group>"; };
 		490F883C38011D033F56149B /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
 		495B748BA95AA1C38AE0ACC2 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -167,17 +168,18 @@
 		6C13ED6BC9690B8BAD1C293D /* MotionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionService.swift; sourceTree = "<group>"; };
 		6DA000BDF804808817A188E3 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		70890FC411099E4B4D869D9D /* BarColorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarColorTests.swift; sourceTree = "<group>"; };
-		71D2FA86F770B4C318865C59 /* nikoneko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nikoneko.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		71D2FA86F770B4C318865C59 /* nikoneko.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = nikoneko.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78B6343558BD9688E80FDA8B /* DrumPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrumPickerView.swift; sourceTree = "<group>"; };
 		794BBFC86D73BEA2E96E6423 /* WidgetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTheme.swift; sourceTree = "<group>"; };
 		804E8509F10256D89DD44B65 /* CharacterPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterPickerView.swift; sourceTree = "<group>"; };
 		825E9C61C670A6E83FA35AB3 /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
-		851219F02A5812D69C0A0F7D /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
+		851219F02A5812D69C0A0F7D /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		867D74EA379E7D40AC574AA4 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
 		86F91B7FA58805B940A4FA71 /* AppGroupDefaults+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppGroupDefaults+App.swift"; sourceTree = "<group>"; };
 		888DF2FE51B76083773D44DE /* BarChartWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartWidget.swift; sourceTree = "<group>"; };
 		8B58C26204FD4FB69A1A152E /* Loader cat.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Loader cat.json"; sourceTree = "<group>"; };
 		8C42A970F271028A75659A3A /* HeatmapWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapWidget.swift; sourceTree = "<group>"; };
+		8F0B669CEC671B53395D8193 /* LaunchScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenView.swift; sourceTree = "<group>"; };
 		92204FB8054C341F2E7DF3E2 /* DataSyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSyncView.swift; sourceTree = "<group>"; };
 		961CB9E3CB2ADE59EA7511F6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9A60E9F3704F3567458738D1 /* LottieCharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieCharacterView.swift; sourceTree = "<group>"; };
@@ -271,6 +273,7 @@
 		206CB52D73FC281ED6514702 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				79693FA0BF8D54E23AD6B3EC /* Launch */,
 				3C05A3C727F719170E51825E /* Onboarding */,
 				289B3C7E94AC664097E789EA /* Report */,
 				43FA3CFA3525C05583FC7C0E /* Settings */,
@@ -387,6 +390,14 @@
 				E939ADC1B0268AC8E50377A5 /* WidgetDataTests.swift */,
 			);
 			path = IntegrationTests;
+			sourceTree = "<group>";
+		};
+		79693FA0BF8D54E23AD6B3EC /* Launch */ = {
+			isa = PBXGroup;
+			children = (
+				8F0B669CEC671B53395D8193 /* LaunchScreenView.swift */,
+			);
+			path = Launch;
 			sourceTree = "<group>";
 		};
 		9E57094A01BE443BFA8B7494 /* Models */ = {
@@ -562,6 +573,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
+					1B16E05F2284765C9C4D3B33 = {
+						DevelopmentTeam = RD7PKRJWKK;
+					};
 					65A79B967CF501C538F52FDB = {
 						DevelopmentTeam = RD7PKRJWKK;
 					};
@@ -675,6 +689,7 @@
 				CDD9C89C461C8B39C39F8C2B /* HeatmapWidget.swift in Sources */,
 				AE712D985AD43344CF08EA97 /* JogApp.swift in Sources */,
 				89651E2E1ADF9AC236986842 /* LanguageManager.swift in Sources */,
+				E80870FBAC856EE66E5600B3 /* LaunchScreenView.swift in Sources */,
 				BAABE729B4FDE8DCDC406AD0 /* LiveActivityService.swift in Sources */,
 				7AEA4392AD645038C5025DF1 /* LottieCharacterView.swift in Sources */,
 				1368EC9ECE0E0E36FF4B303C /* MetronomeService.swift in Sources */,
@@ -823,7 +838,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = nikoneko_run/nikoneko.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = W3L4T944MU;
+				DEVELOPMENT_TEAM = RD7PKRJWKK;
 				INFOPLIST_FILE = nikoneko_run/App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -907,7 +922,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = nikoneko_run/nikoneko.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = W3L4T944MU;
+				DEVELOPMENT_TEAM = RD7PKRJWKK;
 				INFOPLIST_FILE = nikoneko_run/App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
