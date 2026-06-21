@@ -140,12 +140,13 @@ struct OnboardingView: View {
         let saved = UserDefaults.standard.string(forKey: "activeThemeId") ?? "moss"
         return ThemeLibrary.all.firstIndex(where: { $0.id == saved }) ?? 0
     }()
-    // Raw drag translation in points — cards follow finger 1:1
-    @State private var dragPx: CGFloat = 0
+    // scrollOffset = selected index × cardStep, drag adds translation
+    // Always in points; negative = scrolled right (higher index)
+    @State private var scrollOffset: CGFloat = 0   // committed position
+    @State private var dragTranslation: CGFloat = 0 // live finger delta
 
-    // Square card: 88×88, step = 88 + 12 gap = 100
-    private let cardSide: CGFloat = 88
-    private let cardGap: CGFloat = 12
+    private let cardSide: CGFloat = 96    // square card
+    private let cardGap: CGFloat  = 16
     private var cardStep: CGFloat { cardSide + cardGap }
 
     private var themePage: some View {
@@ -187,82 +188,93 @@ struct OnboardingView: View {
 
     private var themeCarousel: some View {
         let count = ThemeLibrary.all.count
-        // Show enough cards to fill screen width + 1 on each side
-        let renderCount = 7  // -3…+3
 
         return GeometryReader { geo in
+            let w = geo.size.width
+            // Total live offset: committed scroll + live drag
+            let liveOffset = scrollOffset + dragTranslation
+            // How many cards to render each side to fill the screen
+            let sideCount = Int(ceil(w / cardStep / 2)) + 1
+
             ZStack {
-                // Fixed selection ring — stays centred, never moves
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(theme.accent.opacity(0.7), lineWidth: 1.5)
+                // Fixed ring in screen centre — never moves
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(theme.accent.opacity(0.8), lineWidth: 2)
                     .frame(width: cardSide, height: cardSide + 20)
 
-                // Cards move behind the ring
-                ForEach((-renderCount/2)...(renderCount/2), id: \.self) { offset in
+                // Cards: each card's position is determined by its absolute index offset
+                ForEach(-sideCount...sideCount, id: \.self) { offset in
                     let idx = ((selectedThemeIndex + offset) % count + count) % count
                     let t = ThemeLibrary.all[idx]
-                    // Raw pixel position: offset × step + live drag
-                    let x = CGFloat(offset) * cardStep + dragPx
+                    // x relative to centre: offset × step + live drag
+                    let x = CGFloat(offset) * cardStep + liveOffset
                     themeCard(t)
                         .offset(x: x)
                 }
             }
-            .frame(width: geo.size.width, height: cardSide + 20)
-            // Clip to screen width so cards don't bleed into other pages
+            .frame(width: w, height: cardSide + 20)
             .clipped()
             .contentShape(Rectangle())
             .gesture(
-                DragGesture(minimumDistance: 4)
+                DragGesture(minimumDistance: 6)
                     .onChanged { value in
-                        // Finger moves cards directly, no conversion needed
-                        dragPx = value.translation.width
+                        dragTranslation = value.translation.width
                     }
                     .onEnded { value in
-                        // Include velocity: predicted - actual gives velocity component
-                        let velocityPx = value.predictedEndTranslation.width - value.translation.width
-                        let totalPx = dragPx + velocityPx * 0.2
-                        // Round to nearest card
+                        // velocity component
+                        let vel = value.predictedEndTranslation.width - value.translation.width
+                        let totalPx = dragTranslation + vel * 0.3
+                        // steps to advance (negative totalPx = moved right = advance index)
                         let steps = Int((-totalPx / cardStep).rounded())
                         let target = ((selectedThemeIndex + steps) % count + count) % count
-                        withAnimation(.easeOut(duration: 0.2)) {
-                            dragPx = 0
-                            selectTheme(at: target)
+
+                        // Animate: first, commit drag into scrollOffset so position doesn't jump
+                        scrollOffset += dragTranslation
+                        dragTranslation = 0
+
+                        // Then animate scrollOffset to land on target
+                        let targetOffset = -CGFloat(steps) * cardStep - scrollOffset
+                        withAnimation(.easeOut(duration: 0.22)) {
+                            scrollOffset += targetOffset
+                        }
+                        // Apply theme without animation (data change, not position)
+                        selectTheme(at: target)
+                        // Normalise scrollOffset back to 0 after a tick so it doesn't accumulate
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                            scrollOffset = 0
                         }
                     }
             )
         }
-        .frame(height: cardSide + 36)  // card + name label below
+        .frame(height: cardSide + 36)
         .padding(.bottom, 16)
-        // Dot strip below
-        .overlay(alignment: .bottom) {
-            themeDots
-        }
+        .overlay(alignment: .bottom) { themeDots }
     }
 
     private func themeCard(_ t: ThemeTokens) -> some View {
-        VStack(spacing: 4) {
-            // Square top section with colour bar
+        VStack(spacing: 0) {
+            // Square card
             ZStack(alignment: .bottom) {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .fill(t.bg)
                     .frame(width: cardSide, height: cardSide)
                 HStack(spacing: 2) {
                     ForEach(t.bar.indices, id: \.self) { i in
-                        Rectangle().fill(t.bar[i]).frame(height: 9)
+                        Rectangle().fill(t.bar[i]).frame(height: 10)
                     }
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 0))
                 .padding(.horizontal, 8)
                 .padding(.bottom, 8)
             }
-            // Name below the square, outside the ring
+            // Name label below card
             Text(themeDisplayName(t.id))
-                .font(.system(size: 9, weight: .medium))
+                .font(.system(size: 10, weight: .medium))
                 .foregroundColor(t.text)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
                 .frame(width: cardSide)
-                .background(t.bg)
+                .padding(.top, 4)
+                .background(Color.clear)
         }
     }
 
@@ -275,7 +287,7 @@ struct OnboardingView: View {
                     .frame(width: i == selectedThemeIndex ? 14 : (dist == 1 ? 5 : 3), height: 3)
                     .animation(.easeInOut(duration: 0.2), value: selectedThemeIndex)
                     .onTapGesture {
-                        withAnimation(.easeOut(duration: 0.22)) { selectTheme(at: i) }
+                        selectTheme(at: i)
                     }
             }
         }
@@ -283,6 +295,8 @@ struct OnboardingView: View {
 
     private func selectTheme(at index: Int) {
         selectedThemeIndex = index
+        scrollOffset = 0
+        dragTranslation = 0
         let t = ThemeLibrary.all[index]
         themeManager.apply(t.id)
         profile?.activeThemeId = t.id
