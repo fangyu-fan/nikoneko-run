@@ -449,7 +449,166 @@ struct OnboardingView: View {
         .buttonStyle(.plain)
         .overlay(Circle().stroke(theme.accentDim, lineWidth: 0.5).frame(width: 32, height: 32))
     }
-    private var notifPermsPage: some View { Color.clear }
+    // MARK: - Page 4: Notifications + Permissions
+
+    private var notifPermsPage: some View {
+        ScrollView {
+            VStack(spacing: 0) {
+                Spacer().frame(height: 32)
+
+                Text(lm.L("onboarding.notif2.title"))
+                    .font(.system(size: 28, weight: .ultraLight))
+                    .tracking(-0.5)
+                    .foregroundColor(theme.text)
+                    .padding(.bottom, 6)
+
+                if notifEnabled {
+                    Text(lm.L("onboarding.notif2.subtitle"))
+                        .font(.system(size: 13))
+                        .tracking(0.04)
+                        .foregroundColor(theme.textDim)
+                        .transition(.opacity)
+                }
+
+                Spacer().frame(height: 32)
+
+                // Notification card
+                VStack(spacing: 0) {
+                    HStack {
+                        Image(systemName: "bell")
+                            .font(.system(size: 16, weight: .light))
+                            .foregroundColor(theme.text)
+                            .frame(width: 24)
+                        Text(lm.L("onboarding.notif2.reminder"))
+                            .font(.system(size: 16))
+                            .foregroundColor(theme.text)
+                        Spacer()
+                        Toggle("", isOn: Binding(
+                            get: { notifEnabled },
+                            set: { newVal in
+                                if newVal {
+                                    Task {
+                                        let granted = await NotificationService.requestPermission()
+                                        await MainActor.run {
+                                            if granted {
+                                                notifEnabled = true
+                                                notifStatus = .granted
+                                                profile?.notificationsEnabled = true
+                                                try? ctx.save()
+                                            } else {
+                                                notifEnabled = false
+                                                notifStatus = .denied
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    notifEnabled = false
+                                    notifStatus = .pending
+                                    profile?.notificationsEnabled = false
+                                    try? ctx.save()
+                                }
+                            }
+                        ))
+                        .tint(theme.accent)
+                        .labelsHidden()
+                    }
+                    .padding(.vertical, 13)
+                    .padding(.horizontal, 16)
+
+                    if notifEnabled && notifStatus == .granted {
+                        Rectangle().fill(theme.accentDim).frame(height: 0.5)
+                        DatePicker("", selection: $notifTime, displayedComponents: .hourAndMinute)
+                            .datePickerStyle(.wheel)
+                            .labelsHidden()
+                            .tint(theme.accent)
+                            .padding(.horizontal, 16)
+                            .onChange(of: notifTime) { _, newTime in
+                                let c = Calendar.current.dateComponents([.hour, .minute], from: newTime)
+                                profile?.notificationHour = c.hour ?? 7
+                                profile?.notificationMinute = c.minute ?? 0
+                                try? ctx.save()
+                                NotificationService.scheduleDaily(hour: c.hour ?? 7, minute: c.minute ?? 0)
+                            }
+                    }
+
+                    if notifStatus == .denied {
+                        Rectangle().fill(theme.accentDim).frame(height: 0.5)
+                        HStack {
+                            Text(lm.L("onboarding.notif2.enableInSettings"))
+                                .font(.system(size: 13))
+                                .foregroundColor(theme.textDim)
+                            Spacer()
+                        }
+                        .padding(.vertical, 10)
+                        .padding(.horizontal, 16)
+                    }
+                }
+                .background(theme.surface)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .padding(.horizontal, 32)
+                .animation(.easeInOut(duration: 0.25), value: notifEnabled)
+                .animation(.easeInOut(duration: 0.25), value: notifStatus)
+
+                Spacer().frame(height: 24)
+
+                // Permissions card
+                VStack(spacing: 0) {
+                    Text(lm.L("onboarding.perms2.label"))
+                        .font(.system(size: 10))
+                        .tracking(1)
+                        .foregroundColor(theme.textDim)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 12)
+                        .padding(.bottom, 4)
+
+                    permRow(
+                        icon: "heart",
+                        name: lm.L("onboarding.perms.health.name"),
+                        desc: lm.L("onboarding.perms.health.desc"),
+                        status: healthStatus
+                    )
+                    Rectangle().fill(theme.accentDim).frame(height: 0.5)
+                    permRow(
+                        icon: "figure.walk",
+                        name: lm.L("onboarding.perms.motion.name"),
+                        desc: lm.L("onboarding.perms.motion.desc"),
+                        status: motionStatus
+                    )
+                }
+                .background(theme.surface)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .padding(.horizontal, 32)
+
+                Spacer().frame(height: 16)
+
+                if healthStatus == .pending || motionStatus == .pending {
+                    Button {
+                        Task { await requestAllPermissions() }
+                    } label: {
+                        Text(isRequesting ? "..." : lm.L("onboarding.perms.cta"))
+                            .font(.system(size: 16))
+                            .foregroundColor(theme.bg)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 52)
+                            .background(theme.accent)
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    }
+                    .disabled(isRequesting)
+                    .buttonStyle(.plain)
+                    .padding(.horizontal, 32)
+                    .padding(.bottom, 12)
+                }
+
+                nextButton(
+                    label: lm.L("onboarding.cta.start"),
+                    enabled: !isRequesting
+                ) { finish() }
+                    .padding(.horizontal, 32)
+                    .padding(.bottom, 52)
+            }
+        }
+    }
 
     // MARK: - Finish
 
