@@ -229,6 +229,18 @@
 "onboarding.perms.status.granted"    = "已允許";
 "onboarding.perms.status.denied"     = "已拒絕";
 "onboarding.perms.cta"               = "允許所有";
+"onboarding.theme.title"             = "選你的風格";
+"onboarding.theme.subtitle"          = "選一個顏色一起跑";
+"onboarding.pace.title"              = "調整節奏";
+"onboarding.pace.bpm.label"          = "每分鐘節拍";
+"onboarding.pace.goal.label"         = "每日目標";
+"onboarding.pace.goal.unit"          = "分鐘";
+"onboarding.pace.sound.label"        = "節拍器音效";
+"onboarding.notif2.title"            = "保持節奏";
+"onboarding.notif2.subtitle"         = "我們會提醒你";
+"onboarding.notif2.reminder"         = "每日提醒";
+"onboarding.notif2.enableInSettings" = "請至設定開啟";
+"onboarding.perms2.label"            = "應用程式權限";
 
 /* DataSync */
 "dataSync.healthkit.disabled"        = "報表將缺少心率與運動資料。";

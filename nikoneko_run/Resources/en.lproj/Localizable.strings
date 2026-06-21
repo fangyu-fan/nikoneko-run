@@ -229,6 +229,18 @@
 "onboarding.perms.status.granted"    = "Allowed";
 "onboarding.perms.status.denied"     = "Denied";
 "onboarding.perms.cta"               = "Allow All";
+"onboarding.theme.title"             = "your vibe.";
+"onboarding.theme.subtitle"          = "pick a colour to run with";
+"onboarding.pace.title"              = "set your pace.";
+"onboarding.pace.bpm.label"          = "BEATS PER MINUTE";
+"onboarding.pace.goal.label"         = "DAILY GOAL";
+"onboarding.pace.goal.unit"          = "min";
+"onboarding.pace.sound.label"        = "METRONOME SOUND";
+"onboarding.notif2.title"            = "stay on track.";
+"onboarding.notif2.subtitle"         = "we'll remind you";
+"onboarding.notif2.reminder"         = "daily reminder";
+"onboarding.notif2.enableInSettings" = "enable in Settings";
+"onboarding.perms2.label"            = "APP PERMISSIONS";
 
 /* DataSync */
 "dataSync.healthkit.disabled"        = "Heart rate and workout data won't appear in reports.";
