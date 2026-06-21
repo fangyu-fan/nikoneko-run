@@ -253,28 +253,33 @@ struct OnboardingView: View {
 
     private func themeCard(_ t: ThemeTokens) -> some View {
         VStack(spacing: 0) {
-            // Square card
+            // Square card — fixed width and height
             ZStack(alignment: .bottom) {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .fill(t.bg)
-                    .frame(width: cardSide, height: cardSide)
-                HStack(spacing: 2) {
-                    ForEach(t.bar.indices, id: \.self) { i in
-                        Rectangle().fill(t.bar[i]).frame(height: 10)
+                // Colour bar pinned to bottom, constrained to card width
+                VStack(spacing: 0) {
+                    Spacer()
+                    HStack(spacing: 1) {
+                        ForEach(t.bar.indices, id: \.self) { i in
+                            t.bar[i]
+                        }
                     }
+                    .frame(height: 14)
+                    .padding(.horizontal, 10)
+                    .padding(.bottom, 10)
                 }
-                .padding(.horizontal, 8)
-                .padding(.bottom, 8)
             }
-            // Name label below card
+            .frame(width: cardSide, height: cardSide)
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            // Name label — same width as card, uses card's own text colour
             Text(themeDisplayName(t.id))
                 .font(.system(size: 10, weight: .medium))
                 .foregroundColor(t.text)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
-                .frame(width: cardSide)
+                .frame(width: cardSide, alignment: .center)
                 .padding(.top, 4)
-                .background(Color.clear)
         }
     }
 

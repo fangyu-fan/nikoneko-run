@@ -1,10 +1,12 @@
 import SwiftUI
+import Lottie
 
 struct LaunchScreenView: View {
     @Environment(ThemeManager.self) private var themeManager
     let onComplete: () -> Void
 
-    @State private var isAnimating: Bool = false  // starts static, animates after brief pause
+    // Controls Lottie playback: false = frozen at frame 0, true = looping
+    @State private var isAnimating: Bool = false
 
     private var theme: ThemeTokens { themeManager.current }
 
@@ -13,6 +15,9 @@ struct LaunchScreenView: View {
             theme.bg.ignoresSafeArea()
             VStack(spacing: 0) {
                 Spacer()
+
+                // Lottie renders synchronously at frame 0 on first layout pass,
+                // so the cat is visible immediately — no blank flash.
                 LottieCharacterView(
                     characterId: "loader_cat",
                     color: theme.accentMid,
@@ -36,15 +41,13 @@ struct LaunchScreenView: View {
                 Spacer()
             }
         }
-        .onAppear {
-            Task {
-                // Brief pause on first frame so system launch screen → static cat is seamless
-                try? await Task.sleep(for: .milliseconds(120))
-                isAnimating = true
-                // Total visible: 120ms static + 900ms animation
-                try? await Task.sleep(for: .milliseconds(900))
-                onComplete()
-            }
+        .task {
+            // Start animation after one render pass so the static frame is visible first
+            try? await Task.sleep(for: .milliseconds(50))
+            isAnimating = true
+            // Animate for ~1 full loop then hand off
+            try? await Task.sleep(for: .milliseconds(1000))
+            onComplete()
         }
     }
 }
