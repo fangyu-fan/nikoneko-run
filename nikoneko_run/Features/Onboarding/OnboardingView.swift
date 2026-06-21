@@ -277,7 +277,178 @@ struct OnboardingView: View {
 
     // MARK: - Placeholders (filled in subsequent tasks)
 
-    private var pacePage: some View { Color.clear }
+    // MARK: - Page 3: Running Defaults
+
+    @State private var bpm: Int = 180
+    @State private var goalMinutes: Int = 20
+    @State private var selectedSound: SoundType = .wood
+    private let previewMetronome = MetronomeService()
+
+    private var pacePage: some View {
+        VStack(spacing: 0) {
+            Spacer()
+
+            Text(lm.L("onboarding.pace.title"))
+                .font(.system(size: 28, weight: .ultraLight))
+                .tracking(-0.5)
+                .foregroundColor(theme.text)
+                .padding(.bottom, 32)
+
+            LottieCharacterView(
+                characterId: "loader_cat",
+                color: theme.accentMid,
+                shadowColor: theme.accentDim,
+                bpm: bpm,
+                isAnimating: true
+            )
+            .frame(width: 100, height: 72)
+            .padding(.bottom, 24)
+
+            VStack(spacing: 8) {
+                Text(lm.L("onboarding.pace.bpm.label"))
+                    .font(.system(size: 10))
+                    .tracking(1)
+                    .foregroundColor(theme.textDim)
+
+                Text("\(bpm)")
+                    .font(.system(size: 52, weight: .ultraLight))
+                    .tracking(-2)
+                    .foregroundColor(theme.text)
+                    .monospacedDigit()
+
+                bpmSlider
+            }
+            .padding(.horizontal, 32)
+            .padding(.bottom, 28)
+
+            HStack(alignment: .top, spacing: 24) {
+                VStack(spacing: 8) {
+                    Text(lm.L("onboarding.pace.goal.label"))
+                        .font(.system(size: 10))
+                        .tracking(1)
+                        .foregroundColor(theme.textDim)
+                    HStack(spacing: 12) {
+                        paceStepButton("−") {
+                            goalMinutes = max(5, goalMinutes - 5)
+                            profile?.dailyGoalMinutes = goalMinutes
+                            profile?.defaultDuration = goalMinutes
+                            try? ctx.save()
+                        }
+                        HStack(alignment: .firstTextBaseline, spacing: 3) {
+                            Text("\(goalMinutes)")
+                                .font(.system(size: 28, weight: .ultraLight))
+                                .foregroundColor(theme.text)
+                                .monospacedDigit()
+                            Text(lm.L("onboarding.pace.goal.unit"))
+                                .font(.system(size: 12))
+                                .foregroundColor(theme.textMid)
+                        }
+                        paceStepButton("+") {
+                            goalMinutes = min(120, goalMinutes + 5)
+                            profile?.dailyGoalMinutes = goalMinutes
+                            profile?.defaultDuration = goalMinutes
+                            try? ctx.save()
+                        }
+                    }
+                }
+
+                VStack(spacing: 8) {
+                    Text(lm.L("onboarding.pace.sound.label"))
+                        .font(.system(size: 10))
+                        .tracking(1)
+                        .foregroundColor(theme.textDim)
+                    soundSegment
+                }
+            }
+            .padding(.horizontal, 32)
+
+            Spacer()
+            nextButton(label: lm.L("onboarding.next")) { page = 3 }
+                .padding(.horizontal, 32)
+                .padding(.bottom, 52)
+        }
+        .onAppear {
+            bpm = profile?.defaultBPM ?? 180
+            goalMinutes = profile?.dailyGoalMinutes ?? 20
+            selectedSound = profile?.soundType ?? .wood
+        }
+    }
+
+    private var bpmSlider: some View {
+        GeometryReader { geo in
+            let range: Double = 80  // 220 - 140
+            let fraction = Double(bpm - 140) / range
+            ZStack(alignment: .leading) {
+                Capsule().fill(theme.accentDim).frame(height: 3)
+                Capsule().fill(theme.accent)
+                    .frame(width: geo.size.width * CGFloat(fraction), height: 3)
+                Circle()
+                    .fill(theme.text)
+                    .frame(width: 22, height: 22)
+                    .offset(x: geo.size.width * CGFloat(fraction) - 11)
+            }
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { value in
+                        let newFraction = min(1, max(0, value.location.x / geo.size.width))
+                        bpm = 140 + Int(newFraction * range)
+                    }
+                    .onEnded { _ in
+                        profile?.defaultBPM = bpm
+                        try? ctx.save()
+                    }
+            )
+        }
+        .frame(height: 22)
+    }
+
+    private var soundSegment: some View {
+        let options: [(SoundType, String)] = [
+            (.woodLo, lm.L("defaults.sound.woodLo")),
+            (.wood,   lm.L("defaults.sound.wood")),
+            (.woodHi, lm.L("defaults.sound.woodHi")),
+        ]
+        return HStack(spacing: 2) {
+            ForEach(options, id: \.0) { (type, label) in
+                Button {
+                    selectedSound = type
+                    profile?.soundType = type
+                    try? ctx.save()
+                    previewMetronome.updateSoundType(type)
+                    previewMetronome.updateBPM(bpm)
+                    previewMetronome.start()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                        self.previewMetronome.stop()
+                    }
+                } label: {
+                    Text(label)
+                        .font(.system(size: 13))
+                        .foregroundColor(selectedSound == type ? theme.text : theme.textMid)
+                        .padding(.vertical, 6)
+                        .padding(.horizontal, 12)
+                        .background(selectedSound == type ? theme.card : Color.clear)
+                        .cornerRadius(8)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(3)
+        .background(theme.surface)
+        .cornerRadius(10)
+        .overlay(RoundedRectangle(cornerRadius: 10).stroke(theme.accentDim, lineWidth: 0.5))
+    }
+
+    private func paceStepButton(_ label: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(label)
+                .font(.system(size: 18))
+                .foregroundColor(theme.text)
+                .frame(width: 32, height: 32)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .overlay(Circle().stroke(theme.accentDim, lineWidth: 0.5).frame(width: 32, height: 32))
+    }
     private var notifPermsPage: some View { Color.clear }
 
     // MARK: - Finish
