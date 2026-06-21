@@ -243,6 +243,11 @@
 "onboarding.notif2.reminder"         = "daily reminder";
 "onboarding.notif2.enableInSettings" = "enable in Settings";
 "onboarding.perms2.label"            = "APP PERMISSIONS";
+"onboarding.perms.health.required"   = "required for heart rate and workout data";
+"onboarding.perms.health.partial"    = "Some data won't appear in reports. Grant all permissions for full tracking.";
+"onboarding.perms.health.cta"        = "Grant Health Access";
+"onboarding.perms.motion.required"   = "required for steps and distance";
+"onboarding.perms.incomplete"        = "Grant all permissions to continue, or skip — you can enable them later in Settings.";
 
 /* DataSync */
 "dataSync.healthkit.disabled"        = "Heart rate and workout data won't appear in reports.";

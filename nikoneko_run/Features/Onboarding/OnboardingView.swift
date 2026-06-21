@@ -38,18 +38,27 @@ struct OnboardingView: View {
                 progressBar
                     .padding(.top, 16)
                     .padding(.horizontal, 32)
-                // TabView with interaction disabled — only nextButton advances pages
-                TabView(selection: $page) {
-                    languagePage.tag(0)
-                    themePage.tag(1)
-                    pacePage.tag(2)
-                    notifPermsPage.tag(3)
+
+                // Manual paging — each page fills the remaining space
+                // Using a plain ZStack + offset instead of TabView to eliminate all swipe
+                GeometryReader { geo in
+                    HStack(spacing: 0) {
+                        languagePage
+                            .frame(width: geo.size.width)
+                        themePage
+                            .frame(width: geo.size.width)
+                        pacePage
+                            .frame(width: geo.size.width)
+                        notifPermsPage
+                            .frame(width: geo.size.width)
+                    }
+                    .frame(width: geo.size.width * CGFloat(totalPages), alignment: .leading)
+                    .offset(x: -geo.size.width * CGFloat(page))
+                    .animation(.easeInOut(duration: 0.3), value: page)
+                    // Absorb all horizontal drags to prevent accidental swipe
+                    .contentShape(Rectangle())
+                    .gesture(DragGesture(minimumDistance: 0).onChanged { _ in })
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .animation(.easeInOut(duration: 0.3), value: page)
-                // Disable swipe navigation — only buttons advance pages
-                .allowsHitTesting(true)
-                .simultaneousGesture(DragGesture())
             }
         }
         .id(lm.version)
@@ -77,7 +86,6 @@ struct OnboardingView: View {
     private var languagePage: some View {
         VStack(spacing: 0) {
             Spacer()
-            // Title at top (no cat on this page)
             Text(lm.L("onboarding.lang.title"))
                 .font(.system(size: 28, weight: .ultraLight))
                 .tracking(-0.5)
@@ -130,7 +138,6 @@ struct OnboardingView: View {
         VStack(spacing: 0) {
             Spacer()
 
-            // Title above cat
             Text(lm.L("onboarding.theme.title"))
                 .font(.system(size: 28, weight: .ultraLight))
                 .tracking(-0.5)
@@ -153,12 +160,11 @@ struct OnboardingView: View {
             .frame(width: 120, height: 88)
             .padding(.bottom, 32)
 
-            // Carousel — tap-only, no swipe (swipe reserved for page navigation disabled above)
+            // Carousel — tap left/right cards to advance, horizontal swipe switches theme (not page)
             themeCarousel
                 .padding(.bottom, 16)
 
             themeDots
-                .padding(.bottom, 0)
 
             Spacer()
             nextButton(label: lm.L("onboarding.next")) { page = 2 }
@@ -192,6 +198,21 @@ struct OnboardingView: View {
             }
         }
         .frame(height: 120)
+        // Swipe on the carousel changes theme, not page
+        .gesture(
+            DragGesture(minimumDistance: 20)
+                .onEnded { value in
+                    if value.translation.width < -20 {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            selectTheme(at: (selectedThemeIndex + 1) % ThemeLibrary.all.count)
+                        }
+                    } else if value.translation.width > 20 {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            selectTheme(at: (selectedThemeIndex - 1 + ThemeLibrary.all.count) % ThemeLibrary.all.count)
+                        }
+                    }
+                }
+        )
     }
 
     private func themeCard(_ t: ThemeTokens, isCenter: Bool, width: CGFloat) -> some View {
@@ -284,7 +305,6 @@ struct OnboardingView: View {
         VStack(spacing: 0) {
             Spacer()
 
-            // Title above cat
             Text(lm.L("onboarding.pace.title"))
                 .font(.system(size: 28, weight: .ultraLight))
                 .tracking(-0.5)
@@ -425,12 +445,9 @@ struct OnboardingView: View {
                     selectedSound = type
                     profile?.soundType = type
                     try? ctx.save()
+                    // updateSoundType handles stop→reload→restart internally
                     previewMetronome.updateSoundType(type)
-                    if !isMetronomePlaying {
-                        previewMetronome.updateBPM(bpm)
-                        previewMetronome.start()
-                        isMetronomePlaying = true
-                    }
+                    isMetronomePlaying = true
                 } label: {
                     Text(label)
                         .font(.system(size: 13))
@@ -463,27 +480,27 @@ struct OnboardingView: View {
 
     // MARK: - Page 4: Notifications + Permissions
 
+    // Health is fully granted only when all required types are authorized
+    private var healthFullyGranted: Bool {
+        guard HKHealthStore.isHealthDataAvailable() else { return false }
+        let store = HKHealthStore()
+        let types: [HKQuantityTypeIdentifier] = [.heartRate, .activeEnergyBurned, .distanceWalkingRunning]
+        return types.allSatisfy { store.authorizationStatus(for: HKQuantityType($0)) == .sharingAuthorized }
+    }
+
+    // Block "start running" unless both health and motion are granted (or user explicitly skips)
+    @State private var showSkipConfirm: Bool = false
+
     private var notifPermsPage: some View {
         ScrollView {
             VStack(spacing: 0) {
                 Spacer().frame(height: 32)
 
-                // Title above content (no cat on this page)
                 Text(lm.L("onboarding.notif2.title"))
                     .font(.system(size: 28, weight: .ultraLight))
                     .tracking(-0.5)
                     .foregroundColor(theme.text)
-                    .padding(.bottom, 6)
-
-                if notifEnabled {
-                    Text(lm.L("onboarding.notif2.subtitle"))
-                        .font(.system(size: 13))
-                        .tracking(0.04)
-                        .foregroundColor(theme.textDim)
-                        .transition(.opacity)
-                }
-
-                Spacer().frame(height: 32)
+                    .padding(.bottom, 32)
 
                 // Notification card
                 VStack(spacing: 0) {
@@ -564,7 +581,7 @@ struct OnboardingView: View {
 
                 Spacer().frame(height: 24)
 
-                // Permissions card — each perm is a toggle
+                // Permissions card
                 VStack(spacing: 0) {
                     Text(lm.L("onboarding.perms2.label"))
                         .font(.system(size: 10))
@@ -575,87 +592,133 @@ struct OnboardingView: View {
                         .padding(.top, 12)
                         .padding(.bottom, 4)
 
-                    permToggleRow(
-                        icon: "heart",
-                        name: lm.L("onboarding.perms.health.name"),
-                        desc: lm.L("onboarding.perms.health.desc"),
-                        hint: lm.L("onboarding.perms.health.hint"),
-                        isOn: $healthEnabled,
-                        status: healthStatus
-                    ) {
-                        Task { await requestHealthPermission() }
-                    }
-
+                    healthPermRow
                     Rectangle().fill(theme.accentDim).frame(height: 0.5)
-
-                    permToggleRow(
-                        icon: "figure.walk",
-                        name: lm.L("onboarding.perms.motion.name"),
-                        desc: lm.L("onboarding.perms.motion.desc"),
-                        hint: lm.L("onboarding.perms.motion.hint"),
-                        isOn: $motionEnabled,
-                        status: motionStatus
-                    ) {
-                        Task { await requestMotionPermission() }
-                    }
+                    motionPermRow
                 }
                 .background(theme.surface)
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                 .padding(.horizontal, 32)
 
-                Spacer().frame(height: 32)
+                // Warning if not all granted
+                if healthStatus != .granted || motionStatus != .granted {
+                    HStack(alignment: .top, spacing: 8) {
+                        Image(systemName: "info.circle")
+                            .font(.system(size: 12))
+                            .foregroundColor(theme.textDim)
+                            .padding(.top, 1)
+                        Text(lm.L("onboarding.perms.incomplete"))
+                            .font(.system(size: 12))
+                            .foregroundColor(theme.textDim)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(.horizontal, 32)
+                    .padding(.top, 12)
+                    .transition(.opacity)
+                }
 
+                Spacer().frame(height: 24)
+
+                // Primary CTA — blocked if any perm not granted
+                let allGranted = healthStatus == .granted && motionStatus == .granted
                 nextButton(
                     label: lm.L("onboarding.cta.start"),
-                    enabled: !isRequesting
+                    enabled: allGranted && !isRequesting
                 ) { finish() }
                     .padding(.horizontal, 32)
-                    .padding(.bottom, 52)
+
+                // Skip link — allows finishing without all perms
+                if !allGranted {
+                    Button {
+                        showSkipConfirm = true
+                    } label: {
+                        Text("skip for now")
+                            .font(.system(size: 13))
+                            .foregroundColor(theme.textDim)
+                            .padding(.vertical, 12)
+                    }
+                    .buttonStyle(.plain)
+                    .confirmationDialog(
+                        lm.L("onboarding.perms.incomplete"),
+                        isPresented: $showSkipConfirm,
+                        titleVisibility: .visible
+                    ) {
+                        Button("skip for now", role: .destructive) { finish() }
+                        Button("cancel", role: .cancel) {}
+                    }
+                }
+
+                Spacer().frame(height: 52)
             }
         }
     }
 
-    private func permToggleRow(
-        icon: String,
-        name: String,
-        desc: String,
-        hint: String,
-        isOn: Binding<Bool>,
-        status: PermStatus,
-        onToggleOn: @escaping () -> Void
-    ) -> some View {
+    private var healthPermRow: some View {
         VStack(spacing: 0) {
             HStack(spacing: 12) {
-                Image(systemName: icon)
+                Image(systemName: "heart")
                     .font(.system(size: 16, weight: .light))
                     .foregroundColor(theme.text)
                     .frame(width: 24)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(name).font(.system(size: 15)).foregroundColor(theme.text)
-                    Text(desc).font(.system(size: 12)).foregroundColor(theme.textDim)
+                    HStack(spacing: 6) {
+                        Text(lm.L("onboarding.perms.health.name"))
+                            .font(.system(size: 15))
+                            .foregroundColor(theme.text)
+                        Text(lm.L("onboarding.perms.health.required"))
+                            .font(.system(size: 10))
+                            .foregroundColor(theme.accent)
+                    }
+                    Text(lm.L("onboarding.perms.health.desc"))
+                        .font(.system(size: 12))
+                        .foregroundColor(theme.textDim)
                 }
                 Spacer()
                 Toggle("", isOn: Binding(
-                    get: { isOn.wrappedValue },
+                    get: { healthEnabled },
                     set: { newVal in
-                        if newVal && status != .granted {
-                            onToggleOn()
-                        } else if !newVal {
-                            isOn.wrappedValue = false
-                        }
+                        if newVal { Task { await requestHealthPermission() } }
+                        else { healthEnabled = false }
                     }
                 ))
                 .tint(theme.accent)
                 .labelsHidden()
-                .disabled(status == .granted)
+                .disabled(isRequesting)
             }
             .padding(.vertical, 14)
             .padding(.horizontal, 16)
 
-            // Hint shown when denied
-            if status == .denied {
+            // Partial grant warning — some types authorized but not all
+            if healthStatus == .granted && !healthFullyGranted {
+                HStack(alignment: .top, spacing: 6) {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.system(size: 11))
+                        .foregroundColor(.orange)
+                        .padding(.top, 1)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(lm.L("onboarding.perms.health.partial"))
+                            .font(.system(size: 12))
+                            .foregroundColor(theme.textDim)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Button {
+                            Task { await requestHealthPermission() }
+                        } label: {
+                            Text(lm.L("onboarding.perms.health.cta"))
+                                .font(.system(size: 12))
+                                .foregroundColor(theme.accent)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 12)
+                .transition(.opacity)
+            }
+
+            // Denied hint
+            if healthStatus == .denied {
                 HStack {
-                    Text(hint)
+                    Text(lm.L("onboarding.perms.health.hint"))
                         .font(.system(size: 12))
                         .foregroundColor(theme.textDim)
                         .fixedSize(horizontal: false, vertical: true)
@@ -663,16 +726,66 @@ struct OnboardingView: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 12)
-                .transition(.opacity.combined(with: .move(edge: .top)))
+                .transition(.opacity)
             }
         }
-        .animation(.easeInOut(duration: 0.25), value: status)
+        .animation(.easeInOut(duration: 0.25), value: healthStatus)
+    }
+
+    private var motionPermRow: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 12) {
+                Image(systemName: "figure.walk")
+                    .font(.system(size: 16, weight: .light))
+                    .foregroundColor(theme.text)
+                    .frame(width: 24)
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 6) {
+                        Text(lm.L("onboarding.perms.motion.name"))
+                            .font(.system(size: 15))
+                            .foregroundColor(theme.text)
+                        Text(lm.L("onboarding.perms.motion.required"))
+                            .font(.system(size: 10))
+                            .foregroundColor(theme.accent)
+                    }
+                    Text(lm.L("onboarding.perms.motion.desc"))
+                        .font(.system(size: 12))
+                        .foregroundColor(theme.textDim)
+                }
+                Spacer()
+                Toggle("", isOn: Binding(
+                    get: { motionEnabled },
+                    set: { newVal in
+                        if newVal { Task { await requestMotionPermission() } }
+                        else { motionEnabled = false }
+                    }
+                ))
+                .tint(theme.accent)
+                .labelsHidden()
+                .disabled(isRequesting)
+            }
+            .padding(.vertical, 14)
+            .padding(.horizontal, 16)
+
+            if motionStatus == .denied {
+                HStack {
+                    Text(lm.L("onboarding.perms.motion.hint"))
+                        .font(.system(size: 12))
+                        .foregroundColor(theme.textDim)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer()
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 12)
+                .transition(.opacity)
+            }
+        }
+        .animation(.easeInOut(duration: 0.25), value: motionStatus)
     }
 
     // MARK: - Finish
 
     private func finish() {
-        // Apply display defaults based on permissions granted
         if healthStatus != .granted {
             profile?.showHR = false
             profile?.showDistance = false
@@ -685,7 +798,6 @@ struct OnboardingView: View {
             profile?.showSteps = false
         }
         try? ctx.save()
-
         UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
         onDismiss()
     }
@@ -696,24 +808,29 @@ struct OnboardingView: View {
         Button(action: action) {
             Text(label)
                 .font(.system(size: 16))
-                .foregroundColor(theme.bg)
+                .foregroundColor(enabled ? theme.bg : theme.textDim)
                 .frame(maxWidth: .infinity)
                 .frame(height: 52)
-                .background(enabled ? theme.accent : theme.accentDim)
+                .background(enabled ? theme.accent : theme.surface)
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .stroke(enabled ? Color.clear : theme.accentDim, lineWidth: 1)
+                )
         }
         .disabled(!enabled)
         .buttonStyle(.plain)
     }
 
-    // MARK: - Permission requests (individual, for toggles)
+    // MARK: - Permission Requests
 
     @MainActor
     private func requestHealthPermission() async {
         isRequesting = true
         await HealthKitService.shared.requestPermissions()
-        let hkStatus = HKHealthStore().authorizationStatus(for: HKQuantityType(.heartRate))
-        if hkStatus == .sharingAuthorized {
+        let store = HKHealthStore()
+        let hrStatus = store.authorizationStatus(for: HKQuantityType(.heartRate))
+        if hrStatus == .sharingAuthorized {
             healthStatus = .granted
             healthEnabled = true
         } else {
@@ -742,23 +859,6 @@ struct OnboardingView: View {
             }
         }
         isRequesting = false
-    }
-
-    private func permRow(icon: String, name: String, desc: String, status: PermStatus) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon)
-                .font(.system(size: 16, weight: .light))
-                .foregroundColor(theme.text)
-                .frame(width: 24)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(name).font(.system(size: 15)).foregroundColor(theme.text)
-                Text(desc).font(.system(size: 12)).foregroundColor(theme.textDim)
-            }
-            Spacer()
-            statusBadge(status)
-        }
-        .padding(.vertical, 14)
-        .padding(.horizontal, 16)
     }
 
     private func statusBadge(_ status: PermStatus) -> some View {

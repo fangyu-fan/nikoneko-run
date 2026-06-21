@@ -243,6 +243,11 @@
 "onboarding.notif2.reminder"         = "每日提醒";
 "onboarding.notif2.enableInSettings" = "請至設定開啟";
 "onboarding.perms2.label"            = "應用程式權限";
+"onboarding.perms.health.required"   = "心率與運動資料所需";
+"onboarding.perms.health.partial"    = "部分資料不會出現在報表，建議全部開啟以完整記錄。";
+"onboarding.perms.health.cta"        = "開啟健康權限";
+"onboarding.perms.motion.required"   = "步數與距離所需";
+"onboarding.perms.incomplete"        = "開啟全部權限以繼續，或略過，稍後可在設定中開啟。";
 
 /* DataSync */
 "dataSync.healthkit.disabled"        = "報表將缺少心率與運動資料。";

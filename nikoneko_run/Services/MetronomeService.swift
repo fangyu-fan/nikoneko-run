@@ -195,6 +195,9 @@ final class MetronomeService {
 
     func updateSoundType(_ type: SoundType) {
         soundType = type
+        let wasPlaying = isPlaying
+        if wasPlaying { stop() }
         if engine.isRunning { reloadBuffersFromEngine() } else { loadBuffers() }
+        if wasPlaying { start() }
     }
 }
