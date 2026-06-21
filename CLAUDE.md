@@ -44,6 +44,7 @@ nikoneko/
 └── Resources/              Localizable.strings (en + zh-Hant)
 ```
 
+Bundle ID: `com.fangyu.nikoneko-run`
 App Group: `group.com.fangyu.nikoneko` — shared between main app and widget extension.
 
 ---

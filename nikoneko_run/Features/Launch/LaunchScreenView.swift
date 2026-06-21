@@ -1,5 +1,4 @@
 import SwiftUI
-import Lottie
 
 struct LaunchScreenView: View {
     @Environment(ThemeManager.self) private var themeManager

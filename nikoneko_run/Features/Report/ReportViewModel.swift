@@ -6,7 +6,7 @@ final class ReportViewModel {
     enum Period: String, CaseIterable { case day, week, month, year }
     enum Metric: String, CaseIterable { case duration, distance, calories, steps, hrAvg, hrMax, count }
 
-    var period: Period = .week
+    var period: Period = .day
     var selectedMetric: Metric = .duration
     var currentOffset: Int = 0
     var isZh: Bool = false  // injected by View, drives weekday label language

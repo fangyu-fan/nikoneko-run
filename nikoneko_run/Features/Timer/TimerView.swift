@@ -607,9 +607,9 @@ struct TimerView: View {
                     .onEnded { _ in
                         isLongPressingPending = false
                         if didCompleteStop {
-                            // Arc already filled and stop was fired — ignore this release
                             didCompleteStop = false
-                            return
+                            // If state returned to idle (stop completed), fall through to start
+                            guard vm.state == .idle else { return }
                         }
                         if isLongPressing {
                             // Hand lifted before arc finished — cancel
