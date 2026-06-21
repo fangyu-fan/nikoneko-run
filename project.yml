@@ -67,12 +67,10 @@ targets:
         NSMotionUsageDescription: "Niconeko Run tracks steps and distance."
         UIBackgroundModes:
           - audio
-          - location
-        NSLocationWhenInUseUsageDescription: "Niconeko Run uses location to track distance."
     capabilities:
       healthKit: {}
       backgroundModes:
-        modes: [audio, location]
+        modes: [audio]
       push: {}
       appGroups:
         groups:

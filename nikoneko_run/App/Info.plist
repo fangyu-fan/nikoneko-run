@@ -24,14 +24,11 @@
 	<string>Niconeko Run reads heart rate during runs.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Niconeko Run saves workout data to Health.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Niconeko Run uses location to track distance.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Niconeko Run tracks steps and distance.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
-		<string>location</string>
 	</array>
 	<key>UILaunchScreen</key>
 	<dict>
