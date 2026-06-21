@@ -78,6 +78,22 @@ struct TimerView: View {
         ZStack {
             theme.bg.ignoresSafeArea()
 
+            // Centred run-complete popup — tap anywhere to dismiss
+            if let session = savedSession {
+                Color.black.opacity(0.35)
+                    .ignoresSafeArea()
+                    .onTapGesture { withAnimation(.easeOut(duration: 0.2)) { savedSession = nil } }
+                    .transition(.opacity)
+
+                SessionDetailSheet(session: session)
+                    .frame(maxWidth: 360)
+                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    .shadow(color: .black.opacity(0.18), radius: 24, y: 8)
+                    .padding(.horizontal, 20)
+                    .transition(.opacity.combined(with: .scale(scale: 0.96)))
+                    .zIndex(1)
+            }
+
             VStack(spacing: 0) {
                 // Character strip
                 LottieCharacterView(
@@ -219,7 +235,7 @@ struct TimerView: View {
                     dailyGoalMinutes: profile?.dailyGoalMinutes ?? 20
                 )
                 WidgetCenter.shared.reloadAllTimelines()
-                savedSession = session
+                withAnimation(.easeOut(duration: 0.25)) { savedSession = session }
             }
             bpm = profile?.defaultBPM ?? 180
             volume = UserDefaults.standard.object(forKey: "defaultVolume") as? Double ?? 0.6
@@ -308,12 +324,6 @@ struct TimerView: View {
             ))
             .presentationBackground(theme.bg)
             .presentationDetents([.medium])
-        }
-        .sheet(item: $savedSession) { session in
-            SummaryView(session: session)
-                .presentationBackground(theme.bg)
-                .presentationDetents([.large])
-                .presentationDragIndicator(.visible)
         }
         .alert(lm.L("timer.alert.tooShort"), isPresented: $showTooShortAlert) {
             Button("OK", role: .cancel) {}
