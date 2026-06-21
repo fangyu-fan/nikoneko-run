@@ -34,6 +34,7 @@
 		4B4EFFB67935E130E85CC07C /* CharacterPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804E8509F10256D89DD44B65 /* CharacterPickerView.swift */; };
 		4F8D70A55717D9BB97D94274 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC5F2B078FFD6B12A66DF98 /* Color+Hex.swift */; };
 		50BED7E902075ADC00EC7D52 /* BPMPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27CEC7E019A6F27484A44DC7 /* BPMPanelView.swift */; };
+		523DBA3CCC328EBBE2C76449 /* LaunchImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7CA76AF2C00798E7DB2FDC /* LaunchImage.png */; };
 		532476B9725E59D2258AA731 /* ReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0B00D0BD01022F870B860A /* ReportViewModel.swift */; };
 		5427604DE03FD360FCA4B750 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65DA448B85C7C62A6046B2F /* SessionDetailView.swift */; };
 		575A6E0A6F74B758F3BBEAB9 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE56B4A442C67A3F92C2DDEC /* ThemeManager.swift */; };
@@ -173,6 +174,7 @@
 		71D2FA86F770B4C318865C59 /* nikoneko.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = nikoneko.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78B6343558BD9688E80FDA8B /* DrumPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrumPickerView.swift; sourceTree = "<group>"; };
 		794BBFC86D73BEA2E96E6423 /* WidgetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTheme.swift; sourceTree = "<group>"; };
+		7E7CA76AF2C00798E7DB2FDC /* LaunchImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LaunchImage.png; sourceTree = "<group>"; };
 		804E8509F10256D89DD44B65 /* CharacterPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterPickerView.swift; sourceTree = "<group>"; };
 		825E9C61C670A6E83FA35AB3 /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
 		851219F02A5812D69C0A0F7D /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
@@ -368,6 +370,7 @@
 				4FE88681615BBD0A9F257019 /* ContentView.swift */,
 				F567944097222D55D480FC97 /* Info.plist */,
 				C104463EF2B987532EF21913 /* JogApp.swift */,
+				7E7CA76AF2C00798E7DB2FDC /* LaunchImage.png */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -620,6 +623,7 @@
 				14A3C293E86B4BBAD0BA73A1 /* 404 Error Lottie animation.json in Resources */,
 				9E8CEFC9892253A7A888A759 /* Assets.xcassets in Resources */,
 				32BB581CAD9892C98F514E97 /* Bad Cat.json in Resources */,
+				523DBA3CCC328EBBE2C76449 /* LaunchImage.png in Resources */,
 				D0D4835365A585088CA43771 /* Loader cat.json in Resources */,
 				39446A8AB5489AAB586174FC /* Localizable.strings in Resources */,
 				ED1FC2FC9E1084EF2EC3D520 /* Trophy.json in Resources */,
