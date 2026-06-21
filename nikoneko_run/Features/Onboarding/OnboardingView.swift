@@ -24,6 +24,8 @@ struct OnboardingView: View {
     @State private var motionStatus: PermStatus = .pending
     @State private var notifStatus: PermStatus = .pending
     @State private var isRequesting: Bool = false
+    // Tracks language selection locally so UI responds immediately
+    @State private var selectedLanguage: AppLanguage = .english
 
     private var theme: ThemeTokens { themeManager.current }
     private var profile: UserProfile? { profiles.first }
@@ -39,8 +41,6 @@ struct OnboardingView: View {
                     .padding(.top, 16)
                     .padding(.horizontal, 32)
 
-                // Manual paging — each page fills the remaining space
-                // Using a plain ZStack + offset instead of TabView to eliminate all swipe
                 GeometryReader { geo in
                     HStack(spacing: 0) {
                         languagePage
@@ -55,13 +55,21 @@ struct OnboardingView: View {
                     .frame(width: geo.size.width * CGFloat(totalPages), alignment: .leading)
                     .offset(x: -geo.size.width * CGFloat(page))
                     .animation(.easeInOut(duration: 0.3), value: page)
-                    // Absorb all horizontal drags to prevent accidental swipe
                     .contentShape(Rectangle())
                     .gesture(DragGesture(minimumDistance: 0).onChanged { _ in })
                 }
             }
         }
         .id(lm.version)
+        .onAppear {
+            // Ensure profile exists before onboarding tries to write to it
+            if profiles.isEmpty {
+                let p = UserProfile()
+                ctx.insert(p)
+                try? ctx.save()
+            }
+            selectedLanguage = profile?.language ?? .english
+        }
     }
 
     // MARK: - Progress Bar
@@ -106,8 +114,9 @@ struct OnboardingView: View {
     }
 
     private func langOption(label: String, lang: AppLanguage) -> some View {
-        let selected = (profile?.language ?? .english) == lang
+        let selected = selectedLanguage == lang
         return Button {
+            selectedLanguage = lang
             profile?.language = lang
             try? ctx.save()
             lm.apply(lang)
@@ -125,6 +134,8 @@ struct OnboardingView: View {
                 )
         }
         .buttonStyle(.plain)
+        // Force re-render when selectedLanguage changes (independent of lm.version rebuild)
+        .id(lang.rawValue + (selected ? "_on" : "_off"))
     }
 
     // MARK: - Page 2: Theme
@@ -133,6 +144,8 @@ struct OnboardingView: View {
         let saved = UserDefaults.standard.string(forKey: "activeThemeId") ?? "moss"
         return ThemeLibrary.all.firstIndex(where: { $0.id == saved }) ?? 0
     }()
+    @State private var dragOffset: CGFloat = 0
+    @State private var isDragging: Bool = false
 
     private var themePage: some View {
         VStack(spacing: 0) {
@@ -160,7 +173,6 @@ struct OnboardingView: View {
             .frame(width: 120, height: 88)
             .padding(.bottom, 32)
 
-            // Carousel — tap left/right cards to advance, horizontal swipe switches theme (not page)
             themeCarousel
                 .padding(.bottom, 16)
 
@@ -173,54 +185,83 @@ struct OnboardingView: View {
         }
     }
 
+    // Card width constants
+    private let cardWidthCenter: CGFloat = 106
+    private let cardWidthSide: CGFloat = 82
+    private let cardWidthFar: CGFloat = 64
+    private let cardSpacing: CGFloat = 8
+
     private var themeCarousel: some View {
-        let slots: [(offset: Int, scale: CGFloat, opacity: Double, width: CGFloat)] = [
-            (-2, 0.72, 0.25, 64),
-            (-1, 0.84, 0.55, 82),
-            ( 0, 1.00, 1.00, 106),
-            ( 1, 0.84, 0.55, 82),
-            ( 2, 0.72, 0.25, 64),
-        ]
-        return HStack(spacing: 8) {
-            ForEach(slots, id: \.offset) { slot in
-                let idx = ((selectedThemeIndex + slot.offset) % ThemeLibrary.all.count + ThemeLibrary.all.count) % ThemeLibrary.all.count
-                let t = ThemeLibrary.all[idx]
-                themeCard(t, isCenter: slot.offset == 0, width: slot.width)
-                    .scaleEffect(slot.scale)
-                    .opacity(slot.opacity)
-                    .onTapGesture {
-                        if slot.offset != 0 {
-                            withAnimation(.easeInOut(duration: 0.25)) {
-                                selectTheme(at: idx)
+        let cardW = cardWidthCenter
+        // Each step = one card width + spacing (approximate)
+        let stepWidth: CGFloat = cardWidthSide + cardSpacing
+
+        return GeometryReader { geo in
+            let count = ThemeLibrary.all.count
+            // Build visible range: center ± 2
+            let slots = (-2...2).map { offset -> (Int, Int) in
+                let idx = ((selectedThemeIndex + offset) % count + count) % count
+                return (offset, idx)
+            }
+
+            ZStack {
+                ForEach(slots, id: \.0) { (offset, idx) in
+                    let t = ThemeLibrary.all[idx]
+                    let isCenter = offset == 0
+                    let continuousOffset = dragOffset / stepWidth
+                    let effectiveOffset = CGFloat(offset) - continuousOffset
+                    let scale: CGFloat = max(0.7, 1.0 - abs(effectiveOffset) * 0.14)
+                    let xPos = geo.size.width / 2 + effectiveOffset * (cardWidthSide + cardSpacing)
+
+                    themeCard(t, isCenter: isCenter, width: isCenter ? cardW : (abs(offset) == 1 ? cardWidthSide : cardWidthFar))
+                        .scaleEffect(scale)
+                        .position(x: xPos, y: 60)
+                        .onTapGesture {
+                            if offset != 0 {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                                    selectTheme(at: idx)
+                                }
+                            }
+                        }
+                }
+            }
+            .frame(height: 120)
+            .clipped()
+            .gesture(
+                DragGesture(minimumDistance: 4)
+                    .onChanged { value in
+                        isDragging = true
+                        dragOffset = -value.translation.width
+                    }
+                    .onEnded { value in
+                        isDragging = false
+                        let velocity = value.predictedEndTranslation.width - value.translation.width
+                        let threshold: CGFloat = 30
+                        let shouldAdvance = -value.translation.width > threshold || velocity < -80
+                        let shouldReverse = -value.translation.width < -threshold || velocity > 80
+
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                            dragOffset = 0
+                            if shouldAdvance {
+                                selectTheme(at: (selectedThemeIndex + 1) % count)
+                            } else if shouldReverse {
+                                selectTheme(at: (selectedThemeIndex - 1 + count) % count)
                             }
                         }
                     }
-            }
+            )
         }
         .frame(height: 120)
-        // Swipe on the carousel changes theme, not page
-        .gesture(
-            DragGesture(minimumDistance: 20)
-                .onEnded { value in
-                    if value.translation.width < -20 {
-                        withAnimation(.easeInOut(duration: 0.25)) {
-                            selectTheme(at: (selectedThemeIndex + 1) % ThemeLibrary.all.count)
-                        }
-                    } else if value.translation.width > 20 {
-                        withAnimation(.easeInOut(duration: 0.25)) {
-                            selectTheme(at: (selectedThemeIndex - 1 + ThemeLibrary.all.count) % ThemeLibrary.all.count)
-                        }
-                    }
-                }
-        )
     }
 
     private func themeCard(_ t: ThemeTokens, isCenter: Bool, width: CGFloat) -> some View {
-        let barHeight: CGFloat = isCenter ? 11 : 8
+        let barHeight: CGFloat = isCenter ? 11 : 9
+        let cardHeight: CGFloat = isCenter ? 100 : 88
+        let nameSize: CGFloat = isCenter ? 11 : 10
         return VStack(spacing: 0) {
             Rectangle()
                 .fill(t.bg)
-                .frame(width: width, height: isCenter ? 74 : 58)
+                .frame(width: width, height: cardHeight - (isCenter ? 26 : 22))
                 .overlay(alignment: .bottom) {
                     HStack(spacing: 2) {
                         ForEach(t.bar.indices, id: \.self) { i in
@@ -232,10 +273,10 @@ struct OnboardingView: View {
                 }
             Rectangle()
                 .fill(t.bg)
-                .frame(width: width, height: isCenter ? 26 : 20)
+                .frame(width: width, height: isCenter ? 26 : 22)
                 .overlay {
                     Text(themeDisplayName(t.id))
-                        .font(.system(size: isCenter ? 11 : 9, weight: .medium))
+                        .font(.system(size: nameSize, weight: .medium))
                         .foregroundColor(t.text)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
@@ -257,7 +298,9 @@ struct OnboardingView: View {
                     .frame(width: i == selectedThemeIndex ? 14 : (dist == 1 ? 5 : 3), height: 3)
                     .animation(.easeInOut(duration: 0.2), value: selectedThemeIndex)
                     .onTapGesture {
-                        withAnimation(.easeInOut(duration: 0.25)) { selectTheme(at: i) }
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                            selectTheme(at: i)
+                        }
                     }
             }
         }
@@ -298,12 +341,34 @@ struct OnboardingView: View {
     @State private var bpm: Int = 180
     @State private var goalMinutes: Int = 20
     @State private var selectedSound: SoundType = .wood
-    @State private var isMetronomePlaying: Bool = false
+    @State private var metronomeOn: Bool = true
     private let previewMetronome = MetronomeService()
 
     private var pacePage: some View {
         VStack(spacing: 0) {
             Spacer()
+
+            HStack {
+                Spacer()
+                // Mute toggle — top right
+                Button {
+                    metronomeOn.toggle()
+                    if metronomeOn {
+                        previewMetronome.updateBPM(bpm)
+                        previewMetronome.start()
+                    } else {
+                        previewMetronome.stop()
+                    }
+                } label: {
+                    Image(systemName: metronomeOn ? "speaker.wave.2" : "speaker.slash")
+                        .font(.system(size: 16, weight: .light))
+                        .foregroundColor(theme.textMid)
+                        .frame(width: 44, height: 44)
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, -8)
 
             Text(lm.L("onboarding.pace.title"))
                 .font(.system(size: 28, weight: .ultraLight))
@@ -315,7 +380,7 @@ struct OnboardingView: View {
                 .font(.system(size: 10))
                 .tracking(1)
                 .foregroundColor(theme.textDim)
-                .padding(.bottom, 24)
+                .padding(.bottom, 16)
 
             LottieCharacterView(
                 characterId: "loader_cat",
@@ -383,7 +448,6 @@ struct OnboardingView: View {
             Spacer()
             nextButton(label: lm.L("onboarding.next")) {
                 previewMetronome.stop()
-                isMetronomePlaying = false
                 page = 3
             }
             .padding(.horizontal, 32)
@@ -393,20 +457,19 @@ struct OnboardingView: View {
             bpm = profile?.defaultBPM ?? 180
             goalMinutes = profile?.dailyGoalMinutes ?? 20
             selectedSound = profile?.soundType ?? .wood
+            metronomeOn = true
             previewMetronome.updateSoundType(selectedSound)
             previewMetronome.updateBPM(bpm)
             previewMetronome.start()
-            isMetronomePlaying = true
         }
         .onDisappear {
             previewMetronome.stop()
-            isMetronomePlaying = false
         }
     }
 
     private var bpmSlider: some View {
         GeometryReader { geo in
-            let range: Double = 80  // 220 - 140
+            let range: Double = 80
             let fraction = Double(bpm - 140) / range
             ZStack(alignment: .leading) {
                 Capsule().fill(theme.accentDim).frame(height: 3)
@@ -422,7 +485,7 @@ struct OnboardingView: View {
                     .onChanged { value in
                         let newFraction = min(1, max(0, value.location.x / geo.size.width))
                         bpm = 140 + Int(newFraction * range)
-                        previewMetronome.updateBPM(bpm)
+                        if metronomeOn { previewMetronome.updateBPM(bpm) }
                     }
                     .onEnded { _ in
                         profile?.defaultBPM = bpm
@@ -445,9 +508,11 @@ struct OnboardingView: View {
                     selectedSound = type
                     profile?.soundType = type
                     try? ctx.save()
-                    // updateSoundType handles stop→reload→restart internally
                     previewMetronome.updateSoundType(type)
-                    isMetronomePlaying = true
+                    if metronomeOn && !previewMetronome.isPlaying {
+                        previewMetronome.updateBPM(bpm)
+                        previewMetronome.start()
+                    }
                 } label: {
                     Text(label)
                         .font(.system(size: 13))
@@ -479,6 +544,8 @@ struct OnboardingView: View {
     }
 
     // MARK: - Page 4: Notifications + Permissions
+
+    @Environment(\.openURL) private var openURL
 
     private var notifPermsPage: some View {
         ScrollView {
@@ -552,14 +619,24 @@ struct OnboardingView: View {
 
                     if notifStatus == .denied {
                         Rectangle().fill(theme.accentDim).frame(height: 0.5)
-                        HStack {
-                            Text(lm.L("onboarding.notif2.enableInSettings"))
-                                .font(.system(size: 13))
-                                .foregroundColor(theme.textDim)
-                            Spacer()
+                        Button {
+                            if let url = URL(string: UIApplication.openSettingsURLString) {
+                                openURL(url)
+                            }
+                        } label: {
+                            HStack {
+                                Text(lm.L("onboarding.notif2.enableInSettings"))
+                                    .font(.system(size: 13))
+                                    .foregroundColor(theme.accent)
+                                Spacer()
+                                Image(systemName: "arrow.up.right.square")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(theme.accent)
+                            }
+                            .padding(.vertical, 10)
+                            .padding(.horizontal, 16)
                         }
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 16)
+                        .buttonStyle(.plain)
                     }
                 }
                 .background(theme.surface)
@@ -570,7 +647,7 @@ struct OnboardingView: View {
 
                 Spacer().frame(height: 24)
 
-                // Permissions card — optional, no gate
+                // Permissions card
                 VStack(spacing: 0) {
                     Text(lm.L("onboarding.perms2.label"))
                         .font(.system(size: 10))
@@ -607,7 +684,6 @@ struct OnboardingView: View {
 
                 Spacer().frame(height: 32)
 
-                // Always enabled — no perms are required
                 nextButton(
                     label: lm.L("onboarding.cta.start"),
                     enabled: !isRequesting
@@ -641,8 +717,19 @@ struct OnboardingView: View {
                 Toggle("", isOn: Binding(
                     get: { isOn.wrappedValue },
                     set: { newVal in
-                        if newVal && status != .granted { onToggleOn() }
-                        else if !newVal { isOn.wrappedValue = false }
+                        if newVal {
+                            if status == .denied {
+                                // Denied — open Settings so user can re-enable
+                                if let url = URL(string: UIApplication.openSettingsURLString) {
+                                    UIApplication.shared.open(url)
+                                }
+                                isOn.wrappedValue = false
+                            } else {
+                                onToggleOn()
+                            }
+                        } else {
+                            isOn.wrappedValue = false
+                        }
                     }
                 ))
                 .tint(theme.accent)
@@ -653,15 +740,25 @@ struct OnboardingView: View {
             .padding(.horizontal, 16)
 
             if status == .denied {
-                HStack {
-                    Text(hint)
-                        .font(.system(size: 12))
-                        .foregroundColor(theme.textDim)
-                        .fixedSize(horizontal: false, vertical: true)
-                    Spacer()
+                Button {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                } label: {
+                    HStack {
+                        Text(hint)
+                            .font(.system(size: 12))
+                            .foregroundColor(theme.textDim)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Spacer()
+                        Image(systemName: "arrow.up.right.square")
+                            .font(.system(size: 11))
+                            .foregroundColor(theme.textDim)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 12)
                 }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 12)
+                .buttonStyle(.plain)
                 .transition(.opacity)
             }
         }
