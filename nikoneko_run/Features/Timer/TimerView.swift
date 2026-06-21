@@ -312,6 +312,8 @@ struct TimerView: View {
         .sheet(item: $savedSession) { session in
             SummaryView(session: session)
                 .presentationBackground(theme.bg)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
         }
         .alert(lm.L("timer.alert.tooShort"), isPresented: $showTooShortAlert) {
             Button("OK", role: .cancel) {}
@@ -342,22 +344,22 @@ struct TimerView: View {
             // Live metrics — shown when running or paused
             HStack(spacing: 28) {
                 if vm.state == .running || vm.state == .paused {
-                    if profile?.showHR ?? false {
+                    if profile?.showHR ?? true {
                         metricItem(icon: "heart",
                                    value: hrService.currentHR > 0 ? "\(hrService.currentHR)" : "—",
                                    unit: nil)
                     }
-                    if profile?.showDistance ?? false {
+                    if profile?.showDistance ?? true {
                         metricItem(icon: "location.circle",
                                    value: String(format: "%.2f", motionService.distance / 1000),
                                    unit: "km")
                     }
-                    if profile?.showCalories ?? false {
+                    if profile?.showCalories ?? true {
                         metricItem(icon: "flame",
                                    value: "\(Int(motionService.calories))",
                                    unit: nil)
                     }
-                    if profile?.showSteps ?? false {
+                    if profile?.showSteps ?? true {
                         metricItem(icon: "shoeprints.fill",
                                    value: "\(motionService.steps)",
                                    unit: nil)
