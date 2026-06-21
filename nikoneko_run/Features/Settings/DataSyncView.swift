@@ -15,6 +15,13 @@ struct DataSyncView: View {
     private var theme: ThemeTokens { themeManager.current }
     private var profile: UserProfile? { profiles.first }
 
+    private var healthFullyGranted: Bool {
+        guard HKHealthStore.isHealthDataAvailable() else { return false }
+        let store = HKHealthStore()
+        let types: [HKQuantityTypeIdentifier] = [.heartRate, .activeEnergyBurned, .distanceWalkingRunning]
+        return types.allSatisfy { store.authorizationStatus(for: HKQuantityType($0)) == .sharingAuthorized }
+    }
+
     @State private var showDeleteConfirm = false
     @State private var exportURL: URL? = nil
     @State private var showShareSheet = false
@@ -64,6 +71,27 @@ struct DataSyncView: View {
                             .foregroundColor(theme.textDim)
                             .padding(.horizontal, 16)
                             .padding(.bottom, 10)
+                    } else if !healthFullyGranted {
+                        // Some types authorized but not all
+                        Button {
+                            if let url = URL(string: UIApplication.openSettingsURLString) {
+                                UIApplication.shared.open(url)
+                            }
+                        } label: {
+                            HStack(spacing: 4) {
+                                Text(lm.L("onboarding.perms.health.partial"))
+                                    .font(.system(size: 12))
+                                    .foregroundColor(theme.textDim)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                Spacer()
+                                Image(systemName: "arrow.up.right.square")
+                                    .font(.system(size: 11))
+                                    .foregroundColor(theme.textDim)
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 10)
+                        }
+                        .buttonStyle(.plain)
                     }
                     Rectangle().fill(theme.accentDim).frame(height: 0.5)
                     toggleRow(icon: "icloud", label: lm.L("dataSync.row.iCloud"),

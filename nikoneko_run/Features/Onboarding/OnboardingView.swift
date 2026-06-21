@@ -55,7 +55,6 @@ struct OnboardingView: View {
                 }
             }
         }
-        .id(lm.version)
         .onAppear {
             if profiles.isEmpty {
                 let p = UserProfile()
@@ -88,11 +87,13 @@ struct OnboardingView: View {
     private var languagePage: some View {
         VStack(spacing: 0) {
             Spacer()
+            // .id(lm.version) only on the text that needs re-render, NOT the whole page
             Text(lm.L("onboarding.lang.title"))
                 .font(.system(size: 28, weight: .ultraLight))
                 .tracking(-0.5)
                 .foregroundColor(theme.text)
                 .padding(.bottom, 40)
+                .id(lm.version)
 
             HStack(spacing: 16) {
                 langOption(label: "English", lang: .english)
@@ -108,28 +109,29 @@ struct OnboardingView: View {
     }
 
     private func langOption(label: String, lang: AppLanguage) -> some View {
-        // selected is driven by local @State — no SwiftData round-trip delay
         let selected = selectedLanguage == lang
         return Button {
+            // Update local state first — instant, no layout rebuild
             selectedLanguage = lang
+            // Persist + apply language change after; lm.version bump only re-renders text nodes
             profile?.language = lang
             try? ctx.save()
             lm.apply(lang)
         } label: {
-            Text(label)
-                .font(.system(size: 17))
-                .foregroundColor(selected ? theme.accent : theme.textMid)
-                .frame(maxWidth: .infinity)
-                .frame(height: 56)
-                .background(theme.surface)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .stroke(selected ? theme.accent : Color.clear, lineWidth: 1.5)
-                )
-                .animation(.easeInOut(duration: 0.15), value: selected)
+            ZStack {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(theme.surface)
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(selected ? theme.accent : Color.clear, lineWidth: 1.5)
+                Text(label)
+                    .font(.system(size: 17))
+                    .foregroundColor(selected ? theme.accent : theme.textMid)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 56)
         }
         .buttonStyle(.plain)
+        .animation(.easeInOut(duration: 0.12), value: selected)
     }
 
     // MARK: - Page 2: Theme
@@ -138,12 +140,13 @@ struct OnboardingView: View {
         let saved = UserDefaults.standard.string(forKey: "activeThemeId") ?? "moss"
         return ThemeLibrary.all.firstIndex(where: { $0.id == saved }) ?? 0
     }()
-    // Continuous drag progress in card-units (positive = dragging left/forward)
-    @State private var carouselDrag: CGFloat = 0
+    // Raw drag translation in points — cards follow finger 1:1
+    @State private var dragPx: CGFloat = 0
 
-    private let cardSize: CGFloat = 96      // all cards same size
-    private let cardStep: CGFloat = 104     // card + gap between card centres
-    private let visibleCount = 5            // -2…+2
+    // Square card: 88×88, step = 88 + 12 gap = 100
+    private let cardSide: CGFloat = 88
+    private let cardGap: CGFloat = 12
+    private var cardStep: CGFloat { cardSide + cardGap }
 
     private var themePage: some View {
         VStack(spacing: 0) {
@@ -154,12 +157,14 @@ struct OnboardingView: View {
                 .tracking(-0.5)
                 .foregroundColor(theme.text)
                 .padding(.bottom, 4)
+                .id(lm.version)
 
             Text(lm.L("onboarding.theme.subtitle"))
                 .font(.system(size: 13))
                 .tracking(0.04)
                 .foregroundColor(theme.textDim)
                 .padding(.bottom, 24)
+                .id(lm.version)
 
             LottieCharacterView(
                 characterId: "loader_cat",
@@ -172,9 +177,6 @@ struct OnboardingView: View {
             .padding(.bottom, 32)
 
             themeCarousel
-                .padding(.bottom, 16)
-
-            themeDots
 
             Spacer()
             nextButton(label: lm.L("onboarding.next")) { page = 2 }
@@ -185,71 +187,83 @@ struct OnboardingView: View {
 
     private var themeCarousel: some View {
         let count = ThemeLibrary.all.count
+        // Show enough cards to fill screen width + 1 on each side
+        let renderCount = 7  // -3…+3
 
-        return ZStack {
-            // Fixed centre ring — never moves
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .stroke(theme.accent.opacity(0.6), lineWidth: 1.5)
-                .frame(width: cardSize, height: cardSize + 22)
+        return GeometryReader { geo in
+            ZStack {
+                // Fixed selection ring — stays centred, never moves
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(theme.accent.opacity(0.7), lineWidth: 1.5)
+                    .frame(width: cardSide, height: cardSide + 20)
 
-            // Cards slide underneath the ring
-            ForEach(-2...2, id: \.self) { offset in
-                let idx = ((selectedThemeIndex + offset) % count + count) % count
-                let t = ThemeLibrary.all[idx]
-                // continuous x position: offset - drag progress in card units
-                let x = (CGFloat(offset) - carouselDrag) * cardStep
-                themeCard(t, width: cardSize)
-                    .offset(x: x)
+                // Cards move behind the ring
+                ForEach((-renderCount/2)...(renderCount/2), id: \.self) { offset in
+                    let idx = ((selectedThemeIndex + offset) % count + count) % count
+                    let t = ThemeLibrary.all[idx]
+                    // Raw pixel position: offset × step + live drag
+                    let x = CGFloat(offset) * cardStep + dragPx
+                    themeCard(t)
+                        .offset(x: x)
+                }
             }
-        }
-        .frame(width: cardStep * CGFloat(visibleCount), height: cardSize + 22)
-        .clipped()
-        .gesture(
-            DragGesture(minimumDistance: 4)
-                .onChanged { value in
-                    // drag is in points; convert to card-units
-                    carouselDrag = value.translation.width / -cardStep
-                }
-                .onEnded { value in
-                    // velocity in card-units/s
-                    let velocity = value.predictedEndTranslation.width / -cardStep
-                    let raw = carouselDrag + velocity * 0.18
-                    let steps = Int(raw.rounded())
-                    let target = ((selectedThemeIndex + steps) % count + count) % count
-                    withAnimation(.easeOut(duration: 0.22)) {
-                        carouselDrag = 0
-                        selectTheme(at: target)
+            .frame(width: geo.size.width, height: cardSide + 20)
+            // Clip to screen width so cards don't bleed into other pages
+            .clipped()
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 4)
+                    .onChanged { value in
+                        // Finger moves cards directly, no conversion needed
+                        dragPx = value.translation.width
                     }
-                }
-        )
-    }
-
-    private func themeCard(_ t: ThemeTokens, width: CGFloat) -> some View {
-        VStack(spacing: 0) {
-            Rectangle()
-                .fill(t.bg)
-                .frame(width: width, height: width - 22)
-                .overlay(alignment: .bottom) {
-                    HStack(spacing: 2) {
-                        ForEach(t.bar.indices, id: \.self) { i in
-                            Rectangle().fill(t.bar[i]).frame(height: 10)
+                    .onEnded { value in
+                        // Include velocity: predicted - actual gives velocity component
+                        let velocityPx = value.predictedEndTranslation.width - value.translation.width
+                        let totalPx = dragPx + velocityPx * 0.2
+                        // Round to nearest card
+                        let steps = Int((-totalPx / cardStep).rounded())
+                        let target = ((selectedThemeIndex + steps) % count + count) % count
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            dragPx = 0
+                            selectTheme(at: target)
                         }
                     }
-                    .padding(.horizontal, 8)
-                    .padding(.bottom, 8)
-                }
-            Rectangle()
-                .fill(t.bg)
-                .frame(width: width, height: 22)
-                .overlay {
-                    Text(themeDisplayName(t.id))
-                        .font(.system(size: 10, weight: .medium))
-                        .foregroundColor(t.text)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
-                }
+            )
         }
-        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .frame(height: cardSide + 36)  // card + name label below
+        .padding(.bottom, 16)
+        // Dot strip below
+        .overlay(alignment: .bottom) {
+            themeDots
+        }
+    }
+
+    private func themeCard(_ t: ThemeTokens) -> some View {
+        VStack(spacing: 4) {
+            // Square top section with colour bar
+            ZStack(alignment: .bottom) {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(t.bg)
+                    .frame(width: cardSide, height: cardSide)
+                HStack(spacing: 2) {
+                    ForEach(t.bar.indices, id: \.self) { i in
+                        Rectangle().fill(t.bar[i]).frame(height: 9)
+                    }
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 0))
+                .padding(.horizontal, 8)
+                .padding(.bottom, 8)
+            }
+            // Name below the square, outside the ring
+            Text(themeDisplayName(t.id))
+                .font(.system(size: 9, weight: .medium))
+                .foregroundColor(t.text)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .frame(width: cardSide)
+                .background(t.bg)
+        }
     }
 
     private var themeDots: some View {
@@ -302,8 +316,21 @@ struct OnboardingView: View {
     @State private var bpm: Int = 180
     @State private var goalMinutes: Int = 20
     @State private var selectedSound: SoundType = .wood
-    @State private var metronomeOn: Bool = false   // off by default, turned on in onAppear
+    @State private var metronomeOn: Bool = false
     private let previewMetronome = MetronomeService()
+
+    // Play a single short click for sound preview (no looping)
+    private func playPreviewClick(sound: SoundType) {
+        previewMetronome.stop()
+        previewMetronome.soundType = sound
+        previewMetronome.updateBPM(bpm)
+        // Start then stop after one beat interval
+        previewMetronome.start()
+        let delay = MetronomeService.beatInterval(bpm: bpm) + 0.05
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            self.previewMetronome.stop()
+        }
+    }
 
     private var pacePage: some View {
         VStack(spacing: 0) {
@@ -315,8 +342,7 @@ struct OnboardingView: View {
                 Button {
                     metronomeOn.toggle()
                     if metronomeOn {
-                        previewMetronome.updateBPM(bpm)
-                        previewMetronome.start()
+                        playPreviewClick(sound: selectedSound)
                     } else {
                         previewMetronome.stop()
                     }
@@ -411,15 +437,11 @@ struct OnboardingView: View {
             .padding(.bottom, 52)
         }
         .onAppear {
-            // Read from profile (guaranteed to exist after body.onAppear)
             bpm = profile?.defaultBPM ?? 180
             goalMinutes = profile?.dailyGoalMinutes ?? 20
             selectedSound = profile?.soundType ?? .wood
-            // Start metronome; set metronomeOn = true AFTER start so icon reflects state
-            previewMetronome.updateSoundType(selectedSound)
-            previewMetronome.updateBPM(bpm)
-            previewMetronome.start()
-            metronomeOn = true
+            previewMetronome.soundType = selectedSound
+            metronomeOn = false  // starts silent; user taps sound button or mute icon to hear
         }
         .onDisappear {
             previewMetronome.stop()
@@ -455,10 +477,6 @@ struct OnboardingView: View {
                         // on its next beat, so it will pick up the new value automatically.
                     }
                     .onEnded { _ in
-                        // Update metronome once drag ends to avoid flooding MainActor
-                        if metronomeOn {
-                            previewMetronome.updateBPM(bpm)
-                        }
                         profile?.defaultBPM = bpm
                         try? ctx.save()
                     }
@@ -479,13 +497,9 @@ struct OnboardingView: View {
                     selectedSound = type
                     profile?.soundType = type
                     try? ctx.save()
-                    // updateSoundType handles stop→reload→start internally
-                    // Only call it when metronome is on; otherwise just update soundType for when it starts
-                    if metronomeOn {
-                        previewMetronome.updateSoundType(type)
-                    } else {
-                        previewMetronome.soundType = type
-                    }
+                    // Always play one-shot click on selection, regardless of metronomeOn
+                    playPreviewClick(sound: type)
+                    metronomeOn = true
                 } label: {
                     Text(label)
                         .font(.system(size: 13))
@@ -784,6 +798,10 @@ struct OnboardingView: View {
         if hrStatus == .sharingAuthorized {
             healthStatus = .granted
             healthEnabled = true
+        } else if hrStatus == .notDetermined {
+            // Still undetermined after request — treat as denied
+            healthStatus = .denied
+            healthEnabled = false
         } else {
             healthStatus = .denied
             healthEnabled = false

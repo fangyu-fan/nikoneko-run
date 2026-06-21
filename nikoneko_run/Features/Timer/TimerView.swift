@@ -342,22 +342,22 @@ struct TimerView: View {
             // Live metrics — shown when running or paused
             HStack(spacing: 28) {
                 if vm.state == .running || vm.state == .paused {
-                    if profile?.showHR ?? true {
+                    if profile?.showHR ?? false {
                         metricItem(icon: "heart",
                                    value: hrService.currentHR > 0 ? "\(hrService.currentHR)" : "—",
                                    unit: nil)
                     }
-                    if profile?.showDistance ?? true {
+                    if profile?.showDistance ?? false {
                         metricItem(icon: "location.circle",
                                    value: String(format: "%.2f", motionService.distance / 1000),
                                    unit: "km")
                     }
-                    if profile?.showCalories ?? true {
+                    if profile?.showCalories ?? false {
                         metricItem(icon: "flame",
                                    value: "\(Int(motionService.calories))",
                                    unit: nil)
                     }
-                    if profile?.showSteps ?? true {
+                    if profile?.showSteps ?? false {
                         metricItem(icon: "shoeprints.fill",
                                    value: "\(motionService.steps)",
                                    unit: nil)

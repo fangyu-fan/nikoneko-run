@@ -108,14 +108,11 @@ struct DefaultsView: View {
 
                 ZStack(alignment: .leading) {
                     // Segmented gradient bar
+                    // cal[0] may match bg on some themes — use accentDim for the empty segment
                     HStack(spacing: 0) {
-                        // 0 → t1 : cal[0]
-                        theme.cal[0].frame(width: w * t1 / 100)
-                        // t1 → t2 : cal[2]
+                        theme.accentDim.frame(width: w * t1 / 100)
                         theme.cal[2].frame(width: w * (t2 - t1) / 100)
-                        // t2 → t3 : cal[3]
                         theme.cal[3].frame(width: w * (t3 - t2) / 100)
-                        // t3 → 100 : cal[4]
                         theme.cal[4].frame(maxWidth: .infinity)
                     }
                     .frame(height: barH)
