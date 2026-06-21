@@ -13,12 +13,13 @@ struct OnboardingView: View {
     let onDismiss: () -> Void
 
     @State private var page: Int = 0
-    // Page 4 state
     @State private var notifEnabled: Bool = false
     @State private var notifTime: Date = {
         var c = DateComponents(); c.hour = 7; c.minute = 0
         return Calendar.current.date(from: c) ?? Date()
     }()
+    @State private var healthEnabled: Bool = false
+    @State private var motionEnabled: Bool = false
     @State private var healthStatus: PermStatus = .pending
     @State private var motionStatus: PermStatus = .pending
     @State private var notifStatus: PermStatus = .pending
@@ -37,6 +38,7 @@ struct OnboardingView: View {
                 progressBar
                     .padding(.top, 16)
                     .padding(.horizontal, 32)
+                // TabView with interaction disabled — only nextButton advances pages
                 TabView(selection: $page) {
                     languagePage.tag(0)
                     themePage.tag(1)
@@ -45,6 +47,9 @@ struct OnboardingView: View {
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .animation(.easeInOut(duration: 0.3), value: page)
+                // Disable swipe navigation — only buttons advance pages
+                .allowsHitTesting(true)
+                .simultaneousGesture(DragGesture())
             }
         }
         .id(lm.version)
@@ -72,8 +77,10 @@ struct OnboardingView: View {
     private var languagePage: some View {
         VStack(spacing: 0) {
             Spacer()
+            // Title at top (no cat on this page)
             Text(lm.L("onboarding.lang.title"))
-                .font(.system(size: 28, weight: .regular))
+                .font(.system(size: 28, weight: .ultraLight))
+                .tracking(-0.5)
                 .foregroundColor(theme.text)
                 .padding(.bottom, 40)
 
@@ -122,6 +129,20 @@ struct OnboardingView: View {
     private var themePage: some View {
         VStack(spacing: 0) {
             Spacer()
+
+            // Title above cat
+            Text(lm.L("onboarding.theme.title"))
+                .font(.system(size: 28, weight: .ultraLight))
+                .tracking(-0.5)
+                .foregroundColor(theme.text)
+                .padding(.bottom, 4)
+
+            Text(lm.L("onboarding.theme.subtitle"))
+                .font(.system(size: 13))
+                .tracking(0.04)
+                .foregroundColor(theme.textDim)
+                .padding(.bottom, 24)
+
             LottieCharacterView(
                 characterId: "loader_cat",
                 color: theme.accentMid,
@@ -130,24 +151,14 @@ struct OnboardingView: View {
                 isAnimating: true
             )
             .frame(width: 120, height: 88)
-            .padding(.bottom, 28)
+            .padding(.bottom, 32)
 
-            Text(lm.L("onboarding.theme.title"))
-                .font(.system(size: 28, weight: .ultraLight))
-                .tracking(-0.5)
-                .foregroundColor(theme.text)
-                .padding(.bottom, 6)
-
-            Text(lm.L("onboarding.theme.subtitle"))
-                .font(.system(size: 13))
-                .tracking(0.04)
-                .foregroundColor(theme.textDim)
-                .padding(.bottom, 32)
-
+            // Carousel — tap-only, no swipe (swipe reserved for page navigation disabled above)
             themeCarousel
-                .padding(.bottom, 12)
+                .padding(.bottom, 16)
 
             themeDots
+                .padding(.bottom, 0)
 
             Spacer()
             nextButton(label: lm.L("onboarding.next")) { page = 2 }
@@ -158,13 +169,13 @@ struct OnboardingView: View {
 
     private var themeCarousel: some View {
         let slots: [(offset: Int, scale: CGFloat, opacity: Double, width: CGFloat)] = [
-            (-2, 0.72, 0.25, 52),
-            (-1, 0.84, 0.55, 68),
-            ( 0, 1.00, 1.00, 88),
-            ( 1, 0.84, 0.55, 68),
-            ( 2, 0.72, 0.25, 52),
+            (-2, 0.72, 0.25, 64),
+            (-1, 0.84, 0.55, 82),
+            ( 0, 1.00, 1.00, 106),
+            ( 1, 0.84, 0.55, 82),
+            ( 2, 0.72, 0.25, 64),
         ]
-        return HStack(spacing: 6) {
+        return HStack(spacing: 8) {
             ForEach(slots, id: \.offset) { slot in
                 let idx = ((selectedThemeIndex + slot.offset) % ThemeLibrary.all.count + ThemeLibrary.all.count) % ThemeLibrary.all.count
                 let t = ThemeLibrary.all[idx]
@@ -180,52 +191,38 @@ struct OnboardingView: View {
                     }
             }
         }
-        .frame(height: 100)
-        .gesture(
-            DragGesture(minimumDistance: 20)
-                .onEnded { value in
-                    if value.translation.width < -20 {
-                        withAnimation(.easeInOut(duration: 0.25)) {
-                            selectTheme(at: (selectedThemeIndex + 1) % ThemeLibrary.all.count)
-                        }
-                    } else if value.translation.width > 20 {
-                        withAnimation(.easeInOut(duration: 0.25)) {
-                            selectTheme(at: (selectedThemeIndex - 1 + ThemeLibrary.all.count) % ThemeLibrary.all.count)
-                        }
-                    }
-                }
-        )
+        .frame(height: 120)
     }
 
     private func themeCard(_ t: ThemeTokens, isCenter: Bool, width: CGFloat) -> some View {
-        let barHeight: CGFloat = isCenter ? 9 : 7
+        let barHeight: CGFloat = isCenter ? 11 : 8
         return VStack(spacing: 0) {
             Rectangle()
                 .fill(t.bg)
-                .frame(width: width, height: isCenter ? 60 : 48)
+                .frame(width: width, height: isCenter ? 74 : 58)
                 .overlay(alignment: .bottom) {
-                    HStack(spacing: 1.5) {
+                    HStack(spacing: 2) {
                         ForEach(t.bar.indices, id: \.self) { i in
                             Rectangle().fill(t.bar[i]).frame(height: barHeight)
                         }
                     }
-                    .padding(.horizontal, 6)
-                    .padding(.bottom, 6)
+                    .padding(.horizontal, 8)
+                    .padding(.bottom, 8)
                 }
             Rectangle()
                 .fill(t.bg)
-                .frame(width: width, height: isCenter ? 22 : 18)
+                .frame(width: width, height: isCenter ? 26 : 20)
                 .overlay {
                     Text(themeDisplayName(t.id))
-                        .font(.system(size: isCenter ? 9 : 8, weight: .medium))
+                        .font(.system(size: isCenter ? 11 : 9, weight: .medium))
                         .foregroundColor(t.text)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                 }
         }
-        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .stroke(isCenter ? Color.white.opacity(0.55) : Color.clear, lineWidth: 1.5)
         )
     }
@@ -275,24 +272,30 @@ struct OnboardingView: View {
             : (map[id] ?? id.capitalized)
     }
 
-    // MARK: - Placeholders (filled in subsequent tasks)
-
     // MARK: - Page 3: Running Defaults
 
     @State private var bpm: Int = 180
     @State private var goalMinutes: Int = 20
     @State private var selectedSound: SoundType = .wood
+    @State private var isMetronomePlaying: Bool = false
     private let previewMetronome = MetronomeService()
 
     private var pacePage: some View {
         VStack(spacing: 0) {
             Spacer()
 
+            // Title above cat
             Text(lm.L("onboarding.pace.title"))
                 .font(.system(size: 28, weight: .ultraLight))
                 .tracking(-0.5)
                 .foregroundColor(theme.text)
-                .padding(.bottom, 32)
+                .padding(.bottom, 4)
+
+            Text(lm.L("onboarding.pace.bpm.label"))
+                .font(.system(size: 10))
+                .tracking(1)
+                .foregroundColor(theme.textDim)
+                .padding(.bottom, 24)
 
             LottieCharacterView(
                 characterId: "loader_cat",
@@ -302,14 +305,9 @@ struct OnboardingView: View {
                 isAnimating: true
             )
             .frame(width: 100, height: 72)
-            .padding(.bottom, 24)
+            .padding(.bottom, 16)
 
             VStack(spacing: 8) {
-                Text(lm.L("onboarding.pace.bpm.label"))
-                    .font(.system(size: 10))
-                    .tracking(1)
-                    .foregroundColor(theme.textDim)
-
                 Text("\(bpm)")
                     .font(.system(size: 52, weight: .ultraLight))
                     .tracking(-2)
@@ -363,14 +361,26 @@ struct OnboardingView: View {
             .padding(.horizontal, 32)
 
             Spacer()
-            nextButton(label: lm.L("onboarding.next")) { page = 3 }
-                .padding(.horizontal, 32)
-                .padding(.bottom, 52)
+            nextButton(label: lm.L("onboarding.next")) {
+                previewMetronome.stop()
+                isMetronomePlaying = false
+                page = 3
+            }
+            .padding(.horizontal, 32)
+            .padding(.bottom, 52)
         }
         .onAppear {
             bpm = profile?.defaultBPM ?? 180
             goalMinutes = profile?.dailyGoalMinutes ?? 20
             selectedSound = profile?.soundType ?? .wood
+            previewMetronome.updateSoundType(selectedSound)
+            previewMetronome.updateBPM(bpm)
+            previewMetronome.start()
+            isMetronomePlaying = true
+        }
+        .onDisappear {
+            previewMetronome.stop()
+            isMetronomePlaying = false
         }
     }
 
@@ -392,6 +402,7 @@ struct OnboardingView: View {
                     .onChanged { value in
                         let newFraction = min(1, max(0, value.location.x / geo.size.width))
                         bpm = 140 + Int(newFraction * range)
+                        previewMetronome.updateBPM(bpm)
                     }
                     .onEnded { _ in
                         profile?.defaultBPM = bpm
@@ -415,10 +426,10 @@ struct OnboardingView: View {
                     profile?.soundType = type
                     try? ctx.save()
                     previewMetronome.updateSoundType(type)
-                    previewMetronome.updateBPM(bpm)
-                    previewMetronome.start()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                        self.previewMetronome.stop()
+                    if !isMetronomePlaying {
+                        previewMetronome.updateBPM(bpm)
+                        previewMetronome.start()
+                        isMetronomePlaying = true
                     }
                 } label: {
                     Text(label)
@@ -449,6 +460,7 @@ struct OnboardingView: View {
         .buttonStyle(.plain)
         .overlay(Circle().stroke(theme.accentDim, lineWidth: 0.5).frame(width: 32, height: 32))
     }
+
     // MARK: - Page 4: Notifications + Permissions
 
     private var notifPermsPage: some View {
@@ -456,6 +468,7 @@ struct OnboardingView: View {
             VStack(spacing: 0) {
                 Spacer().frame(height: 32)
 
+                // Title above content (no cat on this page)
                 Text(lm.L("onboarding.notif2.title"))
                     .font(.system(size: 28, weight: .ultraLight))
                     .tracking(-0.5)
@@ -551,7 +564,7 @@ struct OnboardingView: View {
 
                 Spacer().frame(height: 24)
 
-                // Permissions card
+                // Permissions card — each perm is a toggle
                 VStack(spacing: 0) {
                     Text(lm.L("onboarding.perms2.label"))
                         .font(.system(size: 10))
@@ -562,43 +575,35 @@ struct OnboardingView: View {
                         .padding(.top, 12)
                         .padding(.bottom, 4)
 
-                    permRow(
+                    permToggleRow(
                         icon: "heart",
                         name: lm.L("onboarding.perms.health.name"),
                         desc: lm.L("onboarding.perms.health.desc"),
+                        hint: lm.L("onboarding.perms.health.hint"),
+                        isOn: $healthEnabled,
                         status: healthStatus
-                    )
+                    ) {
+                        Task { await requestHealthPermission() }
+                    }
+
                     Rectangle().fill(theme.accentDim).frame(height: 0.5)
-                    permRow(
+
+                    permToggleRow(
                         icon: "figure.walk",
                         name: lm.L("onboarding.perms.motion.name"),
                         desc: lm.L("onboarding.perms.motion.desc"),
+                        hint: lm.L("onboarding.perms.motion.hint"),
+                        isOn: $motionEnabled,
                         status: motionStatus
-                    )
+                    ) {
+                        Task { await requestMotionPermission() }
+                    }
                 }
                 .background(theme.surface)
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                 .padding(.horizontal, 32)
 
-                Spacer().frame(height: 16)
-
-                if healthStatus == .pending || motionStatus == .pending {
-                    Button {
-                        Task { await requestAllPermissions() }
-                    } label: {
-                        Text(isRequesting ? "..." : lm.L("onboarding.perms.cta"))
-                            .font(.system(size: 16))
-                            .foregroundColor(theme.bg)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 52)
-                            .background(theme.accent)
-                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    }
-                    .disabled(isRequesting)
-                    .buttonStyle(.plain)
-                    .padding(.horizontal, 32)
-                    .padding(.bottom, 12)
-                }
+                Spacer().frame(height: 32)
 
                 nextButton(
                     label: lm.L("onboarding.cta.start"),
@@ -610,9 +615,77 @@ struct OnboardingView: View {
         }
     }
 
+    private func permToggleRow(
+        icon: String,
+        name: String,
+        desc: String,
+        hint: String,
+        isOn: Binding<Bool>,
+        status: PermStatus,
+        onToggleOn: @escaping () -> Void
+    ) -> some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 12) {
+                Image(systemName: icon)
+                    .font(.system(size: 16, weight: .light))
+                    .foregroundColor(theme.text)
+                    .frame(width: 24)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(name).font(.system(size: 15)).foregroundColor(theme.text)
+                    Text(desc).font(.system(size: 12)).foregroundColor(theme.textDim)
+                }
+                Spacer()
+                Toggle("", isOn: Binding(
+                    get: { isOn.wrappedValue },
+                    set: { newVal in
+                        if newVal && status != .granted {
+                            onToggleOn()
+                        } else if !newVal {
+                            isOn.wrappedValue = false
+                        }
+                    }
+                ))
+                .tint(theme.accent)
+                .labelsHidden()
+                .disabled(status == .granted)
+            }
+            .padding(.vertical, 14)
+            .padding(.horizontal, 16)
+
+            // Hint shown when denied
+            if status == .denied {
+                HStack {
+                    Text(hint)
+                        .font(.system(size: 12))
+                        .foregroundColor(theme.textDim)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer()
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 12)
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+        }
+        .animation(.easeInOut(duration: 0.25), value: status)
+    }
+
     // MARK: - Finish
 
     private func finish() {
+        // Apply display defaults based on permissions granted
+        if healthStatus != .granted {
+            profile?.showHR = false
+            profile?.showDistance = false
+            profile?.showCalories = false
+            profile?.healthKitEnabled = false
+        } else {
+            profile?.healthKitEnabled = true
+        }
+        if motionStatus != .granted {
+            profile?.showSteps = false
+        }
+        try? ctx.save()
+
         UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
         onDismiss()
     }
@@ -633,35 +706,39 @@ struct OnboardingView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - Permission helpers (used by page 4)
+    // MARK: - Permission requests (individual, for toggles)
 
     @MainActor
-    private func requestAllPermissions() async {
+    private func requestHealthPermission() async {
         isRequesting = true
         await HealthKitService.shared.requestPermissions()
         let hkStatus = HKHealthStore().authorizationStatus(for: HKQuantityType(.heartRate))
-        healthStatus = hkStatus == .sharingAuthorized ? .granted : .denied
+        if hkStatus == .sharingAuthorized {
+            healthStatus = .granted
+            healthEnabled = true
+        } else {
+            healthStatus = .denied
+            healthEnabled = false
+        }
+        isRequesting = false
+    }
 
+    @MainActor
+    private func requestMotionPermission() async {
+        isRequesting = true
         await withCheckedContinuation { cont in
             let manager = CMMotionActivityManager()
             manager.queryActivityStarting(from: Date(), to: Date(), to: .main) { _, error in
                 let nsError = error as NSError?
-                self.motionStatus = (nsError?.code == Int(CMErrorMotionActivityNotAuthorized.rawValue)) ? .denied : .granted
+                if nsError?.code == Int(CMErrorMotionActivityNotAuthorized.rawValue) {
+                    self.motionStatus = .denied
+                    self.motionEnabled = false
+                } else {
+                    self.motionStatus = .granted
+                    self.motionEnabled = true
+                }
                 manager.stopActivityUpdates()
                 cont.resume()
-            }
-        }
-
-        if notifEnabled {
-            let granted = await NotificationService.requestPermission()
-            notifStatus = granted ? .granted : .denied
-            if granted {
-                let c = Calendar.current.dateComponents([.hour, .minute], from: notifTime)
-                NotificationService.scheduleDaily(hour: c.hour ?? 7, minute: c.minute ?? 0)
-            } else {
-                notifEnabled = false
-                profile?.notificationsEnabled = false
-                try? ctx.save()
             }
         }
         isRequesting = false

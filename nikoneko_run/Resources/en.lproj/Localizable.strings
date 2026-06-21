@@ -211,7 +211,9 @@
 "onboarding.next"                    = "Next";
 "onboarding.cta.start"               = "Start running";
 
-"onboarding.lang.title"              = "Language";
+"onboarding.lang.title"              = "choose your language.";
+"onboarding.perms.health.hint"       = "Without this, heart rate and distance won't appear in reports. You can enable it later in Settings.";
+"onboarding.perms.motion.hint"       = "Without this, steps and distance won't appear in reports. You can enable it later in Settings.";
 
 "onboarding.notif.title"             = "Daily reminder";
 "onboarding.notif.body"              = "Pick a time and we'll nudge you.";

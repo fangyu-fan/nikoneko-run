@@ -211,7 +211,9 @@
 "onboarding.next"                    = "下一步";
 "onboarding.cta.start"               = "開始跑步";
 
-"onboarding.lang.title"              = "語言";
+"onboarding.lang.title"              = "選擇你的語言。";
+"onboarding.perms.health.hint"       = "未開啟時，心率與距離不會出現在報表。可在設定中重新開啟。";
+"onboarding.perms.motion.hint"       = "未開啟時，步數與距離不會出現在報表。可在設定中重新開啟。";
 
 "onboarding.notif.title"             = "每日提醒";
 "onboarding.notif.body"              = "選一個時間，我們會提醒你。";
