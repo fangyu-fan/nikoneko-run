@@ -20,6 +20,34 @@ final class MetronomeService {
     init() {
         setupEngine()
         loadBuffers()
+        setupInterruptionHandler()
+    }
+
+    private func setupInterruptionHandler() {
+        // Single observer — extract all values before entering async context to avoid data races
+        NotificationCenter.default.addObserver(
+            forName: AVAudioSession.interruptionNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let self else { return }
+            let typeRaw = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt ?? 0
+            let optionsRaw = notification.userInfo?[AVAudioSessionInterruptionOptionKey] as? UInt ?? 0
+            let isBegan = AVAudioSession.InterruptionType(rawValue: typeRaw) == .began
+            let shouldResume = AVAudioSession.InterruptionOptions(rawValue: optionsRaw).contains(.shouldResume)
+            // Already on main queue — no Task needed
+            if isBegan {
+                if self.isPlaying {
+                    self.isPlaying = false
+                    self.player.stop()
+                    self.nextBeatTime = nil
+                }
+            } else {
+                if shouldResume && !self.isPlaying {
+                    self.resume()
+                }
+            }
+        }
     }
 
     static func beatInterval(bpm: Int) -> Double { 60.0 / Double(bpm) }

@@ -9,7 +9,9 @@ struct NikoNekoLiveActivityAttributes: ActivityAttributes {
         var characterId: String
         var themeId: String
         var isCountdown: Bool
-        var hr: Int          // 0 = no data
-        var distance: Double // metres
+        var hr: Int
+        var distance: Double
+        var startDate: Date      // wall-clock start — used for live timer
+        var targetDuration: TimeInterval  // 0 for stopwatch
     }
 }

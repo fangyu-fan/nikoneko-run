@@ -6,11 +6,11 @@ struct NikoNekoLiveActivityView: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: NikoNekoLiveActivityAttributes.self) { context in
             let theme = WidgetSharedData.loadTheme()
-            LockScreenCardView(state: context.state, theme: theme)
+            LockScreenLiveView(state: context.state, theme: theme)
         } dynamicIsland: { context in
             let theme = WidgetSharedData.loadTheme()
             return DynamicIsland {
-                // Expanded — shown when user taps Dynamic Island
+                // Expanded — tapping the island
                 DynamicIslandExpandedRegion(.leading) {
                     VStack(alignment: .leading, spacing: 3) {
                         Text("NIKONEKO RUN")
@@ -18,9 +18,9 @@ struct NikoNekoLiveActivityView: Widget {
                             .tracking(1.2)
                             .foregroundColor(theme.accent)
 
-                        Text(timeString(context.state))
+                        liveTimerText(context.state)
                             .font(.system(size: 28, weight: .ultraLight))
-                            .foregroundColor(theme.text)
+                            .foregroundColor(.white)
                             .monospacedDigit()
 
                         HStack(spacing: 8) {
@@ -32,69 +32,87 @@ struct NikoNekoLiveActivityView: Widget {
                                     .font(.system(size: 10))
                                     .foregroundColor(theme.accent)
                             }
+                            if context.state.distance > 0 {
+                                Label(String(format: "%.2fkm", context.state.distance / 1000),
+                                      systemImage: "location.fill")
+                                    .font(.system(size: 10))
+                                    .foregroundColor(theme.textMid)
+                                    .monospacedDigit()
+                            }
                         }
                     }
                     .padding(.leading, 4)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    VStack(alignment: .trailing, spacing: 4) {
-                        Image(systemName: "figure.run")
-                            .font(.system(size: 28, weight: .ultraLight))
-                            .foregroundColor(theme.accentMid)
-
-                        if context.state.distance > 0 {
-                            Text(String(format: "%.2f km", context.state.distance / 1000))
-                                .font(.system(size: 10))
-                                .foregroundColor(theme.textMid)
-                                .monospacedDigit()
-                        }
-                    }
+                    LottieCharacterView(
+                        characterId: context.state.characterId,
+                        color: theme.accentMid,
+                        bpm: context.state.bpm,
+                        isAnimating: true
+                    )
+                    .frame(width: 52, height: 40)
                     .padding(.trailing, 4)
                 }
             } compactLeading: {
-                Image(systemName: "figure.run")
-                    .font(.system(size: 14, weight: .light))
-                    .foregroundColor(theme.accentMid)
+                // Cat animation in compact left slot
+                LottieCharacterView(
+                    characterId: context.state.characterId,
+                    color: theme.accentMid,
+                    bpm: context.state.bpm,
+                    isAnimating: true
+                )
+                .frame(width: 24, height: 20)
             } compactTrailing: {
-                Text(timeString(context.state))
+                // Live counting time — white for visibility on black island
+                liveTimerText(context.state)
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(theme.text)
+                    .foregroundColor(.white)
                     .monospacedDigit()
             } minimal: {
-                Image(systemName: "figure.run")
-                    .font(.system(size: 12))
-                    .foregroundColor(theme.accentMid)
+                LottieCharacterView(
+                    characterId: context.state.characterId,
+                    color: theme.accentMid,
+                    bpm: context.state.bpm,
+                    isAnimating: true
+                )
+                .frame(width: 18, height: 16)
             }
         }
     }
 
-    private func timeString(_ state: NikoNekoLiveActivityAttributes.ContentState) -> String {
-        let t = state.isCountdown ? state.remaining : state.elapsed
-        let min = Int(max(0, t) / 60)
-        let sec = Int(max(0, t)) % 60
-        return String(format: "%d:%02d", min, sec)
+    // Returns a Text that counts automatically using the system timer
+    @ViewBuilder
+    private func liveTimerText(_ state: NikoNekoLiveActivityAttributes.ContentState) -> some View {
+        if state.isCountdown {
+            let end = state.startDate.addingTimeInterval(state.targetDuration)
+            Text(timerInterval: state.startDate...end, countsDown: true)
+        } else {
+            Text(timerInterval: state.startDate...Date.distantFuture, countsDown: false)
+        }
     }
 }
 
-struct LockScreenCardView: View {
+// MARK: - Lock Screen / Notification Banner
+
+struct LockScreenLiveView: View {
     let state: NikoNekoLiveActivityAttributes.ContentState
     let theme: ThemeTokens
 
     var body: some View {
-        HStack(spacing: 12) {
-            // Left: title + time + BPM
-            VStack(alignment: .leading, spacing: 4) {
+        HStack(spacing: 14) {
+            // Left: title, live timer, metrics
+            VStack(alignment: .leading, spacing: 5) {
                 Text("NIKONEKO RUN")
                     .font(.system(size: 9, weight: .medium))
                     .tracking(1.2)
                     .foregroundColor(theme.accent)
 
-                Text(formattedTime)
+                liveTimerText
                     .font(.system(size: 40, weight: .ultraLight))
                     .foregroundColor(theme.text)
                     .monospacedDigit()
 
-                HStack(spacing: 10) {
+                HStack(spacing: 12) {
                     Label("\(state.bpm) bpm", systemImage: "metronome")
                         .font(.system(size: 11))
                         .foregroundColor(theme.textMid)
@@ -106,7 +124,8 @@ struct LockScreenCardView: View {
                     }
 
                     if state.distance > 0 {
-                        Label(String(format: "%.2f km", state.distance / 1000), systemImage: "location.fill")
+                        Label(String(format: "%.2f km", state.distance / 1000),
+                              systemImage: "location.fill")
                             .font(.system(size: 11))
                             .foregroundColor(theme.textMid)
                             .monospacedDigit()
@@ -116,20 +135,27 @@ struct LockScreenCardView: View {
 
             Spacer()
 
-            // Right: running figure
-            Image(systemName: "figure.run")
-                .font(.system(size: 36, weight: .ultraLight))
-                .foregroundColor(theme.accentMid)
+            // Right: Lottie cat
+            LottieCharacterView(
+                characterId: state.characterId,
+                color: theme.accentMid,
+                bpm: state.bpm,
+                isAnimating: true
+            )
+            .frame(width: 52, height: 40)
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
         .background(theme.bg)
     }
 
-    private var formattedTime: String {
-        let t = state.isCountdown ? state.remaining : state.elapsed
-        let min = Int(max(0, t) / 60)
-        let sec = Int(max(0, t)) % 60
-        return String(format: "%d:%02d", min, sec)
+    @ViewBuilder
+    private var liveTimerText: some View {
+        if state.isCountdown {
+            let end = state.startDate.addingTimeInterval(state.targetDuration)
+            Text(timerInterval: state.startDate...end, countsDown: true)
+        } else {
+            Text(timerInterval: state.startDate...Date.distantFuture, countsDown: false)
+        }
     }
 }

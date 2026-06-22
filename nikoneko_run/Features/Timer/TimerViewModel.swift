@@ -15,6 +15,9 @@ final class TimerViewModel {
 
     private var timer: AnyCancellable?
     private var startDate: Date?
+    private var backgroundedAt: Date?
+    private var bgObserver: NSObjectProtocol?
+    private var fgObserver: NSObjectProtocol?
 
     var remaining: TimeInterval { max(0, targetDuration - elapsed) }
     var isCountdown: Bool = true
@@ -27,10 +30,43 @@ final class TimerViewModel {
         isCountdown ? Int(remaining) % 60 : Int(elapsed) % 60
     }
 
+    init() {
+        setupBackgroundHandlers()
+    }
+
+    private func setupBackgroundHandlers() {
+        bgObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.didEnterBackgroundNotification,
+            object: nil, queue: .main
+        ) { [weak self] _ in
+            guard let self, self.state == .running else { return }
+            // Record when we went to background so we can compensate on return
+            self.backgroundedAt = Date()
+        }
+
+        fgObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.willEnterForegroundNotification,
+            object: nil, queue: .main
+        ) { [weak self] _ in
+            guard let self, self.state == .running, let bg = self.backgroundedAt else { return }
+            // Add the time we spent in background to elapsed
+            let backgroundDuration = Date().timeIntervalSince(bg)
+            self.elapsed += backgroundDuration
+            self.backgroundedAt = nil
+            // Restart tick from current position
+            self.startTick()
+            // Check if countdown finished while in background
+            if self.isCountdown && self.elapsed >= self.targetDuration {
+                self.forceStop()
+            }
+        }
+    }
+
     func start(bpm: Int, characterId: String, themeId: String) {
         state = .running
         startDate = Date()
         elapsed = 0
+        backgroundedAt = nil
         startTick()
     }
 
@@ -76,12 +112,13 @@ final class TimerViewModel {
     }
 
     private func startTick() {
+        timer?.cancel()
         let capturedStart = Date()
         let capturedElapsed = elapsed
         timer = Timer.publish(every: 0.5, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] now in
-                guard let self, self.state == .running else { return }
+                guard let self, self.state == .running, self.backgroundedAt == nil else { return }
                 self.elapsed = capturedElapsed + now.timeIntervalSince(capturedStart)
                 if self.isCountdown && self.elapsed >= self.targetDuration {
                     self.forceStop()
