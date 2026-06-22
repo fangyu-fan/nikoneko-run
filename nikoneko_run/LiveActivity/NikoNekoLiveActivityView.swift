@@ -10,55 +10,68 @@ struct NikoNekoLiveActivityView: Widget {
         } dynamicIsland: { context in
             let theme = WidgetSharedData.loadTheme()
             return DynamicIsland {
+                // Expanded — shown when user taps Dynamic Island
                 DynamicIslandExpandedRegion(.leading) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("JOG").font(.system(size: 8)).tracking(1).foregroundColor(theme.textDim)
-                        Text(formattedTime(context.state))
-                            .font(.system(size: 26, weight: .ultraLight)).foregroundColor(theme.text)
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("NIKONEKO RUN")
+                            .font(.system(size: 8, weight: .medium))
+                            .tracking(1.2)
+                            .foregroundColor(theme.accent)
+
+                        Text(timeString(context.state))
+                            .font(.system(size: 28, weight: .ultraLight))
+                            .foregroundColor(theme.text)
                             .monospacedDigit()
+
+                        HStack(spacing: 8) {
+                            Label("\(context.state.bpm) bpm", systemImage: "metronome")
+                                .font(.system(size: 10))
+                                .foregroundColor(theme.textMid)
+                            if context.state.hr > 0 {
+                                Label("\(context.state.hr)", systemImage: "heart.fill")
+                                    .font(.system(size: 10))
+                                    .foregroundColor(theme.accent)
+                            }
+                        }
                     }
+                    .padding(.leading, 4)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     VStack(alignment: .trailing, spacing: 4) {
-                        LottieCharacterView(
-                            characterId: context.state.characterId,
-                            color: theme.accentMid,
-                            bpm: context.state.bpm,
-                            isAnimating: true
-                        )
-                        .frame(width: 44, height: 32)
-                        Text("♩ \(context.state.bpm)")
-                            .font(.system(size: 9)).foregroundColor(theme.textDim)
+                        Image(systemName: "figure.run")
+                            .font(.system(size: 28, weight: .ultraLight))
+                            .foregroundColor(theme.accentMid)
+
+                        if context.state.distance > 0 {
+                            Text(String(format: "%.2f km", context.state.distance / 1000))
+                                .font(.system(size: 10))
+                                .foregroundColor(theme.textMid)
+                                .monospacedDigit()
+                        }
                     }
+                    .padding(.trailing, 4)
                 }
             } compactLeading: {
-                LottieCharacterView(
-                    characterId: context.state.characterId,
-                    color: theme.accentMid,
-                    bpm: context.state.bpm,
-                    isAnimating: true
-                )
-                .frame(width: 22, height: 22)
+                Image(systemName: "figure.run")
+                    .font(.system(size: 14, weight: .light))
+                    .foregroundColor(theme.accentMid)
             } compactTrailing: {
-                Text(formattedTime(context.state))
-                    .font(.system(size: 14, weight: .light)).foregroundColor(theme.text)
+                Text(timeString(context.state))
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(theme.text)
                     .monospacedDigit()
             } minimal: {
-                LottieCharacterView(
-                    characterId: context.state.characterId,
-                    color: theme.accentMid,
-                    bpm: context.state.bpm,
-                    isAnimating: true
-                )
-                .frame(width: 18, height: 18)
+                Image(systemName: "figure.run")
+                    .font(.system(size: 12))
+                    .foregroundColor(theme.accentMid)
             }
         }
     }
 
-    private func formattedTime(_ state: NikoNekoLiveActivityAttributes.ContentState) -> String {
+    private func timeString(_ state: NikoNekoLiveActivityAttributes.ContentState) -> String {
         let t = state.isCountdown ? state.remaining : state.elapsed
-        let min = Int(t / 60)
-        let sec = Int(t) % 60
+        let min = Int(max(0, t) / 60)
+        let sec = Int(max(0, t)) % 60
         return String(format: "%d:%02d", min, sec)
     }
 }
@@ -68,32 +81,55 @@ struct LockScreenCardView: View {
     let theme: ThemeTokens
 
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
+            // Left: title + time + BPM
             VStack(alignment: .leading, spacing: 4) {
-                Text("JOG").font(.system(size: 8)).tracking(1).foregroundColor(theme.textDim)
+                Text("NIKONEKO RUN")
+                    .font(.system(size: 9, weight: .medium))
+                    .tracking(1.2)
+                    .foregroundColor(theme.accent)
+
                 Text(formattedTime)
-                    .font(.system(size: 36, weight: .ultraLight)).foregroundColor(theme.text)
+                    .font(.system(size: 40, weight: .ultraLight))
+                    .foregroundColor(theme.text)
                     .monospacedDigit()
-                Text("♩ \(state.bpm)").font(.system(size: 10)).foregroundColor(theme.textDim)
+
+                HStack(spacing: 10) {
+                    Label("\(state.bpm) bpm", systemImage: "metronome")
+                        .font(.system(size: 11))
+                        .foregroundColor(theme.textMid)
+
+                    if state.hr > 0 {
+                        Label("\(state.hr)", systemImage: "heart.fill")
+                            .font(.system(size: 11))
+                            .foregroundColor(theme.accent)
+                    }
+
+                    if state.distance > 0 {
+                        Label(String(format: "%.2f km", state.distance / 1000), systemImage: "location.fill")
+                            .font(.system(size: 11))
+                            .foregroundColor(theme.textMid)
+                            .monospacedDigit()
+                    }
+                }
             }
+
             Spacer()
-            LottieCharacterView(
-                characterId: state.characterId,
-                color: theme.accentMid,
-                bpm: state.bpm,
-                isAnimating: true
-            )
-            .frame(width: 52, height: 40)
+
+            // Right: running figure
+            Image(systemName: "figure.run")
+                .font(.system(size: 36, weight: .ultraLight))
+                .foregroundColor(theme.accentMid)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 14)
-        .background(theme.bg.opacity(0.88))
+        .padding(.horizontal, 20)
+        .padding(.vertical, 16)
+        .background(theme.bg)
     }
 
     private var formattedTime: String {
         let t = state.isCountdown ? state.remaining : state.elapsed
-        let min = Int(t / 60)
-        let sec = Int(t) % 60
+        let min = Int(max(0, t) / 60)
+        let sec = Int(max(0, t)) % 60
         return String(format: "%d:%02d", min, sec)
     }
 }

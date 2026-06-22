@@ -78,20 +78,28 @@ struct TimerView: View {
         ZStack {
             theme.bg.ignoresSafeArea()
 
-            // Centred run-complete popup — tap anywhere to dismiss
+            // Centred run-complete popup
             if let session = savedSession {
+                // Dim background — tap to dismiss
                 Color.black.opacity(0.35)
                     .ignoresSafeArea()
                     .onTapGesture { withAnimation(.easeOut(duration: 0.2)) { savedSession = nil } }
                     .transition(.opacity)
-
-                SessionDetailSheet(session: session)
-                    .frame(maxWidth: 360)
-                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                    .shadow(color: .black.opacity(0.18), radius: 24, y: 8)
-                    .padding(.horizontal, 20)
-                    .transition(.opacity.combined(with: .scale(scale: 0.96)))
                     .zIndex(1)
+
+                // Card — absorbs taps so they don't fall through to background
+                SessionDetailSheet(session: session, onDismiss: {
+                    withAnimation(.easeOut(duration: 0.2)) { savedSession = nil }
+                })
+                .frame(maxWidth: 340)
+                .fixedSize(horizontal: false, vertical: true)
+                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                .shadow(color: .black.opacity(0.18), radius: 24, y: 8)
+                .padding(.horizontal, 20)
+                .contentShape(Rectangle())
+                .onTapGesture {}  // absorb taps on card — only ✕ button closes
+                .transition(.opacity.combined(with: .scale(scale: 0.96)))
+                .zIndex(2)
             }
 
             VStack(spacing: 0) {
@@ -215,9 +223,10 @@ struct TimerView: View {
                     .padding(.horizontal, 16)
                     .padding(.bottom, 24)
 
-                // Action button
+                // Action button — disabled while popup is showing to prevent accidental re-start
                 actionButtonArea
                     .padding(.bottom, 24)
+                    .allowsHitTesting(savedSession == nil)
             }
         }
         .onAppear {
@@ -284,7 +293,12 @@ struct TimerView: View {
         }
         .onChange(of: vm.elapsed) { _, elapsed in
             guard vm.state == .running else { return }
-            liveActivity.update(elapsed: elapsed, remaining: vm.remaining)
+            liveActivity.update(
+                elapsed: elapsed,
+                remaining: vm.remaining,
+                hr: hrService.currentHR,
+                distance: motionService.distance
+            )
         }
         .onChange(of: isLongPressing) { _, pressing in
             if pressing { UIImpactFeedbackGenerator(style: .medium).impactOccurred() }

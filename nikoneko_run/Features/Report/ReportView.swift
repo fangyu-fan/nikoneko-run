@@ -662,10 +662,15 @@ struct HeatmapView: View {
 
 struct SessionDetailSheet: View {
     let session: RunSession
+    var onDismiss: (() -> Void)? = nil   // used when presented as overlay (not sheet)
     @Environment(ThemeManager.self) private var themeManager
     @Environment(LanguageManager.self) private var lm
     @Environment(\.dismiss) private var dismiss
     private var theme: ThemeTokens { themeManager.current }
+
+    private func doClose() {
+        if let onDismiss { onDismiss() } else { dismiss() }
+    }
 
     private var durationMins: Int { Int(session.duration / 60) }
     private var timeRange: String {
@@ -686,7 +691,7 @@ struct SessionDetailSheet: View {
                     Text(timeRange).font(.system(size: 13)).foregroundColor(theme.textDim)
                 }
                 Spacer()
-                Button { dismiss() } label: {
+                Button { doClose() } label: {
                     Image(systemName: "xmark")
                         .font(.system(size: 15, weight: .regular))
                         .foregroundColor(theme.textDim)
