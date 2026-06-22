@@ -63,8 +63,17 @@ struct ContentView: View {
 
     private func ensureProfile() {
         guard profiles.isEmpty else {
-            if let lang = profiles.first?.language {
-                languageManager.apply(lang)
+            if let p = profiles.first {
+                languageManager.apply(p.language)
+                // Migration: if metrics were incorrectly hidden, restore them.
+                // showHR/showDistance/showCalories/showSteps default to true in UserProfile.
+                // Onboarding used to set them false when health status was pending — fix that here.
+                var dirty = false
+                if !p.showHR      { p.showHR = true;      dirty = true }
+                if !p.showDistance { p.showDistance = true; dirty = true }
+                if !p.showCalories { p.showCalories = true; dirty = true }
+                if !p.showSteps   { p.showSteps = true;    dirty = true }
+                if dirty { try? ctx.save() }
             }
             return
         }

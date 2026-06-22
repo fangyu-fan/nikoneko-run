@@ -740,15 +740,17 @@ struct OnboardingView: View {
     // MARK: - Finish
 
     private func finish() {
-        if healthStatus != .granted {
+        // Only hide metrics when user explicitly denied — pending means not asked, show by default
+        if healthStatus == .denied {
             profile?.showHR = false
             profile?.showDistance = false
             profile?.showCalories = false
             profile?.healthKitEnabled = false
         } else {
-            profile?.healthKitEnabled = true
+            // granted or pending — keep defaults (showHR/showDistance/showCalories all true by default)
+            profile?.healthKitEnabled = (healthStatus == .granted)
         }
-        if motionStatus != .granted {
+        if motionStatus == .denied {
             profile?.showSteps = false
         }
         try? ctx.save()
