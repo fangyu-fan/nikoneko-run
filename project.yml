@@ -24,7 +24,7 @@ targets:
     type: application
     platform: iOS
     deploymentTarget: "17.0"
-    bundleId: com.fangyu.nikoneko
+    bundleId: com.fangyu.nikoneko-run
     sources:
       - path: nikoneko_run/App
       - path: nikoneko_run/Core
@@ -40,7 +40,7 @@ targets:
     settings:
       base:
         INFOPLIST_FILE: nikoneko_run/App/Info.plist
-        PRODUCT_BUNDLE_IDENTIFIER: com.fangyu.nikoneko
+        PRODUCT_BUNDLE_IDENTIFIER: com.fangyu.nikoneko-run
         SWIFT_VERSION: 6.0
         DEVELOPMENT_TEAM: RD7PKRJWKK
     entitlements:
@@ -111,7 +111,7 @@ targets:
     type: app-extension
     platform: iOS
     deploymentTarget: "17.0"
-    bundleId: com.fangyu.nikoneko.widgets
+    bundleId: com.fangyu.nikoneko-run.widgets
     sources:
       - path: nikoneko_run/Widgets
       - path: nikoneko_run/LiveActivity
@@ -126,7 +126,7 @@ targets:
       - path: nikoneko_run/Characters
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.fangyu.nikoneko.widgets
+        PRODUCT_BUNDLE_IDENTIFIER: com.fangyu.nikoneko-run.widgets
         SWIFT_VERSION: 6.0
         NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:

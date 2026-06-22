@@ -845,7 +845,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
-				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run.widgets";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -864,7 +864,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
-				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run.widgets";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -884,7 +884,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -968,7 +968,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.fangyu.nikoneko;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
