@@ -8,10 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		0043CABED0591E062ED9976C /* NikoNekoLiveActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E198C49902F32FF5A4C39E /* NikoNekoLiveActivityView.swift */; };
+		025AC1D8AA8A2E63F1437812 /* NikoNekoLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597CCA5A13B2A44B963406C5 /* NikoNekoLiveActivityAttributes.swift */; };
 		02D489707433C2A1DA530C47 /* ThemeTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CB002201A3605B5C755D99 /* ThemeTokens.swift */; };
 		0333531A6175034DA8AA0A93 /* TodayStepsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606D8B93C812B4D4AA6EEF7E /* TodayStepsWidget.swift */; };
 		03508708D11AC01772204E63 /* DisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FE97011EFA0AB1A7EBFDBB /* DisplayView.swift */; };
+		03BABDCE5E81846CF0E34C56 /* NikoNekoLiveActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E198C49902F32FF5A4C39E /* NikoNekoLiveActivityView.swift */; };
 		03D4F45E889DE08821FA275A /* StatWidgetIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C3F16E403A81DC4BC59A32 /* StatWidgetIntent.swift */; };
+		05329CC7016B4AA22D30DB77 /* NikoNekoWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = FBCAFB33A48D239106A8391D /* NikoNekoWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		06F86A6404C8E50B3D9B5B09 /* AppGroupDefaultsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073EC42D997CC22D7EDD7CD3 /* AppGroupDefaultsTests.swift */; };
 		0708B78B11001790B9BF14D7 /* NikoNekoWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AEEC4A8FAEFDB9BD90EE2F7 /* NikoNekoWidgetBundle.swift */; };
 		0ABE10C77A10EE34D461EA14 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 494EAAD6F67A3197AFD55CBC /* Lottie */; };
@@ -42,6 +45,7 @@
 		59845CF0ABDAB69E86B65CFC /* ReportViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA81960393AABD848F96B250 /* ReportViewModelTests.swift */; };
 		5CB153DF3256EA7E2500C0C0 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DA000BDF804808817A188E3 /* TimerView.swift */; };
 		5D34C5A1DB07A483685128D6 /* WidgetDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E939ADC1B0268AC8E50377A5 /* WidgetDataTests.swift */; };
+		5D75FE18CF036FB49A4732F8 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = F1B2B3A0A6AAC2F8136C5D95 /* Lottie */; };
 		608A538B277628246DC82BE8 /* BarColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70890FC411099E4B4D869D9D /* BarColorTests.swift */; };
 		66DFB63BA79545ACF85C50DF /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFB792DB6970C8D2D3CD216 /* NotificationService.swift */; };
 		68AF989AAD50ECEC12D8276E /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C5078E8D550E5658204098 /* NotificationsView.swift */; };
@@ -112,6 +116,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		3EC6C20870286B360C84E17D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BA6644D57441174F969006AD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F921734759AD1F9E6466177E;
+			remoteInfo = NikoNekoWidgets;
+		};
 		4A580553328724E8831979A0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BA6644D57441174F969006AD /* Project object */;
@@ -119,14 +130,21 @@
 			remoteGlobalIDString = 1B16E05F2284765C9C4D3B33;
 			remoteInfo = nikoneko;
 		};
-		5E574AF6C1EE14A3382F7338 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BA6644D57441174F969006AD /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1B16E05F2284765C9C4D3B33;
-			remoteInfo = nikoneko;
-		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8952B48C65157535B5D00D13 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				05329CC7016B4AA22D30DB77 /* NikoNekoWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		01CB002201A3605B5C755D99 /* ThemeTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeTokens.swift; sourceTree = "<group>"; };
@@ -222,6 +240,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				0ABE10C77A10EE34D461EA14 /* Lottie in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7FC251FDEBE4680B6969A324 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5D75FE18CF036FB49A4732F8 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -520,10 +546,12 @@
 				D9FAD534F7A829A8E9F596A0 /* Sources */,
 				2F85F3EB79944C2BFF06BCD6 /* Resources */,
 				629606A9C4A03A230E3F1432 /* Frameworks */,
+				8952B48C65157535B5D00D13 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				11A18C3EE83F0C5F4E23FA6B /* PBXTargetDependency */,
 			);
 			name = nikoneko;
 			packageProductDependencies = (
@@ -557,14 +585,15 @@
 			buildPhases = (
 				1E4D8827D6699441809FF5E9 /* Sources */,
 				B343D76CA71FBD85E284326A /* Resources */,
+				7FC251FDEBE4680B6969A324 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				79266D642F146B5BC70AF7AF /* PBXTargetDependency */,
 			);
 			name = NikoNekoWidgets;
 			packageProductDependencies = (
+				F1B2B3A0A6AAC2F8136C5D95 /* Lottie */,
 			);
 			productName = NikoNekoWidgets;
 			productReference = FBCAFB33A48D239106A8391D /* NikoNekoWidgets.appex */;
@@ -656,6 +685,8 @@
 				4F8D70A55717D9BB97D94274 /* Color+Hex.swift in Sources */,
 				DA11E512CD49341621BAFF4B /* HeatmapWidget.swift in Sources */,
 				A84CE9E85F562A6C35555C70 /* LottieCharacterView.swift in Sources */,
+				025AC1D8AA8A2E63F1437812 /* NikoNekoLiveActivityAttributes.swift in Sources */,
+				03BABDCE5E81846CF0E34C56 /* NikoNekoLiveActivityView.swift in Sources */,
 				0708B78B11001790B9BF14D7 /* NikoNekoWidgetBundle.swift in Sources */,
 				D37DDA18BE4A6D4DC8F3E8E7 /* PlaceholderCharacterView.swift in Sources */,
 				9C198317D741685FE404E120 /* StatWidget.swift in Sources */,
@@ -758,10 +789,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		79266D642F146B5BC70AF7AF /* PBXTargetDependency */ = {
+		11A18C3EE83F0C5F4E23FA6B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1B16E05F2284765C9C4D3B33 /* nikoneko */;
-			targetProxy = 5E574AF6C1EE14A3382F7338 /* PBXContainerItemProxy */;
+			target = F921734759AD1F9E6466177E /* NikoNekoWidgets */;
+			targetProxy = 3EC6C20870286B360C84E17D /* PBXContainerItemProxy */;
 		};
 		BCFE38B4DDA88BFD50C4139A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1074,6 +1105,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		494EAAD6F67A3197AFD55CBC /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 22BCE48112F52505C70D5275 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+		F1B2B3A0A6AAC2F8136C5D95 /* Lottie */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 22BCE48112F52505C70D5275 /* XCRemoteSwiftPackageReference "lottie-ios" */;
 			productName = Lottie;

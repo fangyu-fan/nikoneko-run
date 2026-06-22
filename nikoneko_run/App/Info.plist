@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Niconeko Run</string>
+	<string>Niko Neko Run</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -21,11 +21,15 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>NSHealthShareUsageDescription</key>
-	<string>Niconeko Run reads heart rate during runs.</string>
+	<string>Niko Neko Run reads heart rate during runs.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>Niconeko Run saves workout data to Health.</string>
+	<string>Niko Neko Run saves workout data to Health.</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Niconeko Run tracks steps and distance.</string>
+	<string>Niko Neko Run tracks steps and distance.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

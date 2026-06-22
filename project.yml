@@ -57,14 +57,16 @@ targets:
     info:
       path: nikoneko_run/App/Info.plist
       properties:
-        CFBundleDisplayName: "Niconeko Run"
+        CFBundleDisplayName: "Niko Neko Run"
+        NSSupportsLiveActivities: true
+        NSSupportsLiveActivitiesFrequentUpdates: true
         UILaunchScreen:
           UIColorName: "LaunchBackground"
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
-        NSHealthShareUsageDescription: "Niconeko Run reads heart rate during runs."
-        NSHealthUpdateUsageDescription: "Niconeko Run saves workout data to Health."
-        NSMotionUsageDescription: "Niconeko Run tracks steps and distance."
+        NSHealthShareUsageDescription: "Niko Neko Run reads heart rate during runs."
+        NSHealthUpdateUsageDescription: "Niko Neko Run saves workout data to Health."
+        NSMotionUsageDescription: "Niko Neko Run tracks steps and distance."
         UIBackgroundModes:
           - audio
           - remote-notification
@@ -84,6 +86,8 @@ targets:
     dependencies:
       - package: Lottie
         product: Lottie
+      - target: NikoNekoWidgets
+        embed: true
     scheme:
       testTargets:
         - nikonekoTests
@@ -110,6 +114,7 @@ targets:
     bundleId: com.fangyu.nikoneko.widgets
     sources:
       - path: nikoneko_run/Widgets
+      - path: nikoneko_run/LiveActivity
       - path: nikoneko_run/Core
         excludes:
           - Models/RunSession.swift
@@ -134,6 +139,8 @@ targets:
       properties:
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
+        NSSupportsLiveActivities: true
+        NSSupportsLiveActivitiesFrequentUpdates: true
     dependencies:
-      - target: nikoneko
-        embed: false
+      - package: Lottie
+        product: Lottie
