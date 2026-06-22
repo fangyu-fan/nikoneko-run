@@ -57,7 +57,7 @@ targets:
     info:
       path: nikoneko_run/App/Info.plist
       properties:
-        CFBundleDisplayName: "Niko Neko Run"
+        CFBundleDisplayName: "Nikoneko Run"
         NSSupportsLiveActivities: true
         NSSupportsLiveActivitiesFrequentUpdates: true
         UILaunchScreen:

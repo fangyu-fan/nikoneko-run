@@ -27,7 +27,7 @@ struct LaunchScreenView: View {
                 .frame(width: 120, height: 88)
                 .padding(.bottom, 32)
 
-                Text("Niko Neko")
+                Text("Nikoneko")
                     .font(.system(size: 32, weight: .ultraLight))
                     .foregroundColor(theme.text)
                     .padding(.bottom, 8)
