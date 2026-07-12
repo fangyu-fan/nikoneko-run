@@ -64,7 +64,9 @@ struct ContentView: View {
     private func ensureProfile() {
         guard profiles.isEmpty else {
             if let p = profiles.first {
+                print("[Lang] profile.language=\(p.language.code) LanguageBundle=\(LanguageBundle.languageCode)")
                 languageManager.apply(p.language)
+                print("[Lang] after apply: LanguageBundle=\(LanguageBundle.languageCode)")
                 // Migration: if metrics were incorrectly hidden, restore them.
                 // showHR/showDistance/showCalories/showSteps default to true in UserProfile.
                 // Onboarding used to set them false when health status was pending — fix that here.

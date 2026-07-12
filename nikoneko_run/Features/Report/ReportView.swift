@@ -410,7 +410,7 @@ struct LogRow: View {
                 .fill(dotColor)
                 .frame(width: 6, height: 6)
 
-            Text(session.startDate, format: .dateTime.month(.abbreviated).day().locale(Locale(identifier: LanguageBundle.languageCode)))
+            Text(formattedDate)
                 .font(.system(size: 16))
                 .foregroundColor(theme.text)
 
@@ -438,6 +438,13 @@ struct LogRow: View {
         }
         .padding(.vertical, 10)
         .contentShape(Rectangle())
+    }
+
+    private var formattedDate: String {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: LanguageBundle.languageCode)
+        f.setLocalizedDateFormatFromTemplate("MMMMd")
+        return f.string(from: session.startDate)
     }
 
     private var timeRange: String {
