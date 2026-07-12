@@ -11,6 +11,7 @@ struct NikoNekoLiveActivityAttributes: ActivityAttributes {
         var isCountdown: Bool
         var hr: Int
         var distance: Double
+        var steps: Int
         var startDate: Date      // wall-clock start — used for live timer
         var targetDuration: TimeInterval  // 0 for stopwatch
     }

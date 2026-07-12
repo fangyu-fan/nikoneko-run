@@ -3,6 +3,7 @@ import SwiftUI
 struct SessionDetailView: View {
     let session: RunSession
     @Environment(ThemeManager.self) private var themeManager
+    @Environment(LanguageManager.self) private var lm
     private var theme: ThemeTokens { themeManager.current }
 
     var body: some View {
@@ -11,7 +12,7 @@ struct SessionDetailView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("\(Int(session.duration / 60))")
                         .font(.system(size: 46, weight: .ultraLight)).foregroundColor(theme.text)
-                    Text("min · \(session.startDate, format: .dateTime.month().day().year())")
+                    Text("min · \(session.startDate, format: .dateTime.month().day().year().locale(Locale(identifier: lm.language.code)))")
                         .font(.system(size: 10)).foregroundColor(theme.textDim)
                 }
                 .padding(.horizontal, 16)

@@ -23,6 +23,13 @@ final class MetronomeService {
         setupInterruptionHandler()
     }
 
+    nonisolated private func configureAudioSession() {
+        try? AVAudioSession.sharedInstance().setCategory(
+            .playback,
+            options: [.mixWithOthers, .allowAirPlay, .allowBluetoothA2DP]
+        )
+    }
+
     private func setupInterruptionHandler() {
         // Single observer — extract all values before entering async context to avoid data races
         NotificationCenter.default.addObserver(
@@ -56,19 +63,8 @@ final class MetronomeService {
         engine.attach(player)
         engine.connect(player, to: engine.mainMixerNode, format: nil)
         engine.mainMixerNode.outputVolume = volume
-        // Do NOT touch AVAudioSession here — any setCategory call at init time
-        // interrupts background music even without setActive(true).
-        // Session is configured lazily in activateAudioSession(), called only
-        // when the user actually starts the metronome.
     }
 
-    private func activateAudioSession() {
-        try? AVAudioSession.sharedInstance().setCategory(
-            .playback,
-            options: [.mixWithOthers, .allowAirPlay, .allowBluetoothA2DP]
-        )
-        try? AVAudioSession.sharedInstance().setActive(true)
-    }
 
     private func loadBuffers() {
         // Use a fixed 44100 Hz fallback since engine isn't running yet at init.
@@ -150,7 +146,7 @@ final class MetronomeService {
     // MARK: - Playback
 
     func start() {
-        activateAudioSession()
+        configureAudioSession()
         isPlaying = true
         beatCount = 0
         if !engine.isRunning {
@@ -159,7 +155,6 @@ final class MetronomeService {
                 reloadBuffersFromEngine()
             } catch {
                 isPlaying = false
-                try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
                 return
             }
         }
@@ -176,7 +171,7 @@ final class MetronomeService {
         guard let buf, buf.frameLength > 0 else { return }
 
         player.scheduleBuffer(buf, at: beatTime, options: []) { [weak self] in
-            Task { @MainActor [weak self] in
+            DispatchQueue.main.async { [weak self] in
                 guard let self, self.isPlaying else { return }
                 self.beatCount += 1
                 self.scheduleBeat()
@@ -197,20 +192,16 @@ final class MetronomeService {
         beatCount = 0
         player.stop()
         nextBeatTime = nil
-        // Yield audio focus so other apps (Spotify, Apple Music, etc.) can resume.
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
 
     func pause() {
         isPlaying = false
-        player.stop()  // clears the buffer queue to prevent overlap on resume
+        player.stop()
         nextBeatTime = nil
-        // Yield audio focus while paused.
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
 
     func resume() {
-        activateAudioSession()
+        configureAudioSession()
         isPlaying = true
         if !engine.isRunning {
             try? engine.start()

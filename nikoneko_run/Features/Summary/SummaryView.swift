@@ -22,7 +22,9 @@ struct SummaryView: View {
     }
 
     private var dateLabel: String {
-        let f = DateFormatter(); f.dateFormat = "MMMM d, yyyy"
+        let f = DateFormatter()
+        f.dateFormat = "MMMM d, yyyy"
+        f.locale = Locale(identifier: lm.language.code)
         return f.string(from: session.startDate)
     }
 

@@ -63,6 +63,13 @@ struct OnboardingView: View {
             }
             selectedLanguage = profile?.language ?? .english
         }
+        .onChange(of: page) { _, newPage in
+            guard newPage == 3 else { return }
+            Task {
+                await requestHealthPermission()
+                await requestMotionPermission()
+            }
+        }
     }
 
     // MARK: - Progress Bar

@@ -93,16 +93,6 @@ struct DataSyncView: View {
                         }
                         .buttonStyle(.plain)
                     }
-                    Rectangle().fill(theme.accentDim).frame(height: 0.5)
-                    toggleRow(icon: "icloud", label: lm.L("dataSync.row.iCloud"),
-                              binding: Binding(
-                                get: { profile?.iCloudEnabled ?? true },
-                                set: { v in
-                                    profile?.iCloudEnabled = v
-                                    UserDefaults.standard.set(v, forKey: "iCloudEnabled")
-                                    try? ctx.save()
-                                }
-                              ))
                 }
                 .background(theme.surface)
                 .cornerRadius(14)

@@ -12,8 +12,10 @@ struct ReportView: View {
     @State private var showStreakToast = false
     @State private var isNewRecord = false
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var ctx
 
     private static let bestStreakKey = "nikoneko.bestStreak"
+    private static let streakShownDateKey = "nikoneko.streakShownDate"
 
     private var theme: ThemeTokens { themeManager.current }
 
@@ -22,6 +24,7 @@ struct ReportView: View {
             VStack(spacing: 10) {
                 periodTabs
                     .padding(.bottom, -8)
+                    .padding(.top, 8)
                 dateNavRow
 
                 // DURATION
@@ -90,6 +93,7 @@ struct ReportView: View {
             SessionDetailSheet(session: session)
                 .presentationDetents([.fraction(0.55)])
                 .presentationDragIndicator(.hidden)
+                .presentationBackground(theme.bg)
         }
         .overlay(alignment: .top) {
             if showStreakToast {
@@ -102,7 +106,13 @@ struct ReportView: View {
             vm.isZh = lm.language == .traditionalChinese
             vm.loadSessions(sessions)
             let streak = vm.currentStreak
-            if streak > 0 {
+            let todayStr = Calendar.current.startOfDay(for: Date()).description
+            let lastShown = UserDefaults.standard.string(forKey: Self.streakShownDateKey)
+            let todayHasRuns = sessions.contains {
+                Calendar.current.isDateInToday($0.startDate)
+            }
+            if streak > 0 && todayHasRuns && lastShown != todayStr {
+                UserDefaults.standard.set(todayStr, forKey: Self.streakShownDateKey)
                 let best = UserDefaults.standard.integer(forKey: Self.bestStreakKey)
                 if streak > best {
                     UserDefaults.standard.set(streak, forKey: Self.bestStreakKey)
@@ -118,7 +128,7 @@ struct ReportView: View {
                 }
             }
         }
-        .onChange(of: sessions.count) { _, _ in vm.loadSessions(sessions) }
+        .onChange(of: sessions) { _, _ in vm.loadSessions(sessions) }
         .onChange(of: lm.version) { _, _ in vm.isZh = lm.language == .traditionalChinese }
     }
 
@@ -233,6 +243,7 @@ struct ReportView: View {
     private var logList: some View {
         VStack(spacing: 0) {
             sectionHeader(lm.L("report.section.sessions"))
+                .padding(.horizontal, 18)
             if vm.logItems.isEmpty {
                 Text(lm.L("report.noData"))
                     .font(.system(size: 14))
@@ -240,18 +251,30 @@ struct ReportView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.vertical, 32)
             } else {
-                LazyVStack(spacing: 0) {
+                List {
                     ForEach(vm.logItems) { session in
                         Button { selectedSession = session } label: {
                             LogRow(session: session, vm: vm)
                         }
                         .buttonStyle(.plain)
-                        .contentShape(Rectangle())
+                        .listRowBackground(theme.bg)
+                        .listRowInsets(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 18))
+                        .listRowSeparatorTint(theme.accentDim)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                ctx.delete(session)
+                                try? ctx.save()
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
                     }
                 }
+                .listStyle(.plain)
+                .scrollDisabled(true)
+                .frame(height: CGFloat(vm.logItems.count) * 53)
             }
         }
-        .padding(.horizontal, 18)
     }
 
     private var streakToast: some View {
@@ -382,46 +405,39 @@ struct LogRow: View {
     private var theme: ThemeTokens { themeManager.current }
 
     var body: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 8) {
-                RoundedRectangle(cornerRadius: 1.5)
-                    .fill(dotColor)
-                    .frame(width: 6, height: 6)
+        HStack(spacing: 8) {
+            RoundedRectangle(cornerRadius: 1.5)
+                .fill(dotColor)
+                .frame(width: 6, height: 6)
 
-                // 日期 · 時間 · 時長 橫排
-                Text(session.startDate, format: .dateTime.month(.abbreviated).day())
-                    .font(.system(size: 16))
-                    .foregroundColor(theme.text)
+            Text(session.startDate, format: .dateTime.month(.abbreviated).day().locale(Locale(identifier: LanguageBundle.languageCode)))
+                .font(.system(size: 16))
+                .foregroundColor(theme.text)
 
-                Circle()
-                    .fill(theme.textDim)
-                    .frame(width: 3, height: 3)
+            Circle()
+                .fill(theme.textDim)
+                .frame(width: 3, height: 3)
 
-                Text(timeRange)
-                    .font(.system(size: 16))
-                    .foregroundColor(theme.text)
+            Text(timeRange)
+                .font(.system(size: 16))
+                .foregroundColor(theme.text)
 
-                Circle()
-                    .fill(theme.textDim)
-                    .frame(width: 3, height: 3)
+            Circle()
+                .fill(theme.textDim)
+                .frame(width: 3, height: 3)
 
-                Text("\(Int(session.duration / 60)) \(lm.L("session.unit.min"))")
-                    .font(.system(size: 16))
-                    .foregroundColor(theme.text)
+            Text("\(Int(session.duration / 60)) \(lm.L("session.unit.min"))")
+                .font(.system(size: 16))
+                .foregroundColor(theme.text)
 
-                Spacer()
+            Spacer()
 
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 13))
-                    .foregroundColor(theme.textMid)
-            }
-            .padding(.vertical, 10)
-            .contentShape(Rectangle())
-
-            Rectangle()
-                .fill(theme.accentDim)
-                .frame(height: 0.5)
+            Image(systemName: "chevron.right")
+                .font(.system(size: 13))
+                .foregroundColor(theme.textMid)
         }
+        .padding(.vertical, 10)
+        .contentShape(Rectangle())
     }
 
     private var timeRange: String {
@@ -679,7 +695,9 @@ struct SessionDetailSheet: View {
         return "\(f.string(from: session.startDate)) – \(f.string(from: end))"
     }
     private var dateLabel: String {
-        let f = DateFormatter(); f.dateFormat = "MMMM d, yyyy"
+        let f = DateFormatter()
+        f.dateFormat = "MMMM d, yyyy"
+        f.locale = Locale(identifier: lm.language.code)
         return f.string(from: session.startDate)
     }
 
@@ -698,7 +716,7 @@ struct SessionDetailSheet: View {
                 }
             }
             .padding(.horizontal, 20)
-            .padding(.top, 24)
+            .padding(.top, 40)
             .padding(.bottom, 12)
 
             HStack(alignment: .firstTextBaseline, spacing: 0) {
@@ -730,10 +748,9 @@ struct SessionDetailSheet: View {
                 statCard("metronome", session.avgCadence > 0 ? "\(session.avgCadence)" : "—", session.avgCadence > 0 ? lm.L("session.unit.spm") : "", lm.L("session.stat.cadence"))
             }
             .padding(.horizontal, 20)
-
-            Spacer()
+            .padding(.bottom, 32)
         }
-        .background(theme.bg.ignoresSafeArea())
+        .background(theme.bg)
     }
 
     private var stepsStr: String {

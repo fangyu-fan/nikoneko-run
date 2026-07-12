@@ -27,7 +27,6 @@ final class UserProfile {
     var notificationHour: Int = 7
     var notificationMinute: Int = 0
     var healthKitEnabled: Bool = false
-    var iCloudEnabled: Bool = true
 
     // Computed enum accessors
     var soundType: SoundType {

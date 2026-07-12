@@ -10,8 +10,8 @@ final class TimerViewModel {
     var elapsed: TimeInterval = 0
     var targetDuration: TimeInterval = 15 * 60
     var selectedMinutes: Int = 15
-    var showSummary: Bool = false
-    var onSessionSaved: ((RunSession) -> Void)?
+    var completedSession: RunSession? = nil
+    var countdownFinished: Bool = false
 
     private var timer: AnyCancellable?
     private var startDate: Date?
@@ -83,13 +83,18 @@ final class TimerViewModel {
     }
 
     func forceStop() {
-        state = .idle
+        print("[VM] forceStop — elapsed=\(elapsed) countdownFinished will become true")
         timer?.cancel()
+        countdownFinished = true
+        state = .idle
+        print("[VM] forceStop done — state=\(state) countdownFinished=\(countdownFinished)")
     }
 
     func stopAndSave(bpm: Int, characterId: String, themeId: String,
                      distance: Double, calories: Double, steps: Int,
                      avgHR: Int, maxHR: Int, avgCadence: Int) {
+        print("[VM] stopAndSave — elapsed=\(elapsed)")
+        countdownFinished = false
         timer?.cancel()
         let session = RunSession(
             startDate: startDate ?? Date(),
@@ -105,10 +110,10 @@ final class TimerViewModel {
             themeId: themeId,
             mode: isCountdown ? .countdown : .stopwatch
         )
-        onSessionSaved?(session)
         Task { await HealthKitService.shared.writeSession(session) }
+        completedSession = session
         state = .idle
-        showSummary = true
+        print("[VM] stopAndSave done — completedSession set")
     }
 
     private func startTick() {

@@ -37,15 +37,17 @@ final class HeartRateService {
             anchor: queryAnchor,
             limit: HKObjectQueryNoLimit
         ) { [weak self] _, newSamples, _, newAnchor, _ in
-            Task { @MainActor [weak self] in
+            let samples = newSamples as? [HKQuantitySample]
+            DispatchQueue.main.async { [weak self] in
                 self?.queryAnchor = newAnchor
-                self?.processHKSamples(newSamples as? [HKQuantitySample])
+                self?.processHKSamples(samples)
             }
         }
         query.updateHandler = { [weak self] _, newSamples, _, newAnchor, _ in
-            Task { @MainActor [weak self] in
+            let samples = newSamples as? [HKQuantitySample]
+            DispatchQueue.main.async { [weak self] in
                 self?.queryAnchor = newAnchor
-                self?.processHKSamples(newSamples as? [HKQuantitySample])
+                self?.processHKSamples(samples)
             }
         }
         anchoredQuery = query

@@ -1,6 +1,5 @@
 import WidgetKit
 import SwiftUI
-import ActivityKit
 
 @main
 struct NikoNekoWidgetBundle: WidgetBundle {
@@ -10,6 +9,5 @@ struct NikoNekoWidgetBundle: WidgetBundle {
         BarChartWidget()
         CalendarWidget()
         AllStatsWidget()
-        NikoNekoLiveActivityView()
     }
 }

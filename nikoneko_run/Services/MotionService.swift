@@ -20,17 +20,20 @@ final class MotionService {
         guard CMPedometer.isStepCountingAvailable() else { return }
         pedometer.startUpdates(from: startDate!) { [weak self] data, _ in
             guard let self, let data else { return }
-            Task { @MainActor in
-                self.steps = data.numberOfSteps.intValue
-                self.distance = data.distance?.doubleValue ?? 0
+            let steps = data.numberOfSteps.intValue
+            let distance = data.distance?.doubleValue ?? 0
+            let end = data.endDate
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.steps = steps
+                self.distance = distance
                 self.calories = Self.estimateCalories(
-                    steps: self.steps,
+                    steps: steps,
                     weightKg: self.weightKg,
                     heightCm: self.heightCm
                 )
-                let end = data.endDate
                 if let start = self.startDate, end.timeIntervalSince(start) > 0 {
-                    self.avgCadence = Int(Double(self.steps) / (end.timeIntervalSince(start) / 60))
+                    self.avgCadence = Int(Double(steps) / (end.timeIntervalSince(start) / 60))
                 }
             }
         }
@@ -38,6 +41,19 @@ final class MotionService {
 
     func stopTracking() {
         pedometer.stopUpdates()
+    }
+
+    static func requestAuthorization() async {
+        guard CMPedometer.isStepCountingAvailable() else { return }
+        let manager = CMMotionActivityManager()
+        _ = await withCheckedContinuation { (cont: CheckedContinuation<Bool, Never>) in
+            var resumed = false
+            manager.queryActivityStarting(from: Date(), to: Date(), to: .main) { _, _ in
+                guard !resumed else { return }
+                resumed = true
+                cont.resume(returning: true)
+            }
+        }
     }
 
     static func estimateCalories(steps: Int, weightKg: Double, heightCm: Double) -> Double {

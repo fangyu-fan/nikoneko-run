@@ -13,7 +13,6 @@ struct TimerView: View {
     @State private var metronome = MetronomeService()
     @State private var hrService = HeartRateService()
     @State private var motionService = MotionService()
-    @State private var liveActivity = LiveActivityService()
     @State private var longPressProgress: CGFloat = 0
     @State private var isLongPressing: Bool = false
     @State private var isLongPressingPending: Bool = false
@@ -22,7 +21,6 @@ struct TimerView: View {
     @State private var showBPMPanel = false
     @State private var showCharacterPicker = false
     @State private var savedSession: RunSession? = nil
-    @State private var showTooShortAlert = false
     @State private var bpm: Int = 180
     @State private var volume: Double = 0.6
     @Environment(\.modelContext) private var ctx
@@ -229,23 +227,22 @@ struct TimerView: View {
                     .allowsHitTesting(savedSession == nil)
             }
         }
+        .onChange(of: vm.completedSession) { _, session in
+            guard let session else { return }
+            print("[TV] completedSession changed — duration=\(session.duration)")
+            ctx.insert(session)
+            try? ctx.save()
+            let allSessions = (try? ctx.fetch(FetchDescriptor<RunSession>())) ?? []
+            AppGroupDefaults.writeSessionSummaries(
+                from: allSessions,
+                dailyGoalMinutes: profile?.dailyGoalMinutes ?? 20
+            )
+            WidgetCenter.shared.reloadAllTimelines()
+            print("[TV] setting savedSession — will show popup")
+            withAnimation(.easeOut(duration: 0.25)) { savedSession = session }
+            vm.completedSession = nil
+        }
         .onAppear {
-            vm.onSessionSaved = { session in
-                guard session.duration >= 60 else {
-                    showTooShortAlert = true
-                    return
-                }
-                ctx.insert(session)
-                try? ctx.save()
-                // Sync latest sessions to App Group so widgets read fresh data
-                let allSessions = (try? ctx.fetch(FetchDescriptor<RunSession>())) ?? []
-                AppGroupDefaults.writeSessionSummaries(
-                    from: allSessions,
-                    dailyGoalMinutes: profile?.dailyGoalMinutes ?? 20
-                )
-                WidgetCenter.shared.reloadAllTimelines()
-                withAnimation(.easeOut(duration: 0.25)) { savedSession = session }
-            }
             bpm = profile?.defaultBPM ?? 180
             volume = UserDefaults.standard.object(forKey: "defaultVolume") as? Double ?? 0.6
             metronome.volume = Float(volume)
@@ -261,9 +258,13 @@ struct TimerView: View {
             volume = 0.6
             metronome.soundType = profile?.soundType ?? .tap
             metronome.volume = Float(volume)
-            Task { await HealthKitService.shared.requestPermissions() }
+            Task {
+                await HealthKitService.shared.requestPermissions()
+                await MotionService.requestAuthorization()
+            }
         }
         .onChange(of: vm.state) { oldState, newState in
+            print("[TV] state changed \(oldState) → \(newState)")
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
             switch newState {
             case .running:
@@ -275,29 +276,30 @@ struct TimerView: View {
                     motionService.heightCm = profile?.heightCm ?? 170
                     hrService.startMonitoring()
                     motionService.startTracking()
-                    let characterId = profile?.activeCharacterId ?? "loader_cat"
-                    let themeId = profile?.activeThemeId ?? "moss"
-                    let target = vm.isCountdown ? vm.targetDuration : 0
-                    liveActivity.start(bpm: bpm, target: target, characterId: characterId, themeId: themeId)
                 }
             case .paused:
                 metronome.pause()
-                liveActivity.update(elapsed: vm.elapsed, remaining: vm.remaining)
             case .idle:
                 metronome.stop()
-                liveActivity.end()
                 hrService.stopMonitoring()
                 motionService.stopTracking()
                 withAnimation(.easeOut(duration: 0.2)) { longPressProgress = 0 }
             }
         }
-        .onChange(of: vm.elapsed) { _, elapsed in
-            guard vm.state == .running else { return }
-            liveActivity.update(
-                elapsed: elapsed,
-                remaining: vm.remaining,
-                hr: hrService.currentHR,
-                distance: motionService.distance
+        .onChange(of: vm.countdownFinished) { _, finished in
+            print("[TV] countdownFinished changed → \(finished)")
+            guard finished else { return }
+            print("[TV] calling stopAndSave from countdownFinished handler")
+            vm.stopAndSave(
+                bpm: bpm,
+                characterId: profile?.activeCharacterId ?? "loader_cat",
+                themeId: themeManager.current.id,
+                distance: motionService.distance,
+                calories: motionService.calories,
+                steps: motionService.steps,
+                avgHR: hrService.avgHR,
+                maxHR: hrService.maxHR,
+                avgCadence: motionService.avgCadence
             )
         }
         .onChange(of: isLongPressing) { _, pressing in
@@ -338,9 +340,6 @@ struct TimerView: View {
             ))
             .presentationBackground(theme.bg)
             .presentationDetents([.medium])
-        }
-        .alert(lm.L("timer.alert.tooShort"), isPresented: $showTooShortAlert) {
-            Button("OK", role: .cancel) {}
         }
     }
 
@@ -557,6 +556,7 @@ struct TimerView: View {
     // MARK: - Stop helper
 
     private func doStop() {
+        print("[TV] doStop called")
         isLongPressing = false
         isLongPressingPending = false
         didCompleteStop = true
@@ -622,8 +622,7 @@ struct TimerView: View {
                         isLongPressingPending = false
                         if didCompleteStop {
                             didCompleteStop = false
-                            // If state returned to idle (stop completed), fall through to start
-                            guard vm.state == .idle else { return }
+                            return
                         }
                         if isLongPressing {
                             // Hand lifted before arc finished — cancel
@@ -635,6 +634,7 @@ struct TimerView: View {
                             // Quick tap
                             switch vm.state {
                             case .idle:
+                                guard savedSession == nil, !didCompleteStop else { return }
                                 vm.targetDuration = timeDisplayFormat == .hhMM
                                     ? Double(selectedHours * 3600 + vm.selectedMinutes * 60)
                                     : Double(vm.selectedMinutes) * 60

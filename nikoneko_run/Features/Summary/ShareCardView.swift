@@ -16,7 +16,7 @@ struct ShareCardView: View {
                 .foregroundColor(theme.text)
                 .monospacedDigit()
 
-            Text("min · \(session.startDate, format: .dateTime.month().day())")
+            Text("min · \(session.startDate, format: .dateTime.month().day().locale(Locale(identifier: LanguageBundle.languageCode)))")
                 .font(.system(size: 10))
                 .foregroundColor(theme.textDim)
         }
