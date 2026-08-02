@@ -329,25 +329,6 @@ struct DefaultsView: View {
         .frame(minHeight: 50)
     }
 
-    private var lockVolumeRow: some View {
-        HStack(spacing: 10) {
-            Image(systemName: "lock.open")
-                .font(.system(size: 16))
-                .foregroundColor(theme.text)
-                .frame(width: 20)
-            Text(lm.L("defaults.row.lockVolume"))
-                .font(.system(size: 16))
-                .foregroundColor(theme.text)
-            Spacer()
-            Toggle("", isOn: bindBool(\.volumeLockEnabled))
-                .tint(theme.accent)
-                .labelsHidden()
-        }
-        .padding(.vertical, 13)
-        .padding(.horizontal, 16)
-        .frame(minHeight: 50)
-    }
-
     private var soundPicker: some View {
         let options: [(SoundType, String)] = [
             (.woodLo, lm.L("defaults.sound.woodLo")),
@@ -372,25 +353,6 @@ struct DefaultsView: View {
         .padding(3)
         .background(theme.surface)
         .cornerRadius(10)
-    }
-
-    private var hapticRow: some View {
-        HStack(spacing: 10) {
-            Image(systemName: "waveform")
-                .font(.system(size: 16))
-                .foregroundColor(theme.text)
-                .frame(width: 20)
-            Text(lm.L("defaults.row.haptic"))
-                .font(.system(size: 16))
-                .foregroundColor(theme.text)
-            Spacer()
-            Toggle("", isOn: bindBool(\.hapticEnabled))
-                .tint(theme.accent)
-                .labelsHidden()
-        }
-        .padding(.vertical, 13)
-        .padding(.horizontal, 16)
-        .frame(minHeight: 50)
     }
 
     private var volumeRow: some View {

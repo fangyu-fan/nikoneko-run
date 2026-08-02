@@ -3,13 +3,13 @@ import SwiftUI
 
 struct TodayDistanceEntry: TimelineEntry {
     let date: Date
-    let hasData: Bool
+    let distanceKm: Double
     let theme: ThemeTokens
 }
 
 struct TodayDistanceProvider: TimelineProvider {
     func placeholder(in context: Context) -> TodayDistanceEntry {
-        TodayDistanceEntry(date: Date(), hasData: false, theme: ThemeLibrary.obsidian)
+        TodayDistanceEntry(date: Date(), distanceKm: 2.8, theme: ThemeLibrary.obsidian)
     }
     func getSnapshot(in context: Context, completion: @escaping (TodayDistanceEntry) -> Void) {
         completion(entry())
@@ -19,10 +19,12 @@ struct TodayDistanceProvider: TimelineProvider {
         completion(Timeline(entries: [entry()], policy: .after(next)))
     }
     private func entry() -> TodayDistanceEntry {
-        let theme = WidgetTheme.load(for: "widget.todayDistance.themeId")
-        let stats = WidgetTheme.todayStats(from: AppGroupDefaults.loadSummaries())
-        // DaySessionSummary has no distance field; show "—" when no step data available
-        return TodayDistanceEntry(date: Date(), hasData: stats.hasSteps, theme: theme)
+        let theme = WidgetSharedData.loadTheme()
+        let summaries = AppGroupDefaults.loadSummaries()
+        let todayDistance = summaries
+            .filter { Calendar.current.isDateInToday($0.date) }
+            .reduce(0.0) { $0 + $1.distance }
+        return TodayDistanceEntry(date: Date(), distanceKm: todayDistance / 1000.0, theme: theme)
     }
 }
 
@@ -33,7 +35,7 @@ struct TodayDistanceWidgetView: View {
             Text("TODAY")
                 .font(.system(size: 8)).tracking(1)
                 .foregroundColor(entry.theme.textDim)
-            Text(entry.hasData ? "—" : "—")
+            Text(entry.distanceKm > 0 ? String(format: "%.1f", entry.distanceKm) : "—")
                 .font(.system(size: 44, weight: .ultraLight))
                 .foregroundColor(entry.theme.accent)
             Text("km today")
@@ -42,7 +44,6 @@ struct TodayDistanceWidgetView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .padding(14)
-        .background(entry.theme.bg)
         .containerBackground(entry.theme.bg, for: .widget)
     }
 }

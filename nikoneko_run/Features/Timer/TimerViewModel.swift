@@ -39,25 +39,25 @@ final class TimerViewModel {
             forName: UIApplication.didEnterBackgroundNotification,
             object: nil, queue: .main
         ) { [weak self] _ in
-            guard let self, self.state == .running else { return }
-            // Record when we went to background so we can compensate on return
-            self.backgroundedAt = Date()
+            MainActor.assumeIsolated {
+                guard let self, self.state == .running else { return }
+                self.backgroundedAt = Date()
+            }
         }
 
         fgObserver = NotificationCenter.default.addObserver(
             forName: UIApplication.willEnterForegroundNotification,
             object: nil, queue: .main
         ) { [weak self] _ in
-            guard let self, self.state == .running, let bg = self.backgroundedAt else { return }
-            // Add the time we spent in background to elapsed
-            let backgroundDuration = Date().timeIntervalSince(bg)
-            self.elapsed += backgroundDuration
-            self.backgroundedAt = nil
-            // Restart tick from current position
-            self.startTick()
-            // Check if countdown finished while in background
-            if self.isCountdown && self.elapsed >= self.targetDuration {
-                self.forceStop()
+            MainActor.assumeIsolated {
+                guard let self, self.state == .running, let bg = self.backgroundedAt else { return }
+                let backgroundDuration = Date().timeIntervalSince(bg)
+                self.elapsed += backgroundDuration
+                self.backgroundedAt = nil
+                self.startTick()
+                if self.isCountdown && self.elapsed >= self.targetDuration {
+                    self.forceStop()
+                }
             }
         }
     }
@@ -123,10 +123,12 @@ final class TimerViewModel {
         timer = Timer.publish(every: 0.5, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] now in
-                guard let self, self.state == .running, self.backgroundedAt == nil else { return }
-                self.elapsed = capturedElapsed + now.timeIntervalSince(capturedStart)
-                if self.isCountdown && self.elapsed >= self.targetDuration {
-                    self.forceStop()
+                MainActor.assumeIsolated {
+                    guard let self, self.state == .running, self.backgroundedAt == nil else { return }
+                    self.elapsed = capturedElapsed + now.timeIntervalSince(capturedStart)
+                    if self.isCountdown && self.elapsed >= self.targetDuration {
+                        self.forceStop()
+                    }
                 }
             }
     }

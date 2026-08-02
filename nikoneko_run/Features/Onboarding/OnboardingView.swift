@@ -248,7 +248,7 @@ struct OnboardingView: View {
                         selectTheme(at: target)
                         // Normalise scrollOffset back to 0 after a tick so it doesn't accumulate
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                            scrollOffset = 0
+                            MainActor.assumeIsolated { scrollOffset = 0 }
                         }
                     }
             )
@@ -351,7 +351,7 @@ struct OnboardingView: View {
         previewMetronome.start()
         let delay = MetronomeService.beatInterval(bpm: bpm) + 0.05
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            self.previewMetronome.stop()
+            MainActor.assumeIsolated { self.previewMetronome.stop() }
         }
     }
 
@@ -569,6 +569,8 @@ struct OnboardingView: View {
                                                 notifStatus = .granted
                                                 profile?.notificationsEnabled = true
                                                 try? ctx.save()
+                                                let c = Calendar.current.dateComponents([.hour, .minute], from: notifTime)
+                                                NotificationService.scheduleDaily(hour: c.hour ?? 7, minute: c.minute ?? 0)
                                             } else {
                                                 notifEnabled = false
                                                 notifStatus = .denied
@@ -580,6 +582,7 @@ struct OnboardingView: View {
                                     notifStatus = .pending
                                     profile?.notificationsEnabled = false
                                     try? ctx.save()
+                                    NotificationService.cancel()
                                 }
                             }
                         ))
@@ -813,16 +816,18 @@ struct OnboardingView: View {
         await withCheckedContinuation { cont in
             let manager = CMMotionActivityManager()
             manager.queryActivityStarting(from: Date(), to: Date(), to: .main) { _, error in
-                let nsError = error as NSError?
-                if nsError?.code == Int(CMErrorMotionActivityNotAuthorized.rawValue) {
-                    self.motionStatus = .denied
-                    self.motionEnabled = false
-                } else {
-                    self.motionStatus = .granted
-                    self.motionEnabled = true
+                MainActor.assumeIsolated {
+                    let nsError = error as NSError?
+                    if nsError?.code == Int(CMErrorMotionActivityNotAuthorized.rawValue) {
+                        self.motionStatus = .denied
+                        self.motionEnabled = false
+                    } else {
+                        self.motionStatus = .granted
+                        self.motionEnabled = true
+                    }
+                    manager.stopActivityUpdates()
+                    cont.resume()
                 }
-                manager.stopActivityUpdates()
-                cont.resume()
             }
         }
         isRequesting = false

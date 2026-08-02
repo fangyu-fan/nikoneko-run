@@ -173,17 +173,19 @@ struct HeatmapWidgetView: View {
     // Returns a dict keyed by "YYYY-MM-DD" with the metric value for that day.
     private func buildDailyValues() -> [String: Double] {
         let cal = Calendar.current
-        var map: [String: (duration: Double, steps: Int, count: Int)] = [:]
+        var map: [String: (duration: Double, steps: Int, count: Int, calories: Double, distance: Double)] = [:]
 
         for summary in entry.summaries {
             let dc = cal.dateComponents([.year, .month, .day], from: summary.date)
             guard let y = dc.year, let m = dc.month, let d = dc.day else { continue }
             let key = String(format: "%04d-%02d-%02d", y, m, d)
-            let existing = map[key] ?? (duration: 0, steps: 0, count: 0)
+            let existing = map[key] ?? (duration: 0, steps: 0, count: 0, calories: 0, distance: 0)
             map[key] = (
                 duration: existing.duration + summary.duration,
                 steps: existing.steps + summary.steps,
-                count: existing.count + 1
+                count: existing.count + 1,
+                calories: existing.calories + summary.calories,
+                distance: existing.distance + summary.distance
             )
         }
 
@@ -194,15 +196,13 @@ struct HeatmapWidgetView: View {
             case .duration:
                 value = agg.duration / 60.0   // minutes
             case .calories:
-                let durationMin = agg.duration / 60.0
-                value = durationMin * 7.0
+                value = agg.calories
             case .steps:
                 value = Double(agg.steps)
             case .runs:
                 value = Double(agg.count)
             case .distance:
-                // DaySessionSummary has no distance field; estimate from steps
-                value = Double(agg.steps) / 1500.0
+                value = agg.distance / 1000.0
             case .streak:
                 // Streak is not a per-day metric; treat as completionRatio present/absent
                 value = agg.count > 0 ? 1.0 : 0.0
@@ -221,11 +221,6 @@ struct HeatmapWidgetView: View {
         else                    { return entry.theme.bar[4] }
     }
 
-    // ISO weekday: Mon=1, Sun=7
-    private func isoWeekday(of date: Date) -> Int {
-        let wd = Calendar.current.component(.weekday, from: date) // 1=Sun..7=Sat
-        return wd == 1 ? 7 : wd - 1
-    }
 }
 
 // MARK: - HeatmapWidget

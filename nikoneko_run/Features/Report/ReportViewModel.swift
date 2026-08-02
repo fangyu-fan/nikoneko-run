@@ -2,38 +2,54 @@ import Foundation
 import SwiftData
 
 @Observable
+@MainActor
 final class ReportViewModel {
     enum Period: String, CaseIterable { case day, week, month, year }
     enum Metric: String, CaseIterable { case duration, distance, calories, steps, hrAvg, hrMax, count }
 
-    var period: Period = .day
+    var period: Period = .day { didSet { invalidateCache() } }
     var selectedMetric: Metric = .duration
-    var currentOffset: Int = 0
-    var isZh: Bool = false  // injected by View, drives weekday label language
+    var currentOffset: Int = 0 { didSet { invalidateCache() } }
+    var isZh: Bool = false
 
-    var yearStartWeekday: Int {
-        let cal = Calendar(identifier: .gregorian)
-        let range = dateRange
-        let wd = cal.component(.weekday, from: range.start)  // 1=Sun..7=Sat
-        return AppGroupDefaults.weekStartsOnMonday
-            ? (wd + 5) % 7   // Mon=0..Sun=6
-            : wd - 1          // Sun=0..Sat=6
-    }
-
-    var sessions: [RunSession] = []
+    var sessions: [RunSession] = [] { didSet { invalidateCache() } }
 
     func loadSessions(_ sessions: [RunSession]) {
         self.sessions = sessions
     }
 
+    // MARK: - Cached date range + filtered sessions
+
+    private var _cachedRange: (start: Date, end: Date)?
+    private var _cachedPeriodSessions: [RunSession]?
+
+    private func invalidateCache() {
+        _cachedRange = nil
+        _cachedPeriodSessions = nil
+    }
+
     var dateRange: (start: Date, end: Date) {
+        if let cached = _cachedRange { return cached }
+        let result = computeDateRange()
+        _cachedRange = result
+        return result
+    }
+
+    private var periodSessions: [RunSession] {
+        if let cached = _cachedPeriodSessions { return cached }
+        let range = dateRange
+        let result = sessions.filter { $0.startDate >= range.start && $0.startDate < range.end }
+        _cachedPeriodSessions = result
+        return result
+    }
+
+    private func computeDateRange() -> (start: Date, end: Date) {
         let cal = Calendar.current
         let now = Date()
         let today = cal.startOfDay(for: now)
         switch period {
         case .day:
-            let base = cal.startOfDay(for: now)
-            let start = cal.date(byAdding: .day, value: currentOffset, to: base) ?? today
+            let start = cal.date(byAdding: .day, value: currentOffset, to: today) ?? today
             let end = cal.date(byAdding: .day, value: 1, to: start) ?? start
             return (start, end)
         case .week:
@@ -55,40 +71,50 @@ final class ReportViewModel {
         }
     }
 
-    var heroDuration: TimeInterval {
+    var yearStartWeekday: Int {
+        let cal = Calendar(identifier: .gregorian)
         let range = dateRange
-        return sessions
-            .filter { $0.startDate >= range.start && $0.startDate < range.end }
-            .reduce(0) { $0 + $1.duration }
+        let wd = cal.component(.weekday, from: range.start)
+        return AppGroupDefaults.weekStartsOnMonday
+            ? (wd + 5) % 7
+            : wd - 1
+    }
+
+    var displayYear: Int {
+        Calendar(identifier: .gregorian).component(.year, from: dateRange.start)
+    }
+
+    // MARK: - Derived data (uses cached periodSessions)
+
+    var heroDuration: TimeInterval {
+        periodSessions.reduce(0) { $0 + $1.duration }
     }
 
     var periodSessionCount: Int {
-        let range = dateRange
-        return sessions.filter { $0.startDate >= range.start && $0.startDate < range.end }.count
+        periodSessions.count
     }
 
     var currentStreak: Int {
         let cal = Calendar.current
+        var daySet = Set<Int>()
+        for s in sessions {
+            daySet.insert(cal.ordinality(of: .day, in: .era, for: s.startDate) ?? 0)
+        }
+        let todayOrd = cal.ordinality(of: .day, in: .era, for: Date()) ?? 0
         var streak = 0
-        var checkDate = cal.startOfDay(for: Date())
-        for _ in 0..<365 {
-            let hasSessions = sessions.contains { cal.isDate($0.startDate, inSameDayAs: checkDate) }
-            if hasSessions {
+        for i in 0..<365 {
+            let dayOrd = todayOrd - i
+            if daySet.contains(dayOrd) {
                 streak += 1
-            } else if checkDate < cal.startOfDay(for: Date()) {
+            } else if i > 0 {
                 break
             }
-            guard let prev = cal.date(byAdding: .day, value: -1, to: checkDate) else { break }
-            checkDate = prev
         }
         return streak
     }
 
     var logItems: [RunSession] {
-        let range = dateRange
-        return sessions
-            .filter { $0.startDate >= range.start && $0.startDate < range.end }
-            .sorted { $0.startDate > $1.startDate }
+        periodSessions.sorted { $0.startDate > $1.startDate }
     }
 
     // MARK: - UI Helpers
@@ -152,8 +178,7 @@ final class ReportViewModel {
     }
 
     func metricValueString(_ metric: Metric) -> String {
-        let range = dateRange
-        let inRange = sessions.filter { $0.startDate >= range.start && $0.startDate < range.end }
+        let inRange = periodSessions
         switch metric {
         case .duration:
             let mins = Int(inRange.reduce(0) { $0 + $1.duration } / 60)
@@ -199,59 +224,77 @@ final class ReportViewModel {
         }
     }
 
+    // MARK: - Chart bars (dictionary bucketing)
+
     var chartBars: [ChartBar] {
         let range = dateRange
         let cal = Calendar.current
         switch period {
         case .day:
+            var buckets = [Int: [RunSession]](minimumCapacity: 24)
+            for s in periodSessions {
+                let hour = cal.component(.hour, from: s.startDate)
+                buckets[hour, default: []].append(s)
+            }
             return (0..<24).map { hour in
-                let hourSessions = sessions.filter {
-                    cal.component(.hour, from: $0.startDate) == hour &&
-                    cal.isDate($0.startDate, inSameDayAs: range.start)
-                }
-                let v = metricValue(for: hourSessions)
+                let v = metricValue(for: buckets[hour] ?? [])
                 return ChartBar(label: "\(hour)", value: v,
                     isToday: hour == cal.component(.hour, from: Date()),
                     displayValue: formatBarValue(v))
             }
         case .week:
-            // Use fixed labels to avoid locale-dependent prefix bugs (e.g. "週一".prefix(1) == "週")
-            // Labels ordered from week start day
-            let enMon = ["M","T","W","T","F","S","S"]  // Mon-first
-            let enSun = ["S","M","T","W","T","F","S"]  // Sun-first
+            let enMon = ["M","T","W","T","F","S","S"]
+            let enSun = ["S","M","T","W","T","F","S"]
             let zhMon = ["週一","週二","週三","週四","週五","週六","週日"]
             let zhSun = ["週日","週一","週二","週三","週四","週五","週六"]
             let startsMonday = AppGroupDefaults.weekStartsOnMonday
             let labels = isZh ? (startsMonday ? zhMon : zhSun) : (startsMonday ? enMon : enSun)
+            var buckets = [Int: [RunSession]](minimumCapacity: 7)
+            for s in periodSessions {
+                let daysSinceStart = cal.dateComponents([.day], from: range.start, to: cal.startOfDay(for: s.startDate)).day ?? 0
+                if daysSinceStart >= 0 && daysSinceStart < 7 {
+                    buckets[daysSinceStart, default: []].append(s)
+                }
+            }
             return (0..<7).map { dayOffset in
                 let day = cal.date(byAdding: .day, value: dayOffset, to: range.start) ?? range.start
-                let daySessions = sessions.filter { cal.isDate($0.startDate, inSameDayAs: day) }
-                let label = labels[dayOffset]  // dayOffset 0 = week start day
-                let v2 = metricValue(for: daySessions)
-                return ChartBar(label: label, value: v2,
+                let v = metricValue(for: buckets[dayOffset] ?? [])
+                return ChartBar(label: labels[dayOffset], value: v,
                     isToday: cal.isDateInToday(day),
-                    displayValue: formatBarValue(v2))
+                    displayValue: formatBarValue(v))
             }
         case .month:
             let daysInMonth = cal.range(of: .day, in: .month, for: range.start)?.count ?? 30
+            var buckets = [Int: [RunSession]](minimumCapacity: daysInMonth)
+            for s in periodSessions {
+                let dayOffset = cal.dateComponents([.day], from: range.start, to: cal.startOfDay(for: s.startDate)).day ?? 0
+                if dayOffset >= 0 && dayOffset < daysInMonth {
+                    buckets[dayOffset, default: []].append(s)
+                }
+            }
             return (0..<daysInMonth).map { dayOffset in
                 let day = cal.date(byAdding: .day, value: dayOffset, to: range.start) ?? range.start
-                let daySessions = sessions.filter { cal.isDate($0.startDate, inSameDayAs: day) }
-                let v3 = metricValue(for: daySessions)
-                return ChartBar(label: "\(dayOffset + 1)", value: v3,
+                let v = metricValue(for: buckets[dayOffset] ?? [])
+                return ChartBar(label: "\(dayOffset + 1)", value: v,
                     isToday: cal.isDateInToday(day),
-                    displayValue: formatBarValue(v3))
+                    displayValue: formatBarValue(v))
             }
         case .year:
             let daysInYear = cal.range(of: .day, in: .year, for: range.start)?.count ?? 365
+            var buckets = [Int: [RunSession]](minimumCapacity: daysInYear)
+            for s in periodSessions {
+                let dayOffset = cal.dateComponents([.day], from: range.start, to: cal.startOfDay(for: s.startDate)).day ?? 0
+                if dayOffset >= 0 && dayOffset < daysInYear {
+                    buckets[dayOffset, default: []].append(s)
+                }
+            }
             return (0..<daysInYear).map { dayOffset in
                 let day = cal.date(byAdding: .day, value: dayOffset, to: range.start) ?? range.start
-                let daySessions = sessions.filter { cal.isDate($0.startDate, inSameDayAs: day) }
                 let dayNum = cal.component(.day, from: day)
-                let v4 = metricValue(for: daySessions)
-                return ChartBar(label: "\(dayNum)", value: v4,
+                let v = metricValue(for: buckets[dayOffset] ?? [])
+                return ChartBar(label: "\(dayNum)", value: v,
                     isToday: cal.isDateInToday(day),
-                    displayValue: formatBarValue(v4))
+                    displayValue: formatBarValue(v))
             }
         }
     }
@@ -293,5 +336,5 @@ struct ChartBar {
     let label: String
     let value: Double
     let isToday: Bool
-    var displayValue: String = ""  // formatted value + unit for tooltip
+    var displayValue: String = ""
 }

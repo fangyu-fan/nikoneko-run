@@ -1,11 +1,15 @@
 import Foundation
 
+extension UserDefaults: @unchecked @retroactive Sendable {}
+
 struct DaySessionSummary: Codable {
     let date: Date
     let duration: TimeInterval
     let completionRatio: Double
     let hrAvg: Int
     let steps: Int
+    var calories: Double = 0
+    var distance: Double = 0
 }
 
 enum AppGroupDefaults {

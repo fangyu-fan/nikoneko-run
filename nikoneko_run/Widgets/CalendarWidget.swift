@@ -203,8 +203,8 @@ struct CalendarWidgetView: View {
                 switch entry.metric {
                 case .duration:  return sum + s.duration / 60
                 case .steps:     return sum + Double(s.steps)
-                case .calories:  return sum + s.duration / 60 * 7
-                case .distance:  return sum + Double(s.steps) / 1500
+                case .calories:  return sum + s.calories
+                case .distance:  return sum + s.distance / 1000
                 case .runs:      return sum + 1
                 case .streak:    return sum
                 }
@@ -228,25 +228,19 @@ struct CalendarWidgetView: View {
         }
     }
 
-    private func metricUnit() -> String {
-        switch entry.metric {
-        case .duration:  return "min"
-        case .steps:     return "steps"
-        case .calories:  return "kcal"
-        case .distance:  return "km"
-        case .runs:      return "runs"
-        case .streak:    return "days"
-        }
-    }
 
 private func currentStreak() -> Int {
         let today = cal.startOfDay(for: entry.date)
         var streak = 0
         var cursor = today
         while true {
-            let hasSessions = entry.summaries.contains { cal.isDate($0.date, inSameDayAs: cursor) }
-            if hasSessions {
+            let dayTotal = entry.summaries
+                .filter { cal.isDate($0.date, inSameDayAs: cursor) }
+                .reduce(0.0) { $0 + $1.completionRatio }
+            if dayTotal >= 1.0 {
                 streak += 1
+                cursor = cal.date(byAdding: .day, value: -1, to: cursor)!
+            } else if cal.isDateInToday(cursor) {
                 cursor = cal.date(byAdding: .day, value: -1, to: cursor)!
             } else {
                 break
@@ -260,8 +254,8 @@ private func currentStreak() -> Int {
         switch entry.metric {
         case .duration:   return daySummaries.reduce(0) { $0 + $1.duration } / 60  // minutes
         case .steps:      return Double(daySummaries.reduce(0) { $0 + $1.steps })
-        case .calories:   return daySummaries.reduce(0) { $0 + $1.duration } / 60 * 7
-        case .distance:   return Double(daySummaries.reduce(0) { $0 + $1.steps }) / 1500
+        case .calories:   return daySummaries.reduce(0) { $0 + $1.calories }
+        case .distance:   return daySummaries.reduce(0) { $0 + $1.distance } / 1000
         case .runs:       return Double(daySummaries.count)
         case .streak:     return 0
         }

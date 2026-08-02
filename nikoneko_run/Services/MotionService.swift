@@ -1,5 +1,11 @@
 import CoreMotion
 
+private struct PedometerUpdate: Sendable {
+    let steps: Int
+    let distance: Double
+    let endDate: Date
+}
+
 @Observable
 @MainActor
 final class MotionService {
@@ -10,6 +16,8 @@ final class MotionService {
 
     private let pedometer = CMPedometer()
     private var startDate: Date?
+    private var updateTask: Task<Void, Never>?
+    private var streamContinuation: AsyncStream<PedometerUpdate>.Continuation?
 
     var weightKg: Double = 65
     var heightCm: Double = 170
@@ -18,22 +26,31 @@ final class MotionService {
         startDate = Date()
         steps = 0; distance = 0; calories = 0; avgCadence = 0
         guard CMPedometer.isStepCountingAvailable() else { return }
-        pedometer.startUpdates(from: startDate!) { [weak self] data, _ in
-            guard let self, let data else { return }
-            let steps = data.numberOfSteps.intValue
-            let distance = data.distance?.doubleValue ?? 0
-            let end = data.endDate
-            DispatchQueue.main.async { [weak self] in
+
+        let (stream, continuation) = AsyncStream.makeStream(of: PedometerUpdate.self)
+        streamContinuation = continuation
+
+        pedometer.startUpdates(from: startDate!) { @Sendable data, _ in
+            guard let data else { return }
+            continuation.yield(PedometerUpdate(
+                steps: data.numberOfSteps.intValue,
+                distance: data.distance?.doubleValue ?? 0,
+                endDate: data.endDate
+            ))
+        }
+
+        updateTask = Task { [weak self] in
+            for await update in stream {
                 guard let self else { return }
-                self.steps = steps
-                self.distance = distance
+                self.steps = update.steps
+                self.distance = update.distance
                 self.calories = Self.estimateCalories(
-                    steps: steps,
+                    steps: update.steps,
                     weightKg: self.weightKg,
                     heightCm: self.heightCm
                 )
-                if let start = self.startDate, end.timeIntervalSince(start) > 0 {
-                    self.avgCadence = Int(Double(steps) / (end.timeIntervalSince(start) / 60))
+                if let start = self.startDate, update.endDate.timeIntervalSince(start) > 0 {
+                    self.avgCadence = Int(Double(update.steps) / (update.endDate.timeIntervalSince(start) / 60))
                 }
             }
         }
@@ -41,6 +58,10 @@ final class MotionService {
 
     func stopTracking() {
         pedometer.stopUpdates()
+        streamContinuation?.finish()
+        streamContinuation = nil
+        updateTask?.cancel()
+        updateTask = nil
     }
 
     static func requestAuthorization() async {

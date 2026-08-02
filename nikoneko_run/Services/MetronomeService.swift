@@ -16,11 +16,16 @@ final class MetronomeService {
     private var weakBuffer: AVAudioPCMBuffer?    // beat 2 — soft
     private var nextBeatTime: AVAudioTime?
     private var beatCount: Int = 0               // alternates 0/1
+    private var interruptionObserver: NSObjectProtocol?
+    private var configChangeObserver: NSObjectProtocol?
+    private var beatContinuation: AsyncStream<Void>.Continuation?
+    private var beatTask: Task<Void, Never>?
 
     init() {
         setupEngine()
         loadBuffers()
         setupInterruptionHandler()
+        setupConfigChangeHandler()
     }
 
     nonisolated private func configureAudioSession() {
@@ -32,26 +37,51 @@ final class MetronomeService {
 
     private func setupInterruptionHandler() {
         // Single observer — extract all values before entering async context to avoid data races
-        NotificationCenter.default.addObserver(
+        interruptionObserver = NotificationCenter.default.addObserver(
             forName: AVAudioSession.interruptionNotification,
             object: nil,
             queue: .main
         ) { [weak self] notification in
-            guard let self else { return }
             let typeRaw = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt ?? 0
             let optionsRaw = notification.userInfo?[AVAudioSessionInterruptionOptionKey] as? UInt ?? 0
             let isBegan = AVAudioSession.InterruptionType(rawValue: typeRaw) == .began
             let shouldResume = AVAudioSession.InterruptionOptions(rawValue: optionsRaw).contains(.shouldResume)
-            // Already on main queue — no Task needed
-            if isBegan {
-                if self.isPlaying {
-                    self.isPlaying = false
-                    self.player.stop()
-                    self.nextBeatTime = nil
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                if isBegan {
+                    if self.isPlaying {
+                        self.isPlaying = false
+                        self.player.stop()
+                        self.nextBeatTime = nil
+                    }
+                } else {
+                    if shouldResume && !self.isPlaying {
+                        self.resume()
+                    }
                 }
-            } else {
-                if shouldResume && !self.isPlaying {
-                    self.resume()
+            }
+        }
+    }
+
+    private func setupConfigChangeHandler() {
+        configChangeObserver = NotificationCenter.default.addObserver(
+            forName: .AVAudioEngineConfigurationChange,
+            object: engine,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated {
+                guard let self, self.isPlaying else { return }
+                self.player.stop()
+                self.nextBeatTime = nil
+                self.setupEngine()
+                self.configureAudioSession()
+                do {
+                    try self.engine.start()
+                    self.reloadBuffersFromEngine()
+                    self.nextBeatTime = AVAudioTime(hostTime: mach_absolute_time())
+                    self.scheduleBeat()
+                } catch {
+                    self.isPlaying = false
                 }
             }
         }
@@ -158,6 +188,17 @@ final class MetronomeService {
                 return
             }
         }
+
+        let (stream, continuation) = AsyncStream.makeStream(of: Void.self)
+        beatContinuation = continuation
+        beatTask = Task { [weak self] in
+            for await _ in stream {
+                guard let self, self.isPlaying else { return }
+                self.beatCount += 1
+                self.scheduleBeat()
+            }
+        }
+
         nextBeatTime = AVAudioTime(hostTime: mach_absolute_time())
         scheduleBeat()
     }
@@ -170,12 +211,9 @@ final class MetronomeService {
         let buf = (beatCount % 2 == 0) ? strongBuffer : weakBuffer
         guard let buf, buf.frameLength > 0 else { return }
 
-        player.scheduleBuffer(buf, at: beatTime, options: []) { [weak self] in
-            DispatchQueue.main.async { [weak self] in
-                guard let self, self.isPlaying else { return }
-                self.beatCount += 1
-                self.scheduleBeat()
-            }
+        let continuation = beatContinuation
+        player.scheduleBuffer(buf, at: beatTime, options: []) { @Sendable in
+            continuation?.yield()
         }
         if !player.isPlaying { player.play() }
 
@@ -192,12 +230,20 @@ final class MetronomeService {
         beatCount = 0
         player.stop()
         nextBeatTime = nil
+        beatContinuation?.finish()
+        beatContinuation = nil
+        beatTask?.cancel()
+        beatTask = nil
     }
 
     func pause() {
         isPlaying = false
         player.stop()
         nextBeatTime = nil
+        beatContinuation?.finish()
+        beatContinuation = nil
+        beatTask?.cancel()
+        beatTask = nil
     }
 
     func resume() {
@@ -206,6 +252,17 @@ final class MetronomeService {
         if !engine.isRunning {
             try? engine.start()
         }
+
+        let (stream, continuation) = AsyncStream.makeStream(of: Void.self)
+        beatContinuation = continuation
+        beatTask = Task { [weak self] in
+            for await _ in stream {
+                guard let self, self.isPlaying else { return }
+                self.beatCount += 1
+                self.scheduleBeat()
+            }
+        }
+
         nextBeatTime = AVAudioTime(hostTime: mach_absolute_time())
         scheduleBeat()
     }

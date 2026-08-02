@@ -12,7 +12,9 @@ extension AppGroupDefaults {
                     duration: session.duration,
                     completionRatio: min(1.0, session.duration / (Double(dailyGoalMinutes) * 60)),
                     hrAvg: session.avgHR,
-                    steps: session.steps
+                    steps: session.steps,
+                    calories: session.calories,
+                    distance: session.distance
                 )
             }
         writeSummaries(Array(summaries))

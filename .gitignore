@@ -4,6 +4,7 @@ xcuserdata/
 *.xccheckout
 *.moved-aside
 DerivedData/
+build/
 
 # macOS
 .DS_Store

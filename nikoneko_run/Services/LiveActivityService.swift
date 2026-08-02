@@ -5,12 +5,13 @@ import Observation
 @Observable
 @MainActor
 final class LiveActivityService {
-    nonisolated(unsafe) private var activity: Activity<NikoNekoLiveActivityAttributes>?
+    private var activity: Activity<NikoNekoLiveActivityAttributes>?
     private var sessionStart: Date = Date()
     private var updateTask: Task<Void, Never>?
 
     func start(bpm: Int, target: TimeInterval, characterId: String, themeId: String) {
         guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+        end()
         sessionStart = Date()
         let state = NikoNekoLiveActivityAttributes.ContentState(
             elapsed: 0, remaining: target, bpm: bpm,

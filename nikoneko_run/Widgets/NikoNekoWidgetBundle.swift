@@ -9,5 +9,9 @@ struct NikoNekoWidgetBundle: WidgetBundle {
         BarChartWidget()
         CalendarWidget()
         AllStatsWidget()
+        StreakWidget()
+        TodayDistanceWidget()
+        TodayStepsWidget()
+        TodayDurationWidget()
     }
 }

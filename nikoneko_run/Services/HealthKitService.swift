@@ -16,7 +16,8 @@ final class HealthKitService {
         let write: Set<HKSampleType> = [
             HKWorkoutType.workoutType(),
             HKQuantityType(.activeEnergyBurned),
-            HKQuantityType(.heartRate)
+            HKQuantityType(.heartRate),
+            HKQuantityType(.distanceWalkingRunning)
         ]
         try? await store.requestAuthorization(toShare: write, read: read)
     }

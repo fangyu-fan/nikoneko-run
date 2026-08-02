@@ -43,7 +43,7 @@ struct ReportView: View {
                     sectionHeader("\(lm.L("report.section.chart")) · \(vm.metricLabel(vm.selectedMetric).uppercased())")
                         .padding(.horizontal, 18)
                     if vm.period == .month || vm.period == .year {
-                        HeatmapView(bars: vm.chartBars, period: vm.period, valueUnit: vm.metricUnit(vm.selectedMetric), yearStartWeekday: vm.yearStartWeekday)
+                        HeatmapView(bars: vm.chartBars, period: vm.period, valueUnit: vm.metricUnit(vm.selectedMetric), yearStartWeekday: vm.yearStartWeekday, displayYear: vm.displayYear)
                             .padding(.horizontal, 18)
                     } else {
                         BarChartView(
@@ -121,9 +121,13 @@ struct ReportView: View {
                     isNewRecord = false
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                    withAnimation(.spring(duration: 0.4)) { showStreakToast = true }
+                    MainActor.assumeIsolated {
+                        withAnimation(.spring(duration: 0.4)) { showStreakToast = true }
+                    }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
-                        withAnimation(.easeOut(duration: 0.3)) { showStreakToast = false }
+                        MainActor.assumeIsolated {
+                            withAnimation(.easeOut(duration: 0.3)) { showStreakToast = false }
+                        }
                     }
                 }
             }
@@ -223,9 +227,7 @@ struct ReportView: View {
     // MARK: - Metric cards
 
     private var metricCards: some View {
-        let metrics: [ReportViewModel.Metric] = vm.period == .day
-            ? [.distance, .calories, .steps, .hrAvg, .hrMax, .count]
-            : [.distance, .calories, .steps, .hrAvg, .hrMax, .count]
+        let metrics: [ReportViewModel.Metric] = [.distance, .calories, .steps, .hrAvg, .hrMax, .count]
 
         return LazyVGrid(
             columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())],
@@ -398,6 +400,18 @@ struct MetricCard: View {
 // MARK: - LogRow
 
 struct LogRow: View {
+    static let dateFmt: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: LanguageBundle.languageCode)
+        f.setLocalizedDateFormatFromTemplate("MMMMd")
+        return f
+    }()
+    static let timeFmt: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "HH:mm"
+        return f
+    }()
+
     let session: RunSession
     let vm: ReportViewModel
     @Environment(ThemeManager.self) private var themeManager
@@ -441,16 +455,12 @@ struct LogRow: View {
     }
 
     private var formattedDate: String {
-        let f = DateFormatter()
-        f.locale = Locale(identifier: LanguageBundle.languageCode)
-        f.setLocalizedDateFormatFromTemplate("MMMMd")
-        return f.string(from: session.startDate)
+        Self.dateFmt.string(from: session.startDate)
     }
 
     private var timeRange: String {
-        let f = DateFormatter(); f.dateFormat = "HH:mm"
         let end = session.startDate.addingTimeInterval(session.duration)
-        return "\(f.string(from: session.startDate)) – \(f.string(from: end))"
+        return "\(Self.timeFmt.string(from: session.startDate)) – \(Self.timeFmt.string(from: end))"
     }
 
     private var dotColor: Color {
@@ -466,6 +476,7 @@ struct HeatmapView: View {
     let period: ReportViewModel.Period
     var valueUnit: String = ""
     var yearStartWeekday: Int = 0  // Mon=0 … Sun=6
+    var displayYear: Int = Calendar(identifier: .gregorian).component(.year, from: Date())
     @Environment(ThemeManager.self) private var themeManager
     @Environment(LanguageManager.self) private var lm
     @Query private var configs: [ThresholdConfig]
@@ -589,7 +600,8 @@ struct HeatmapView: View {
     private struct RowBars { let bars: [ChartBar]; let firstWeekday: Int }
 
     private func barsForMonths(startMonth: Int, endMonth: Int, cal: Calendar) -> RowBars {
-        var comps = cal.dateComponents([.year], from: Date())
+        var comps = DateComponents()
+        comps.year = displayYear
         comps.month = startMonth + 1; comps.day = 1
         guard let firstDay = cal.date(from: comps) else { return RowBars(bars: [], firstWeekday: 0) }
 

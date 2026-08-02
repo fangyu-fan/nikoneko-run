@@ -69,12 +69,11 @@ struct AllStatsProvider: AppIntentTimelineProvider {
             durationUnit = "min"
         }
 
-        // Distance (estimated from steps: 1500 steps ≈ 1 km)
-        let totalSteps = filtered.reduce(0) { $0 + $1.steps }
-        let distanceKm = String(format: "%.1f", Double(totalSteps) / 1500.0)
+        let totalDistanceKm = filtered.reduce(0.0) { $0 + $1.distance } / 1000
+        let distanceKm = String(format: "%.1f", totalDistanceKm)
 
-        // Calories (~7 kcal/min)
-        let totalCalories = Int(totalMinutes) * 7
+        let totalSteps = filtered.reduce(0) { $0 + $1.steps }
+        let totalCalories = Int(filtered.reduce(0.0) { $0 + $1.calories })
         let caloriesStr: String
         if totalCalories >= 1000 {
             caloriesStr = String(format: "%.1fk", Double(totalCalories) / 1000.0)

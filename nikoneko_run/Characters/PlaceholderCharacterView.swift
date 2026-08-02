@@ -35,7 +35,7 @@ struct PlaceholderCharacterView: View {
     private func startAnimation() {
         animTimer?.invalidate()
         animTimer = Timer.scheduledTimer(withTimeInterval: frameInterval, repeats: true) { _ in
-            frame = (frame + 1) % 4
+            MainActor.assumeIsolated { frame = (frame + 1) % 4 }
         }
     }
 

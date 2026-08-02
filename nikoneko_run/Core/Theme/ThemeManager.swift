@@ -2,6 +2,7 @@ import SwiftUI
 import WidgetKit
 
 @Observable
+@MainActor
 final class ThemeManager {
     private(set) var current: ThemeTokens = ThemeLibrary.moss
 

@@ -3,6 +3,7 @@ import Foundation
 enum DotState { case empty, partial, achieved }
 
 @Observable
+@MainActor
 final class SummaryViewModel {
     let session: RunSession
     let streakDays: Int
@@ -14,7 +15,9 @@ final class SummaryViewModel {
         self.streakDays = AppGroupDefaults.currentStreak(from: summaries, goalMinutes: goalMinutes)
 
         let cal = Calendar.current
-        let weekStart = cal.dateInterval(of: .weekOfYear, for: Date())!.start
+        let today = cal.startOfDay(for: Date())
+        let daysFromStart = AppGroupDefaults.weekdayOffset(for: today)
+        let weekStart = cal.date(byAdding: .day, value: -daysFromStart, to: today)!
         self.thisWeekDots = (0..<7).map { dayOffset in
             let day = cal.date(byAdding: .day, value: dayOffset, to: weekStart)!
             let dayTotal = summaries

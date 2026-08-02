@@ -120,9 +120,9 @@ struct BarChartProvider: AppIntentTimelineProvider {
         case .duration:
             return sessions.reduce(0) { $0 + $1.duration } / 60.0  // minutes
         case .distance:
-            return Double(sessions.reduce(0) { $0 + $1.steps }) / 1500.0  // km estimate
+            return sessions.reduce(0) { $0 + $1.distance } / 1000.0
         case .calories:
-            return sessions.reduce(0) { $0 + $1.duration } / 60.0 * 7.0  // kcal
+            return sessions.reduce(0) { $0 + $1.calories }
         case .steps:
             return Double(sessions.reduce(0) { $0 + $1.steps })
         case .runs:

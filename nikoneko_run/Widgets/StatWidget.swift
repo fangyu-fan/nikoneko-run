@@ -115,13 +115,11 @@ struct StatProvider: AppIntentTimelineProvider {
             }
 
         case .distance:
-            // DaySessionSummary has no distance field; distance is unavailable
-            return ("0.0", "km")
+            let totalKm = filtered.reduce(0.0) { $0 + $1.distance } / 1000
+            return (String(format: "%.1f", totalKm), "km")
 
         case .calories:
-            // Estimate: durationMin * 7 kcal
-            let totalMinutes = Int(filtered.reduce(0.0) { $0 + $1.duration } / 60.0)
-            let cal = totalMinutes * 7
+            let cal = Int(filtered.reduce(0.0) { $0 + $1.calories })
             return ("\(cal)", "cal")
 
         case .steps:

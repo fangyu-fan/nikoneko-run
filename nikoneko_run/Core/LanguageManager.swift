@@ -13,6 +13,7 @@ final class LanguageBundle: Bundle, @unchecked Sendable {
 }
 
 @Observable
+@MainActor
 final class LanguageManager {
     var language: AppLanguage = .english
     // Views use .id(lm.version) on their content to force re-render on language change

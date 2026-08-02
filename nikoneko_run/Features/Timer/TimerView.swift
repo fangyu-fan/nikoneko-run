@@ -64,14 +64,6 @@ struct TimerView: View {
         return String(format: "%02d", Int(seconds) % 60)
     }
 
-    private var hhmmssText: String {
-        let seconds = vm.isCountdown ? vm.remaining : vm.elapsed
-        let hh = Int(seconds) / 3600
-        let mm = (Int(seconds) % 3600) / 60
-        let ss = Int(seconds) % 60
-        return String(format: "%d:%02d:%02d", hh, mm, ss)
-    }
-
     var body: some View {
         ZStack {
             theme.bg.ignoresSafeArea()
@@ -255,9 +247,7 @@ struct TimerView: View {
                 selectedHours = 0
                 vm.selectedMinutes = defMins
             }
-            volume = 0.6
             metronome.soundType = profile?.soundType ?? .tap
-            metronome.volume = Float(volume)
             Task {
                 await HealthKitService.shared.requestPermissions()
                 await MotionService.requestAuthorization()
@@ -412,23 +402,6 @@ struct TimerView: View {
 
 
     // MARK: - HH:MM slot helpers
-
-    @ViewBuilder
-    private func slot<I: View>(idle: I, running: Text, width: CGFloat = 100) -> some View {
-        Group {
-            if vm.state == .idle {
-                idle
-            } else {
-                running
-                    .font(.system(size: 108, weight: .ultraLight))
-                    .foregroundColor(theme.text)
-                    .monospacedDigit()
-                    .kerning(-5)
-                    .fixedSize()
-            }
-        }
-        .frame(width: width)
-    }
 
     private var colon: some View {
         Text(":")
@@ -609,13 +582,16 @@ struct TimerView: View {
                         isLongPressingPending = true
                         // After 0.2s: show stop icon + start arc
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                            guard self.isLongPressingPending else { return }
-                            self.isLongPressing = true
-                            withAnimation(.linear(duration: 0.8)) { self.longPressProgress = 1.0 }
-                            // Schedule stop after arc completes
-                            let work = DispatchWorkItem { self.doStop() }
-                            self.stopWorkItem = work
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8, execute: work)
+                            MainActor.assumeIsolated {
+                                guard self.isLongPressingPending else { return }
+                                self.isLongPressing = true
+                                withAnimation(.linear(duration: 1.8)) { self.longPressProgress = 1.0 }
+                                let work = DispatchWorkItem {
+                                    MainActor.assumeIsolated { self.doStop() }
+                                }
+                                self.stopWorkItem = work
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.8, execute: work)
+                            }
                         }
                     }
                     .onEnded { _ in
@@ -654,31 +630,6 @@ struct TimerView: View {
         }
         .frame(height: 169)
     }
-}
-
-// MARK: - HH:MM slot helpers (only used by TimerView HH:MM mode)
-
-private struct HHMMSlot<Idle: View, Running: View>: View {
-    let isIdle: Bool
-    let idle: Idle
-    let running: Running
-
-    var body: some View {
-        Group {
-            if isIdle { idle } else { running
-                    .font(.system(size: 108, weight: .ultraLight))
-                    .monospacedDigit()
-                    .kerning(-5)
-                    .fixedSize()
-            }
-        }
-        .frame(width: 100)
-    }
-}
-
-private struct NumeralBottomKey: PreferenceKey {
-    static let defaultValue: CGFloat = 0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = nextValue() }
 }
 
 #if DEBUG

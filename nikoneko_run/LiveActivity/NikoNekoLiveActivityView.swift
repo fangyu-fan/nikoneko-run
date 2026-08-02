@@ -26,11 +26,6 @@ struct NikoNekoLiveActivityView: Widget {
                             Label("\(context.state.bpm)", systemImage: "metronome")
                                 .font(.system(size: 10))
                                 .foregroundColor(theme.textMid)
-                            if context.state.hr > 0 {
-                                Label("\(context.state.hr)", systemImage: "heart.fill")
-                                    .font(.system(size: 10))
-                                    .foregroundColor(theme.accent)
-                            }
                             if context.state.distance > 0 {
                                 Label(String(format: "%.2fkm", context.state.distance / 1000),
                                       systemImage: "location.fill")
