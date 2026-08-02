@@ -37,17 +37,30 @@ struct NikoNekoApp: App {
 
     private static func makeContainer() -> ModelContainer {
         let schema = Schema([RunSession.self, UserProfile.self, ThresholdConfig.self])
-        // Explicitly use app's own Documents directory and disable CloudKit
         let storeURL = URL.applicationSupportDirectory.appending(path: "nikoneko.store")
         let localConfig = ModelConfiguration(
             schema: schema,
             url: storeURL,
             cloudKitDatabase: .none
         )
-        if let container = try? ModelContainer(for: schema, configurations: [localConfig]) {
-            return container
+        do {
+            return try ModelContainer(for: schema, configurations: [localConfig])
+        } catch {
+            print("⚠️ [Store] persistent store failed: \(error). Deleting and retrying…")
+            let related = ["nikoneko.store", "nikoneko.store-shm", "nikoneko.store-wal"]
+            for name in related {
+                let url = URL.applicationSupportDirectory.appending(path: name)
+                try? FileManager.default.removeItem(at: url)
+            }
+            do {
+                return try ModelContainer(for: schema, configurations: [localConfig])
+            } catch {
+                print("⚠️ [Store] retry failed: \(error). Falling back to in-memory store.")
+                return try! ModelContainer(
+                    for: schema,
+                    configurations: [ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)]
+                )
+            }
         }
-        let memConfig = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-        return try! ModelContainer(for: schema, configurations: [memConfig])
     }
 }

@@ -65,7 +65,6 @@ final class HeartRateService {
         }
         anchoredQuery = query
         store.execute(query)
-        source = .watch
 
         updateTask = Task { [weak self] in
             for await update in stream {

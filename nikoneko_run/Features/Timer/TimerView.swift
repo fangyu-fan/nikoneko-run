@@ -221,16 +221,18 @@ struct TimerView: View {
         }
         .onChange(of: vm.completedSession) { _, session in
             guard let session else { return }
-            print("[TV] completedSession changed — duration=\(session.duration)")
             ctx.insert(session)
-            try? ctx.save()
+            do {
+                try ctx.save()
+            } catch {
+                print("⚠️ [TV] ctx.save() failed: \(error)")
+            }
             let allSessions = (try? ctx.fetch(FetchDescriptor<RunSession>())) ?? []
             AppGroupDefaults.writeSessionSummaries(
                 from: allSessions,
                 dailyGoalMinutes: profile?.dailyGoalMinutes ?? 20
             )
             WidgetCenter.shared.reloadAllTimelines()
-            print("[TV] setting savedSession — will show popup")
             withAnimation(.easeOut(duration: 0.25)) { savedSession = session }
             vm.completedSession = nil
         }
