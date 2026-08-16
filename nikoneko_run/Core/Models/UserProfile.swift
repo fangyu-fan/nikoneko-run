@@ -18,7 +18,7 @@ final class UserProfile {
     var showCalories: Bool = true
     var showSteps: Bool = true
     var activeThemeId: String = "moss"
-    var activeCharacterId: String = "cat_a"
+    var activeCharacterId: String = "loader_cat"
     var languageRaw: String = AppLanguage.english.rawValue
     var heightCm: Double = 170
     var weightKg: Double = 65

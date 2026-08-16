@@ -5,6 +5,7 @@ struct ReportView: View {
     @Environment(ThemeManager.self) private var themeManager
     @Environment(LanguageManager.self) private var lm
     @Query(sort: \RunSession.startDate, order: .reverse) private var sessions: [RunSession]
+    @Query private var profiles: [UserProfile]
     @State private var vm = ReportViewModel()
     @State private var selectedSession: RunSession? = nil
     @State private var tappedBar: ChartBar? = nil
@@ -104,6 +105,7 @@ struct ReportView: View {
         }
         .onAppear {
             vm.isZh = lm.language == .traditionalChinese
+            vm.dailyGoalMinutes = profiles.first?.dailyGoalMinutes ?? 20
             vm.loadSessions(sessions)
             let streak = vm.currentStreak
             let todayStr = Calendar.current.startOfDay(for: Date()).description
@@ -133,6 +135,9 @@ struct ReportView: View {
             }
         }
         .onChange(of: sessions) { _, _ in vm.loadSessions(sessions) }
+        .onChange(of: profiles.first?.dailyGoalMinutes) { _, goal in
+            vm.dailyGoalMinutes = goal ?? 20
+        }
         .onChange(of: lm.version) { _, _ in vm.isZh = lm.language == .traditionalChinese }
     }
 
@@ -481,10 +486,10 @@ struct HeatmapView: View {
     @Environment(LanguageManager.self) private var lm
     @Query private var configs: [ThresholdConfig]
     private var theme: ThemeTokens { themeManager.current }
-    private var maxValue: Double { bars.map(\.value).max() ?? 1 }
-    private var t1: Int { configs.first?.threshold1 ?? 25 }
-    private var t2: Int { configs.first?.threshold2 ?? 60 }
-    private var t3: Int { configs.first?.threshold3 ?? 90 }
+    private var goalSettings: ThresholdConfig? { ThresholdConfig.goalSettings(in: configs) }
+    private var t1: Int { goalSettings?.threshold1 ?? 25 }
+    private var t2: Int { goalSettings?.threshold2 ?? 60 }
+    private var t3: Int { goalSettings?.threshold3 ?? 90 }
 
     var body: some View {
         if period == .month { monthGrid } else { yearGrid }
@@ -633,29 +638,27 @@ struct HeatmapView: View {
     }
 
     private func yearCell(bar: ChartBar, size: CGFloat) -> some View {
-        let ratio = maxValue > 0 ? bar.value / maxValue : 0
         let bgColor = bar.value == 0
             ? theme.bar[0]
-            : BarChartView.barColor(ratio: ratio, theme: theme, t1: t1, t2: t2, t3: t3)
+            : BarChartView.barColor(ratio: bar.goalRatio, theme: theme, t1: t1, t2: t2, t3: t3)
         return RoundedRectangle(cornerRadius: 2)
             .fill(bgColor)
             .frame(width: size, height: size)
-            .animation(.easeInOut(duration: 0.25), value: ratio)
+            .animation(.easeInOut(duration: 0.25), value: bar.goalRatio)
     }
 
     private func cell(bar: ChartBar) -> some View {
-        let ratio = maxValue > 0 ? bar.value / maxValue : 0
         let bgColor = bar.value == 0
             ? theme.bar[0]
-            : BarChartView.barColor(ratio: ratio, theme: theme, t1: t1, t2: t2, t3: t3)
-        let isDark = bar.value / max(maxValue, 1) > 0.4
+            : BarChartView.barColor(ratio: bar.goalRatio, theme: theme, t1: t1, t2: t2, t3: t3)
+        let isDark = bar.goalRatio * 100 >= Double(t2)
         let textColor = isDark ? Color.white.opacity(0.9) : theme.textMid
 
         return GeometryReader { geo in
             ZStack(alignment: .topLeading) {
                 RoundedRectangle(cornerRadius: 6)
                     .fill(bgColor)
-                    .animation(.easeInOut(duration: 0.25), value: ratio)
+                    .animation(.easeInOut(duration: 0.25), value: bar.goalRatio)
 
                 VStack(spacing: 0) {
                     // Day number top-left

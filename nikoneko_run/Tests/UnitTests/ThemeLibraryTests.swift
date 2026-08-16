@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 @testable import nikoneko
 
+@MainActor
 final class ThemeLibraryTests: XCTestCase {
 
     override func setUp() {
@@ -11,7 +12,7 @@ final class ThemeLibraryTests: XCTestCase {
     }
 
     func test_allThemesExist() {
-        XCTAssertEqual(ThemeLibrary.all.count, 14)
+        XCTAssertEqual(ThemeLibrary.all.count, 15)
     }
 
     func test_allThemesHaveFiveBarStops() {
@@ -33,9 +34,9 @@ final class ThemeLibraryTests: XCTestCase {
         XCTAssertEqual(ids.count, Set(ids).count)
     }
 
-    func test_themeManagerDefaultIsObsidian() {
+    func test_themeManagerDefaultIsMoss() {
         let manager = ThemeManager()
-        XCTAssertEqual(manager.current.id, "obsidian")
+        XCTAssertEqual(manager.current.id, "moss")
     }
 
     func test_themeManagerApplyChangesCurrentTheme() {
@@ -47,7 +48,7 @@ final class ThemeLibraryTests: XCTestCase {
     func test_themeManagerIgnoresUnknownId() {
         let manager = ThemeManager()
         manager.apply("nonexistent")
-        XCTAssertEqual(manager.current.id, "obsidian")
+        XCTAssertEqual(manager.current.id, "moss")
     }
 
     func test_colorHexInitializer() {

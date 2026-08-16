@@ -9,6 +9,7 @@ final class ReportViewModel {
 
     var period: Period = .day { didSet { invalidateCache() } }
     var selectedMetric: Metric = .duration
+    var dailyGoalMinutes: Int = 20
     var currentOffset: Int = 0 { didSet { invalidateCache() } }
     var isZh: Bool = false
 
@@ -237,9 +238,11 @@ final class ReportViewModel {
                 buckets[hour, default: []].append(s)
             }
             return (0..<24).map { hour in
-                let v = metricValue(for: buckets[hour] ?? [])
+                let sessions = buckets[hour] ?? []
+                let v = metricValue(for: sessions)
                 return ChartBar(label: "\(hour)", value: v,
                     isToday: hour == cal.component(.hour, from: Date()),
+                    goalRatio: goalRatio(for: sessions),
                     displayValue: formatBarValue(v))
             }
         case .week:
@@ -258,9 +261,11 @@ final class ReportViewModel {
             }
             return (0..<7).map { dayOffset in
                 let day = cal.date(byAdding: .day, value: dayOffset, to: range.start) ?? range.start
-                let v = metricValue(for: buckets[dayOffset] ?? [])
+                let sessions = buckets[dayOffset] ?? []
+                let v = metricValue(for: sessions)
                 return ChartBar(label: labels[dayOffset], value: v,
                     isToday: cal.isDateInToday(day),
+                    goalRatio: goalRatio(for: sessions),
                     displayValue: formatBarValue(v))
             }
         case .month:
@@ -274,9 +279,11 @@ final class ReportViewModel {
             }
             return (0..<daysInMonth).map { dayOffset in
                 let day = cal.date(byAdding: .day, value: dayOffset, to: range.start) ?? range.start
-                let v = metricValue(for: buckets[dayOffset] ?? [])
+                let sessions = buckets[dayOffset] ?? []
+                let v = metricValue(for: sessions)
                 return ChartBar(label: "\(dayOffset + 1)", value: v,
                     isToday: cal.isDateInToday(day),
+                    goalRatio: goalRatio(for: sessions),
                     displayValue: formatBarValue(v))
             }
         case .year:
@@ -291,12 +298,19 @@ final class ReportViewModel {
             return (0..<daysInYear).map { dayOffset in
                 let day = cal.date(byAdding: .day, value: dayOffset, to: range.start) ?? range.start
                 let dayNum = cal.component(.day, from: day)
-                let v = metricValue(for: buckets[dayOffset] ?? [])
+                let sessions = buckets[dayOffset] ?? []
+                let v = metricValue(for: sessions)
                 return ChartBar(label: "\(dayNum)", value: v,
                     isToday: cal.isDateInToday(day),
+                    goalRatio: goalRatio(for: sessions),
                     displayValue: formatBarValue(v))
             }
         }
+    }
+
+    private func goalRatio(for sessions: [RunSession]) -> Double {
+        let goalSeconds = Double(max(dailyGoalMinutes, 1)) * 60
+        return sessions.reduce(0) { $0 + $1.duration } / goalSeconds
     }
 
     private func formatBarValue(_ v: Double) -> String {
@@ -336,5 +350,6 @@ struct ChartBar {
     let label: String
     let value: Double
     let isToday: Bool
+    var goalRatio: Double = 0
     var displayValue: String = ""
 }

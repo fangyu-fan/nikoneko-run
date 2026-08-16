@@ -37,7 +37,17 @@ struct NikoNekoApp: App {
 
     private static func makeContainer() -> ModelContainer {
         let schema = Schema([RunSession.self, UserProfile.self, ThresholdConfig.self])
-        let storeURL = URL.applicationSupportDirectory.appending(path: "nikoneko.store")
+        let applicationSupportURL = URL.applicationSupportDirectory
+        do {
+            try FileManager.default.createDirectory(
+                at: applicationSupportURL,
+                withIntermediateDirectories: true
+            )
+        } catch {
+            print("⚠️ [Store] could not create Application Support directory: \(error)")
+        }
+
+        let storeURL = applicationSupportURL.appending(path: "nikoneko.store")
         let localConfig = ModelConfiguration(
             schema: schema,
             url: storeURL,
@@ -49,7 +59,7 @@ struct NikoNekoApp: App {
             print("⚠️ [Store] persistent store failed: \(error). Deleting and retrying…")
             let related = ["nikoneko.store", "nikoneko.store-shm", "nikoneko.store-wal"]
             for name in related {
-                let url = URL.applicationSupportDirectory.appending(path: name)
+                let url = applicationSupportURL.appending(path: name)
                 try? FileManager.default.removeItem(at: url)
             }
             do {

@@ -1,6 +1,7 @@
 import XCTest
 @testable import nikoneko
 
+@MainActor
 final class DrumPickerTests: XCTestCase {
 
     func test_stepsFromTranslation_positiveScrollDecreasesValue() {

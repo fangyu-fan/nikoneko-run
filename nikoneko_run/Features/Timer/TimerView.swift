@@ -97,7 +97,9 @@ struct TimerView: View {
                 LottieCharacterView(
                     characterId: profile?.activeCharacterId ?? "loader_cat",
                     color: theme.accentMid,
-                    shadowColor: theme.accentDim,
+                    secondaryColor: theme.accent,
+                    tertiaryColor: theme.accentDim,
+                    shadowColor: theme.bg,
                     bpm: bpm,
                     isAnimating: vm.state == .running
                 )
@@ -582,17 +584,17 @@ struct TimerView: View {
                     .onChanged { _ in
                         guard vm.state != .idle, !isLongPressingPending else { return }
                         isLongPressingPending = true
-                        // After 0.2s: show stop icon + start arc
+                        // After 0.2s show the stop state, then finish at 1.0s total.
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                             MainActor.assumeIsolated {
                                 guard self.isLongPressingPending else { return }
                                 self.isLongPressing = true
-                                withAnimation(.linear(duration: 1.8)) { self.longPressProgress = 1.0 }
+                                withAnimation(.linear(duration: 0.8)) { self.longPressProgress = 1.0 }
                                 let work = DispatchWorkItem {
                                     MainActor.assumeIsolated { self.doStop() }
                                 }
                                 self.stopWorkItem = work
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.8, execute: work)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8, execute: work)
                             }
                         }
                     }

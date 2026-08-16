@@ -9,9 +9,10 @@ struct BarChartView: View {
     @Environment(ThemeManager.self) private var themeManager
     @Query private var configs: [ThresholdConfig]
     private var theme: ThemeTokens { themeManager.current }
-    private var t1: Int { configs.first?.threshold1 ?? 25 }
-    private var t2: Int { configs.first?.threshold2 ?? 60 }
-    private var t3: Int { configs.first?.threshold3 ?? 90 }
+    private var goalSettings: ThresholdConfig? { ThresholdConfig.goalSettings(in: configs) }
+    private var t1: Int { goalSettings?.threshold1 ?? 25 }
+    private var t2: Int { goalSettings?.threshold2 ?? 60 }
+    private var t3: Int { goalSettings?.threshold3 ?? 90 }
 
     private let barAreaHeight: CGFloat = 140
     private let xLabelHeight: CGFloat = 14
@@ -65,7 +66,7 @@ struct BarChartView: View {
                             GeometryReader { barGeo in
                                 RoundedRectangle(cornerRadius: 2)
                                     .fill(hasValue
-                                          ? Self.barColor(ratio: ratio, theme: theme, t1: t1, t2: t2, t3: t3)
+                                          ? Self.barColor(ratio: bars[i].goalRatio, theme: theme, t1: t1, t2: t2, t3: t3)
                                           : Color.clear)
                                     .frame(width: 6, height: hasValue ? max(2, ratio * barAreaHeight) : 0)
                                     .animation(.easeInOut(duration: 0.25), value: ratio)
@@ -133,11 +134,11 @@ struct BarChartView: View {
     }
 
     static func barColor(ratio: Double, theme: ThemeTokens, t1: Int, t2: Int, t3: Int) -> Color {
-        let pct = Int(ratio * 100)
-        if pct == 0          { return theme.bar[0] }
-        if pct <= t1         { return theme.bar[1] }
-        if pct < t2          { return theme.bar[2] }
-        if pct <= t3         { return theme.bar[3] }
+        let pct = ratio * 100
+        if pct <= 0                 { return theme.bar[0] }
+        if pct <= Double(t1)        { return theme.bar[1] }
+        if pct < Double(t2)         { return theme.bar[2] }
+        if pct <= Double(t3)        { return theme.bar[3] }
         return theme.bar[4]
     }
 }

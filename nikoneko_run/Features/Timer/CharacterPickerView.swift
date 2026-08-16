@@ -14,8 +14,31 @@ struct CharacterPickerView: View {
 
     // Characters that map to actual Lottie files in the bundle
     private let characters: [(id: String, labelKey: String)] = [
+        // Theme-colored characters first
         ("loader_cat", "character.loaderCat"),
         ("bad_cat",    "character.badCat"),
+        ("crow_people", "character.crowPeople"),
+        ("jumper", "character.jumper"),
+        ("running_dog", "character.runningDog"),
+        ("soccer", "character.soccer"),
+        ("happy_dog", "character.happyDog"),
+        ("heartbeat", "character.heartbeat"),
+        ("runner", "character.runner"),
+        ("jogger", "character.jogger"),
+        ("squirrel", "character.squirrel"),
+        ("salad_cat", "character.saladCat"),
+        ("space_buddy", "character.spaceBuddy"),
+
+        // Original-color characters
+        ("coffee", "character.coffee"),
+        ("fries", "character.fries"),
+        ("mushrooms", "character.mushrooms"),
+        ("potato", "character.potato"),
+        ("avocado", "character.avocado"),
+        ("donut", "character.donut"),
+        ("pothos", "character.pothos"),
+        ("taco", "character.taco"),
+        ("running_man", "character.runningMan"),
     ]
 
     var body: some View {
@@ -55,7 +78,9 @@ struct CharacterPickerView: View {
                 LottieCharacterView(
                     characterId: char.id,
                     color: theme.accentMid,
-                    shadowColor: theme.accentDim,
+                    secondaryColor: theme.accent,
+                    tertiaryColor: theme.accentDim,
+                    shadowColor: theme.surface,
                     bpm: 160,
                     isAnimating: isSelected
                 )

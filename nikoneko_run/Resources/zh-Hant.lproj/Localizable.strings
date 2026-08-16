@@ -204,8 +204,28 @@
 
 /* Characters */
 "character.title"             = "角色";
-"character.loaderCat"         = "貓貓";
-"character.badCat"            = "壞貓";
+"character.loaderCat"         = "Loader";
+"character.badCat"            = "Bad Cat";
+"character.coffee"            = "Coffee";
+"character.crowPeople"        = "Crow People";
+"character.jumper"            = "Jumper";
+"character.runningDog"        = "Running Dog";
+"character.soccer"            = "Soccer";
+"character.fries"             = "Fries";
+"character.happyDog"          = "Happy Dog";
+"character.heartbeat"         = "Heartbeat";
+"character.spaceBuddy"        = "Space Buddy";
+"character.mushrooms"         = "Mushrooms";
+"character.potato"            = "Potato";
+"character.runner"            = "Runner";
+"character.jogger"            = "Jogger";
+"character.saladCat"          = "Salad Cat";
+"character.squirrel"          = "Squirrel";
+"character.avocado"           = "Avocado";
+"character.donut"             = "Donut";
+"character.pothos"            = "Pothos";
+"character.taco"              = "Taco";
+"character.runningMan"        = "Running Man";
 
 /* Onboarding */
 "onboarding.next"                    = "下一步";

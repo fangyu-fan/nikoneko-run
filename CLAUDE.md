@@ -44,8 +44,8 @@ nikoneko/
 └── Resources/              Localizable.strings (en + zh-Hant)
 ```
 
-Bundle ID: `com.fangyu.nikoneko-run`
-App Group: `group.com.fangyu.nikoneko` — shared between main app and widget extension.
+Bundle ID: `com.fangyu.nikoneko-run-v1.0`
+App Group: `group.com.fangyu.nikoneko-run-v1.0` — shared between main app and widget extension.
 
 ---
 
@@ -68,8 +68,8 @@ Main app writes `[DaySessionSummary]` (last ~400 sessions) to App Group UserDefa
 ### Metronome
 `AVAudioEngine` + `AVAudioPlayerNode` with `mach_absolute_time` scheduling. BPM range: 140–220. Character animation speed = `BPM / 180.0` (Lottie `animationSpeed`, normalized to 180 BPM baseline). Sound options: tap / bell / drum / wood (WAV files).
 
-### iCloud Sync
-Controlled by `UserProfile.iCloudEnabled`. When on: `ModelConfiguration(cloudKitDatabase: .automatic)`. When off: standard local config. Switched at app launch — requires container rebuild.
+### Local Persistence
+SwiftData currently uses a local `ModelConfiguration` only. The iCloud/CloudKit capability uses `iCloud.com.fangyu.nikoneko-run-v1.0` and is reserved for future sync support.
 
 ---
 

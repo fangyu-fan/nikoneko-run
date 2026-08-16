@@ -1,6 +1,7 @@
 import XCTest
 @testable import nikoneko
 
+@MainActor
 final class SummaryViewModelTests: XCTestCase {
 
     func test_streakCountsConsecutiveDays() {

@@ -61,86 +61,107 @@ struct CalendarWidgetView: View {
         let today = cal.startOfDay(for: entry.date)
         let dailyMax = maxDailyValue()
 
-        VStack(alignment: .leading, spacing: 0) {
-            // Header
-            HStack {
-                Text("NIKONEKO RUN")
-                    .font(.system(size: 10)).tracking(0.8)
-                    .foregroundColor(entry.theme.textMid)
-                Spacer()
-                Text(monthYearLabel())
-                    .font(.system(size: 10)).tracking(0.8)
-                    .foregroundColor(entry.theme.textMid)
-            }
-            .padding(.bottom, 14)
+        GeometryReader { geometry in
+            let horizontalPadding: CGFloat = 12
+            let topPadding: CGFloat = 4
+            let bottomPadding: CGFloat = 1
+            let gridSpacing: CGFloat = 4
+            let contentWidth = max(0, geometry.size.width - horizontalPadding * 2)
+            // Width is authoritative: the calendar always fills the available width.
+            let fittedCellSide = max(0, (contentWidth - gridSpacing * 6) / 7)
+            let fittedGridWidth = fittedCellSide * 7 + gridSpacing * 6
 
-            HStack(spacing: 4) {
-                ForEach(dayHeaders, id: \.self) { d in
-                    Text(d).font(.system(size: 11)).foregroundColor(entry.theme.textMid)
-                        .frame(maxWidth: .infinity)
+            VStack(alignment: .leading, spacing: 0) {
+                // Header
+                HStack {
+                    Text("NIKONEKO RUN")
+                        .font(.system(size: 10)).tracking(0.8)
+                        .foregroundColor(entry.theme.textMid)
+                        .lineLimit(1)
+                    Spacer()
+                    Text(monthYearLabel())
+                        .font(.system(size: 10)).tracking(0.8)
+                        .foregroundColor(entry.theme.textMid)
+                        .lineLimit(1)
                 }
-            }
-            .padding(.bottom, 4)
+                .padding(.bottom, 5)
 
-            LazyVGrid(
-                columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 7),
-                spacing: 4
-            ) {
-                ForEach(0..<firstOffset, id: \.self) { _ in
-                    entry.theme.cal[0]
-                        .aspectRatio(1, contentMode: .fit)
-                        .cornerRadius(8)
+                HStack(spacing: gridSpacing) {
+                    ForEach(Array(dayHeaders.enumerated()), id: \.offset) { _, day in
+                        Text(day)
+                            .font(.system(size: 10))
+                            .foregroundColor(entry.theme.textMid)
+                            .frame(maxWidth: .infinity)
+                    }
                 }
-                ForEach(1...daysInMonth, id: \.self) { day in
-                    let date = cal.date(from: DateComponents(
-                        year: cal.component(.year, from: entry.date),
-                        month: cal.component(.month, from: entry.date),
-                        day: day))!
-                    let isFuture = date > today
-                    let value = isFuture ? 0.0 : dayValue(for: date)
-                    let level = colorLevel(value: value, max: dailyMax, isFuture: isFuture, hasData: value > 0)
-                    let cellColor = entry.theme.cal[level]
-                    let dateColor: Color = isFuture ? entry.theme.textDim : entry.theme.onCal[level].opacity(0.65)
-                    let valColor: Color = entry.theme.onCal[level]
+                .padding(.bottom, 2)
 
-                    ZStack(alignment: .topLeading) {
-                        cellColor.aspectRatio(1, contentMode: .fit).cornerRadius(8)
-                        Text("\(day)")
-                            .font(.system(size: 10)).foregroundColor(dateColor)
-                            .padding(5)
-                        if !isFuture && value > 0 {
-                            Text(formattedCellValue(value))
-                                .font(.system(size: 13, weight: .ultraLight))
-                                .foregroundColor(valColor)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                                .padding(.bottom, 5)
+                LazyVGrid(
+                    columns: Array(repeating: GridItem(.fixed(fittedCellSide), spacing: gridSpacing), count: 7),
+                    spacing: gridSpacing
+                ) {
+                    // One index space prevents leading placeholders and dates from sharing IDs.
+                    ForEach(0..<(firstOffset + daysInMonth), id: \.self) { index in
+                        if index < firstOffset {
+                            Color.clear
+                                .frame(width: fittedCellSide, height: fittedCellSide)
+                        } else {
+                            let day = index - firstOffset + 1
+                            let date = cal.date(from: DateComponents(
+                                year: cal.component(.year, from: entry.date),
+                                month: cal.component(.month, from: entry.date),
+                                day: day))!
+                            let isFuture = date > today
+                            let value = isFuture ? 0.0 : dayValue(for: date)
+                            let level = colorLevel(value: value, max: dailyMax, isFuture: isFuture, hasData: value > 0)
+                            let cellColor = entry.theme.cal[level]
+                            let dateColor: Color = isFuture ? entry.theme.textDim : entry.theme.onCal[level].opacity(0.65)
+                            let valColor: Color = entry.theme.onCal[level]
+
+                            ZStack(alignment: .topLeading) {
+                                cellColor.cornerRadius(8)
+                                Text("\(day)")
+                                    .font(.system(size: 10)).foregroundColor(dateColor)
+                                    .padding(5)
+                                if !isFuture && value > 0 {
+                                    Text(formattedCellValue(value))
+                                        .font(.system(size: 13, weight: .ultraLight))
+                                        .foregroundColor(valColor)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                                        .padding(.bottom, 5)
+                                }
+                            }
+                            .frame(width: fittedCellSide, height: fittedCellSide)
                         }
                     }
-                    .aspectRatio(1, contentMode: .fit)
                 }
-            }
-            .frame(maxWidth: .infinity)
+                .frame(width: fittedGridWidth)
+                .frame(maxWidth: .infinity, alignment: .center)
 
-            Spacer()
+                Spacer(minLength: 0)
 
-            // Bottom stats row: today (left) · month (center) · streak (right)
-            HStack(alignment: .top, spacing: 0) {
-                let todayStats = statValueUnit(dayValue(for: today))
-                statCell(icon: metricIcon(), label: "TODAY",
-                         value: todayStats.value, unit: todayStats.unit,
-                         alignment: .leading)
-                let monthStats = statValueUnit(monthTotal())
-                statCell(icon: "calendar", label: "MONTH",
-                         value: monthStats.value, unit: monthStats.unit,
-                         alignment: .center)
-                statCell(icon: "flame", label: "STREAK",
-                         value: "\(currentStreak())", unit: "days",
-                         alignment: .trailing)
+                // Bottom stats row: today (left) · month (center) · streak (right)
+                HStack(alignment: .top, spacing: 0) {
+                    let todayStats = statValueUnit(dayValue(for: today))
+                    statCell(icon: metricIcon(), label: "TODAY",
+                             value: todayStats.value, unit: todayStats.unit,
+                             alignment: .leading)
+                    let monthStats = statValueUnit(monthTotal())
+                    statCell(icon: "calendar", label: "MONTH",
+                             value: monthStats.value, unit: monthStats.unit,
+                             alignment: .center)
+                    statCell(icon: "flame", label: "STREAK",
+                             value: "\(currentStreak())", unit: "days",
+                             alignment: .trailing)
+                }
+                .frame(height: 36, alignment: .top)
+                .padding(.top, 1)
             }
-            .padding(.top, 10)
+            .padding(.horizontal, horizontalPadding)
+            .padding(.top, topPadding)
+            .padding(.bottom, bottomPadding)
+            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .topLeading)
         }
-        .padding(14)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .containerBackground(entry.theme.bg, for: .widget)
     }
 
@@ -148,24 +169,24 @@ struct CalendarWidgetView: View {
     private func statCell(icon: String, label: String, value: String, unit: String, alignment: HorizontalAlignment) -> some View {
         let frameAlign: Alignment = alignment == .leading ? .leading : alignment == .trailing ? .trailing : .center
         // VStack is always .leading so value aligns to the left edge of the label
-        VStack(alignment: .leading, spacing: 3) {
-            HStack(spacing: 3) {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: 2) {
                 Image(systemName: icon)
-                    .font(.system(size: 10, weight: .light))
+                    .font(.system(size: 8, weight: .light))
                     .foregroundColor(entry.theme.textMid)
                 Text(label)
-                    .font(.system(size: 10)).tracking(0.8)
+                    .font(.system(size: 8)).tracking(0.6)
                     .foregroundColor(entry.theme.textMid)
             }
-            HStack(alignment: .lastTextBaseline, spacing: 3) {
+            HStack(alignment: .lastTextBaseline, spacing: 2) {
                 Text(value)
-                    .font(.system(size: 40, weight: .ultraLight))
+                    .font(.system(size: 20, weight: .ultraLight))
                     .foregroundColor(entry.theme.text)
                     .monospacedDigit()
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
                 Text(unit)
-                    .font(.system(size: 10, weight: .light))
+                    .font(.system(size: 8, weight: .light))
                     .foregroundColor(entry.theme.textMid)
             }
         }

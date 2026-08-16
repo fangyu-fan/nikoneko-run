@@ -20,4 +20,9 @@ final class ThresholdConfig {
     init(widgetKind: String) {
         self.widgetKind = widgetKind
     }
+
+    static func goalSettings(in configs: [ThresholdConfig]) -> ThresholdConfig? {
+        configs.first { $0.widgetKind == "defaults" }
+            ?? configs.first { $0.widgetKind.isEmpty }
+    }
 }

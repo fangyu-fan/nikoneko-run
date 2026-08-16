@@ -13,11 +13,9 @@ struct DaySessionSummary: Codable {
 }
 
 enum AppGroupDefaults {
-    static let suiteName = "group.com.fangyu.nikoneko-run"
+    static let suiteName = "group.com.fangyu.nikoneko-run-v1.0"
 
-    static var shared: UserDefaults {
-        UserDefaults(suiteName: suiteName) ?? .standard
-    }
+    static let shared = UserDefaults(suiteName: suiteName) ?? .standard
 
     static func writeSummaries(_ summaries: [DaySessionSummary]) {
         guard let data = try? JSONEncoder().encode(summaries) else { return }

@@ -1,13 +1,14 @@
 import SwiftUI
 
 struct LaunchScreenView: View {
-    @Environment(ThemeManager.self) private var themeManager
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let onComplete: () -> Void
 
     // Controls Lottie playback: false = frozen at frame 0, true = looping
     @State private var isAnimating: Bool = false
 
-    private var theme: ThemeTokens { themeManager.current }
+    // Keep the in-app launch animation aligned with the fixed system launch image.
+    private let theme = ThemeLibrary.moss
 
     var body: some View {
         ZStack {
@@ -20,29 +21,29 @@ struct LaunchScreenView: View {
                 LottieCharacterView(
                     characterId: "loader_cat",
                     color: theme.accentMid,
-                    shadowColor: theme.accentDim,
+                    secondaryColor: theme.accent,
+                    tertiaryColor: theme.accentDim,
+                    shadowColor: theme.bg,
                     bpm: 180,
                     isAnimating: isAnimating
                 )
                 .frame(width: 120, height: 88)
-                .padding(.bottom, 32)
+                .padding(.bottom, 17)
 
-                Text("Nikoneko")
-                    .font(.system(size: 32, weight: .ultraLight))
+                Text("nikoneko run")
+                    .font(.system(size: 30, weight: .ultraLight))
                     .foregroundColor(theme.text)
-                    .padding(.bottom, 8)
-
-                Text("slow jog · smile pace")
-                    .font(.system(size: 13))
-                    .tracking(0.5)
-                    .foregroundColor(theme.textDim)
+                    .offset(y: -10)
 
                 Spacer()
             }
+            .offset(y: -12)
         }
         .task {
-            try? await Task.sleep(for: .milliseconds(50))
-            isAnimating = true
+            if !reduceMotion {
+                try? await Task.sleep(for: .milliseconds(50))
+                isAnimating = true
+            }
             try? await Task.sleep(for: .milliseconds(1000))
             onComplete()
         }

@@ -12,7 +12,7 @@ struct DefaultsView: View {
 
     private var theme: ThemeTokens { themeManager.current }
     private var profile: UserProfile? { profiles.first }
-    private var config: ThresholdConfig? { configs.first }
+    private var config: ThresholdConfig? { ThresholdConfig.goalSettings(in: configs) }
 
     // Local drag state — committed to SwiftData on drag end
     @State private var t1: Double = 25
@@ -259,7 +259,13 @@ struct DefaultsView: View {
     }
 
     private func ensureConfig() {
-        guard configs.isEmpty else { return }
+        if let existing = config {
+            if existing.widgetKind.isEmpty {
+                existing.widgetKind = "defaults"
+                try? ctx.save()
+            }
+            return
+        }
         let c = ThresholdConfig(widgetKind: "defaults")
         c.threshold1 = 25
         c.threshold2 = 60

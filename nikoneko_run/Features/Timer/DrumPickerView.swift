@@ -50,7 +50,10 @@ struct DrumPickerView: View {
                         startValue = value  // lock anchor at gesture start
                     }
                     countsDown = g.velocity.height < 0
-                    let steps = Int((-g.translation.height / stepDistance).rounded())
+                    let steps = Self.stepsFrom(
+                        translationY: g.translation.height,
+                        stepHeight: stepDistance
+                    )
                     let next = Self.clamped(startValue + steps, to: range)
                     if next != value {
                         if hapticEnabled && (next / 10) != (value / 10) {
@@ -60,7 +63,10 @@ struct DrumPickerView: View {
                     }
                 }
                 .onEnded { g in
-                    let steps = Int((-g.translation.height / stepDistance).rounded())
+                    let steps = Self.stepsFrom(
+                        translationY: g.translation.height,
+                        stepHeight: stepDistance
+                    )
                     value = Self.clamped(startValue + steps, to: range)
                     isDragging = false
                 }
@@ -86,5 +92,9 @@ struct DrumPickerView: View {
 
     static func clamped(_ v: Int, to range: ClosedRange<Int>) -> Int {
         min(range.upperBound, max(range.lowerBound, v))
+    }
+
+    static func stepsFrom(translationY: CGFloat, stepHeight: CGFloat) -> Int {
+        Int((-translationY / stepHeight).rounded())
     }
 }

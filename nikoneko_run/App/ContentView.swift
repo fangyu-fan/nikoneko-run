@@ -67,15 +67,19 @@ struct ContentView: View {
                 print("[Lang] profile.language=\(p.language.code) LanguageBundle=\(LanguageBundle.languageCode)")
                 languageManager.apply(p.language)
                 print("[Lang] after apply: LanguageBundle=\(LanguageBundle.languageCode)")
+                var dirty = false
+                if LottieCharacterView.fileNameMap[p.activeCharacterId] == nil {
+                    p.activeCharacterId = "loader_cat"
+                    dirty = true
+                }
                 if !UserDefaults.standard.bool(forKey: "metricsMigrationDone") {
-                    var dirty = false
                     if !p.showHR      { p.showHR = true;      dirty = true }
                     if !p.showDistance { p.showDistance = true; dirty = true }
                     if !p.showCalories { p.showCalories = true; dirty = true }
                     if !p.showSteps   { p.showSteps = true;    dirty = true }
-                    if dirty { try? ctx.save() }
                     UserDefaults.standard.set(true, forKey: "metricsMigrationDone")
                 }
+                if dirty { try? ctx.save() }
             }
             return
         }

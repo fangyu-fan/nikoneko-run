@@ -24,9 +24,9 @@ final class WidgetDataTests: XCTestCase {
     }
 
     func test_themeWrittenToAppGroup() {
-        AppGroupDefaults.shared.set("zinc", forKey: "activeThemeId")
+        AppGroupDefaults.shared.set("paper", forKey: "activeThemeId")
         let theme = WidgetSharedData.loadTheme()
-        XCTAssertEqual(theme.id, "zinc")
+        XCTAssertEqual(theme.id, "paper")
         AppGroupDefaults.shared.removeObject(forKey: "activeThemeId")
     }
 }

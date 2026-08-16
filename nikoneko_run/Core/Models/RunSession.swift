@@ -45,7 +45,7 @@ final class RunSession {
     var maxHR: Int = 0
     var avgCadence: Int = 0
     var bpm: Int = 180
-    var characterId: String = "cat_a"
+    var characterId: String = "loader_cat"
     var themeId: String = "obsidian"
     var modeRaw: String = TimerMode.countdown.rawValue
     var mode: TimerMode {
@@ -64,7 +64,7 @@ final class RunSession {
         maxHR: Int = 0,
         avgCadence: Int = 0,
         bpm: Int = 180,
-        characterId: String = "cat_a",
+        characterId: String = "loader_cat",
         themeId: String = "obsidian",
         mode: TimerMode = .countdown
     ) {

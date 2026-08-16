@@ -178,7 +178,9 @@ struct OnboardingView: View {
             LottieCharacterView(
                 characterId: "loader_cat",
                 color: theme.accentMid,
-                shadowColor: theme.accentDim,
+                secondaryColor: theme.accent,
+                tertiaryColor: theme.accentDim,
+                shadowColor: theme.bg,
                 bpm: 180,
                 isAnimating: true
             )
@@ -215,7 +217,7 @@ struct OnboardingView: View {
                 }
                 // Fixed SQUARE ring — sits on top, never moves, covers only the card square
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(theme.accent, lineWidth: 1.5)
+                    .strokeBorder(theme.accent, lineWidth: 1.5)
                     .frame(width: cardSide, height: cardSide)
                     .offset(y: -(labelAreaHeight / 2))  // shift up to align with card square
             }
@@ -374,7 +376,9 @@ struct OnboardingView: View {
             LottieCharacterView(
                 characterId: "loader_cat",
                 color: theme.accentMid,
-                shadowColor: theme.accentDim,
+                secondaryColor: theme.accent,
+                tertiaryColor: theme.accentDim,
+                shadowColor: theme.bg,
                 bpm: bpm,
                 isAnimating: true
             )

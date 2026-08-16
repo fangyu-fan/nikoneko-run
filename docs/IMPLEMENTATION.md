@@ -4,8 +4,8 @@
 
 **Stack:** SwiftUI + SwiftData + Lottie  
 **Pattern:** MVVM + Service layer  
-**Bundle ID:** `com.fangyu.nikonekoo`  
-**App Group:** `group.com.fangyu.nikoneko`
+**Bundle ID:** `com.fangyu.nikoneko-run-v1.0`
+**App Group:** `group.com.fangyu.nikoneko-run-v1.0`
 
 ---
 
