@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-Hant">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Niko Neko Run · App Store Connect 送審指引</title>
+<style>
+body{margin:0;background:#0a0a0a;color:#f0ede8;font:16px/1.65 -apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif}main{max-width:900px;margin:0 auto;padding:48px 24px 80px}h1{font-size:42px;font-weight:300;line-height:1.1;margin:0 0 8px}h2{font-weight:400;color:#a5d4a5;margin-top:42px}h3{font-weight:500;color:#d8ddd8;margin-top:28px}.lede,.meta{color:#9aa39a}.card{background:#121412;border:1px solid #202820;border-radius:18px;padding:20px 22px;margin:18px 0}.grid{display:grid;grid-template-columns:180px 1fr;gap:8px 20px}.label{color:#899489}.ok{color:#9bd49b}.warn{color:#efc27c}.button{display:inline-block;background:#f0ede8;color:#0a0a0a;border-radius:999px;padding:10px 18px;text-decoration:none;font-weight:600;margin:8px 8px 0 0}.check{margin:12px 0}.path{font-family:ui-monospace,SFMono-Regular,monospace;color:#c4d8c4;font-size:14px}code{color:#c4d8c4}a{color:#a5d4a5}.small{font-size:14px;color:#869086}
+</style>
+<main>
+<p class="meta">NIKO NEKO RUN · 送審工作頁</p>
+<h1>App Store Connect 設定指引</h1>
+<p class="lede">這頁整理好可以直接照著填的欄位。App Store Connect 需要 Apple 登入；本機安全層目前不允許自動開啟外部管理頁，所以請點下方按鈕後由你登入。</p>
+<a class="button" href="https://appstoreconnect.apple.com/">開啟 App Store Connect</a>
+<a class="button" href="privacy-policy.html">預覽隱私政策</a>
+<a class="button" href="support.html">預覽支援頁</a>
+
+<h2>1. 建立 App 基本資料</h2>
+<div class="card"><div class="grid"><div class="label">App 名稱</div><div>慢跑貓貓（繁中）／Niko Neko Run（English）</div><div class="label">Bundle ID</div><div><code>com.fangyu.nikoneko-run-v1.0</code></div><div class="label">平台／版本</div><div>iOS · 1.0 · build 1 · 最低 iOS 17.0</div><div class="label">主類別</div><div>健康與健身</div><div class="label">副類別</div><div>生活風格</div><div class="label">價格</div><div>Free（請確認商業決策）</div></div></div>
+
+<h2>2. 貼上商店文案</h2>
+<div class="card"><p class="check"><span class="ok">□</span> 副標題：<strong>slow jog · smile pace</strong></p><p class="check"><span class="ok">□</span> 宣傳文字：從 <span class="path">APP_STORE_METADATA.md</span> 複製繁中或英文版本</p><p class="check"><span class="ok">□</span> 關鍵字：使用 metadata 文件內對應語言版本</p><p class="check"><span class="ok">□</span> 描述與 What's New：使用 metadata 文件完整內容</p><p class="small">完整文案：<a href="APP_STORE_METADATA.md">開啟 APP_STORE_METADATA.md</a></p></div>
+
+<h2>3. 上傳截圖與 App Icon</h2>
+<div class="card"><p class="check"><span class="ok">□</span> 6.7 吋：<span class="path">screenshots/</span>（1290 × 2796 px）</p><p class="check"><span class="ok">□</span> 6.5 吋：<span class="path">screenshots/6.5-inch/</span>（1284 × 2778 px）</p><p class="check"><span class="ok">□</span> App Icon：<span class="path">assets/NikoNekoRun_AppIcon_1024.png</span></p><p class="warn">注意：這組圖是依目前設計與假資料製作的候選圖。正式送審前，建議用最終簽署 build 在 iPhone 17 Pro 模擬器重新截圖。</p></div>
+
+<h2>4. App Review Information</h2>
+<div class="card"><p>將 <a href="REVIEW_NOTES.md">REVIEW_NOTES.md</a> 的 Reviewer summary、Suggested review path、Permission explanations 貼入 App Review Notes。</p><p><strong>Demo account：</strong>Not applicable — no account or login.</p><p><strong>測試重點：</strong>啟動 → 完成 onboarding → Start → 長按 stop 2 秒 → Report → Settings → Widgets / Live Activity。</p></div>
+
+<h2>5. 隱私、支援與聯絡方式</h2>
+<div class="card"><p class="check"><span class="warn">□</span> 將 <span class="path">privacy-policy.html</span> 發布到正式 HTTPS 網址，填入 Privacy Policy URL。</p><p class="check"><span class="warn">□</span> 將 <span class="path">support.html</span> 發布到正式 HTTPS 網址，填入 Support URL。</p><p class="check"><span class="warn">□</span> 替換頁面內的 support email、legal name/company、copyright。</p><p class="check"><span class="warn">□</span> 用最終 archive 重新確認 App Privacy questionnaire；目前程式是本機 SwiftData、無帳號、無廣告追蹤。</p></div>
+
+<h2>6. 送審前最後檢查</h2>
+<div class="card"><p class="check">□ Bundle ID、Team、簽名、version/build 正確</p><p class="check">□ HealthKit、Motion、Notification 拒絕權限流程可使用計時器</p><p class="check">□ 小工具、Live Activity、CSV export 在最終 build 可運作</p><p class="check">□ Lottie 角色素材已確認可再散布</p><p class="check">□ 不要宣傳尚未啟用的 iCloud sync</p><p class="small">完整清單：<a href="SUBMISSION_CHECKLIST.md">開啟 SUBMISSION_CHECKLIST.md</a></p></div>
+</main>
+</html>
