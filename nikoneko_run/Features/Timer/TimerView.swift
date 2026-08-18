@@ -361,9 +361,9 @@ struct TimerView: View {
             // Live metrics — shown when running or paused
             HStack(spacing: 28) {
                 if vm.state == .running || vm.state == .paused {
-                    if profile?.showHR ?? true {
+                    if (profile?.showHR ?? true), hrService.currentHR > 0 {
                         metricItem(icon: "heart",
-                                   value: hrService.currentHR > 0 ? "\(hrService.currentHR)" : "—",
+                                   value: "\(hrService.currentHR)",
                                    unit: nil)
                     }
                     if profile?.showDistance ?? true {
