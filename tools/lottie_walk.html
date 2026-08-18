@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Original Lottie Walk</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 1080px; height: 1080px; overflow: hidden; background: #fff; }
+    #stage { width: 1080px; height: 1080px; background: #fff; position: relative; }
+    #row { position: absolute; left: 32px; top: 322px; width: 1016px; height: 430px; display: grid; grid-template-columns: repeat(6, 1fr); align-items: end; gap: 0; }
+    .slot { width: 169px; height: 430px; display: flex; align-items: flex-end; justify-content: center; }
+    .anim { width: 156px; height: 300px; }
+    .anim svg { width: 100% !important; height: 100% !important; overflow: visible; }
+    #baseline { position: absolute; left: 42px; right: 42px; top: 748px; height: 3px; background: #eeeeef; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <div id="stage"><div id="row"></div><div id="baseline"></div></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+  <script>
+    const names = ['Mushrooms', 'Potato', 'Avocado', 'Donut', 'Pothos', 'Taco'];
+    const animations = [];
+    const row = document.getElementById('row');
+    names.forEach((name, i) => {
+      const slot = document.createElement('div'); slot.className = 'slot';
+      const el = document.createElement('div'); el.className = 'anim'; el.id = 'anim-' + i;
+      slot.appendChild(el); row.appendChild(slot);
+      animations.push(lottie.loadAnimation({
+        container: el, renderer: 'svg', loop: true, autoplay: true,
+        path: '/nikoneko_run/Characters/Lottie/' + encodeURIComponent(name) + '.json',
+        rendererSettings: { preserveAspectRatio: 'xMidYMax meet', progressiveLoad: false, hideOnTransparent: false }
+      }));
+    });
+    window.__lottieAnimations = animations;
+    window.__lottieReady = new Promise(resolve => {
+      let loaded = 0;
+      animations.forEach(a => a.addEventListener('DOMLoaded', () => { loaded++; if (loaded === animations.length) resolve(true); }));
+    });
+    window.setFrame = (frame) => animations.forEach(a => a.goToAndStop(frame, true));
+  </script>
+</body>
+</html>

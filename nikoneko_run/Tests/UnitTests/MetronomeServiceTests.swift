@@ -1,4 +1,5 @@
 import XCTest
+import AVFoundation
 @testable import nikoneko
 
 @MainActor
@@ -18,6 +19,22 @@ final class MetronomeServiceTests: XCTestCase {
     func test_stopSetsIsPlayingFalse() {
         let m = MetronomeService()
         m.stop()
+        XCTAssertFalse(m.isPlaying)
+    }
+
+    func test_interruptionEndingDoesNotResumeAfterStop() {
+        let m = MetronomeService()
+        m.stop()
+
+        NotificationCenter.default.post(
+            name: AVAudioSession.interruptionNotification,
+            object: AVAudioSession.sharedInstance(),
+            userInfo: [
+                AVAudioSessionInterruptionTypeKey: AVAudioSession.InterruptionType.ended.rawValue,
+                AVAudioSessionInterruptionOptionKey: AVAudioSession.InterruptionOptions.shouldResume.rawValue,
+            ]
+        )
+
         XCTAssertFalse(m.isPlaying)
     }
 

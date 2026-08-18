@@ -5,6 +5,7 @@ xcuserdata/
 *.moved-aside
 DerivedData/
 build/
+.cache/
 
 # macOS
 .DS_Store

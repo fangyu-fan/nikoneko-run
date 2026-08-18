@@ -3,6 +3,7 @@ import SwiftData
 
 extension AppGroupDefaults {
     static func writeSessionSummaries(from sessions: [RunSession], dailyGoalMinutes: Int) {
+        let normalizedGoalMinutes = max(dailyGoalMinutes, 1)
         let summaries = sessions
             .sorted { $0.startDate > $1.startDate }
             .prefix(400)
@@ -10,13 +11,14 @@ extension AppGroupDefaults {
                 DaySessionSummary(
                     date: session.startDate,
                     duration: session.duration,
-                    completionRatio: min(1.0, session.duration / (Double(dailyGoalMinutes) * 60)),
+                    completionRatio: min(1.0, session.duration / (Double(normalizedGoalMinutes) * 60)),
                     hrAvg: session.avgHR,
                     steps: session.steps,
                     calories: session.calories,
                     distance: session.distance
                 )
             }
+        shared.set(normalizedGoalMinutes, forKey: "dailyGoalMinutes")
         writeSummaries(Array(summaries))
     }
 }

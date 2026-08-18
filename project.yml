@@ -40,6 +40,8 @@ targets:
     settings:
       base:
         INFOPLIST_FILE: nikoneko_run/App/Info.plist
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "6"
         PRODUCT_BUNDLE_IDENTIFIER: com.fangyu.nikoneko-run-v1.0
         SWIFT_VERSION: 6.0
         DEVELOPMENT_TEAM: 5A5TMU9JP3
@@ -64,6 +66,9 @@ targets:
           UIColorName: "LaunchBackground"
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
         NSHealthShareUsageDescription: "Niko Neko Run reads heart rate during runs."
         NSHealthUpdateUsageDescription: "Niko Neko Run saves workout data to Health."
         NSMotionUsageDescription: "Niko Neko Run tracks steps and distance."
@@ -127,6 +132,8 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.fangyu.nikoneko-run-v1.0.widgets
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "6"
         SWIFT_VERSION: 6.0
         NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:
@@ -137,6 +144,7 @@ targets:
     info:
       path: nikoneko_run/Widgets/Info.plist
       properties:
+        CFBundleDisplayName: "Nikoneko Run"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
         NSSupportsLiveActivities: true

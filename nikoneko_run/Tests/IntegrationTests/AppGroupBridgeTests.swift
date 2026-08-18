@@ -1,6 +1,7 @@
 import XCTest
 @testable import nikoneko
 
+@MainActor
 final class AppGroupBridgeTests: XCTestCase {
 
     func test_writeThenLoadSummariesRoundTrip() {
@@ -20,5 +21,20 @@ final class AppGroupBridgeTests: XCTestCase {
         AppGroupDefaults.shared.removeObject(forKey: "sessionSummaries")
         let loaded = AppGroupDefaults.loadSummaries()
         XCTAssertEqual(loaded.count, 0)
+    }
+
+    func test_sessionSyncAlsoWritesDailyGoal() {
+        defer {
+            AppGroupDefaults.shared.removeObject(forKey: "sessionSummaries")
+            AppGroupDefaults.shared.removeObject(forKey: "dailyGoalMinutes")
+        }
+
+        let session = RunSession(startDate: Date(), duration: 15 * 60, steps: 1_500)
+        AppGroupDefaults.writeSessionSummaries(from: [session], dailyGoalMinutes: 30)
+
+        let summaries = AppGroupDefaults.loadSummaries()
+        XCTAssertEqual(summaries.count, 1)
+        XCTAssertEqual(summaries[0].completionRatio, 0.5, accuracy: 0.001)
+        XCTAssertEqual(AppGroupDefaults.shared.integer(forKey: "dailyGoalMinutes"), 30)
     }
 }

@@ -1,11 +1,13 @@
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct ContentView: View {
     @Environment(ThemeManager.self) private var themeManager
     @Environment(LanguageManager.self) private var languageManager
     @Environment(\.modelContext) private var ctx
     @Query private var profiles: [UserProfile]
+    @Query(sort: \RunSession.startDate, order: .reverse) private var sessions: [RunSession]
     @State private var timerVM = TimerViewModel()
     @State private var showOnboarding: Bool = !UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
     private var theme: ThemeTokens { themeManager.current }
@@ -58,7 +60,16 @@ struct ContentView: View {
             .animation(.easeInOut(duration: 0.3), value: timerVM.state == .idle)
             .navigationBarHidden(true)
         }
-        .onAppear { ensureProfile() }
+        .onAppear {
+            ensureProfile()
+            syncWidgetData()
+        }
+        .onChange(of: sessions) { _, _ in
+            syncWidgetData()
+        }
+        .onChange(of: profiles.first?.dailyGoalMinutes) { _, _ in
+            syncWidgetData()
+        }
     }
 
     private func ensureProfile() {
@@ -86,5 +97,13 @@ struct ContentView: View {
         let profile = UserProfile()
         ctx.insert(profile)
         try? ctx.save()
+    }
+
+    private func syncWidgetData() {
+        AppGroupDefaults.writeSessionSummaries(
+            from: sessions,
+            dailyGoalMinutes: profiles.first?.dailyGoalMinutes ?? 20
+        )
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }

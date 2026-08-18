@@ -20,6 +20,9 @@ final class MetronomeService {
     private var configChangeObserver: NSObjectProtocol?
     private var beatContinuation: AsyncStream<Void>.Continuation?
     private var beatTask: Task<Void, Never>?
+    /// User/session intent, kept separate from transient audio interruptions.
+    private var playbackRequested = false
+    private var wasPlayingBeforeInterruption = false
 
     init() {
         setupEngine()
@@ -50,12 +53,17 @@ final class MetronomeService {
                 guard let self else { return }
                 if isBegan {
                     if self.isPlaying {
-                        self.isPlaying = false
-                        self.player.stop()
-                        self.nextBeatTime = nil
+                        self.wasPlayingBeforeInterruption = self.playbackRequested
+                        self.haltPlayback(resetBeatCount: false)
+                    } else if !self.playbackRequested {
+                        self.wasPlayingBeforeInterruption = false
                     }
                 } else {
-                    if shouldResume && !self.isPlaying {
+                    let shouldRestart = shouldResume
+                        && self.playbackRequested
+                        && self.wasPlayingBeforeInterruption
+                    self.wasPlayingBeforeInterruption = false
+                    if shouldRestart && !self.isPlaying {
                         self.resume()
                     }
                 }
@@ -176,6 +184,7 @@ final class MetronomeService {
     // MARK: - Playback
 
     func start() {
+        playbackRequested = true
         configureAudioSession()
         isPlaying = true
         beatCount = 0
@@ -226,18 +235,20 @@ final class MetronomeService {
     }
 
     func stop() {
-        isPlaying = false
-        beatCount = 0
-        player.stop()
-        nextBeatTime = nil
-        beatContinuation?.finish()
-        beatContinuation = nil
-        beatTask?.cancel()
-        beatTask = nil
+        playbackRequested = false
+        wasPlayingBeforeInterruption = false
+        haltPlayback(resetBeatCount: true)
     }
 
     func pause() {
+        playbackRequested = false
+        wasPlayingBeforeInterruption = false
+        haltPlayback(resetBeatCount: false)
+    }
+
+    private func haltPlayback(resetBeatCount: Bool) {
         isPlaying = false
+        if resetBeatCount { beatCount = 0 }
         player.stop()
         nextBeatTime = nil
         beatContinuation?.finish()
@@ -247,6 +258,7 @@ final class MetronomeService {
     }
 
     func resume() {
+        playbackRequested = true
         configureAudioSession()
         isPlaying = true
         if !engine.isRunning {
