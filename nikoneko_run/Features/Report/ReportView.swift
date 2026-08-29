@@ -84,6 +84,8 @@ struct ReportView: View {
                     logList
                 }
             }
+            .frame(maxWidth: 700)
+            .frame(maxWidth: .infinity)
             .padding(.bottom, 20)
         }
         .background(theme.bg.ignoresSafeArea())
@@ -92,7 +94,7 @@ struct ReportView: View {
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $selectedSession) { session in
             SessionDetailSheet(session: session)
-                .presentationDetents([.fraction(0.55)])
+                .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.hidden)
                 .presentationBackground(theme.bg)
         }
@@ -360,17 +362,18 @@ struct MetricCard: View {
             GeometryReader { geo in
                 VStack(alignment: .leading, spacing: 0) {
                     // Fixed-size numeral so all cards have the same number height
-                    HStack(alignment: .lastTextBaseline, spacing: 2) {
-                        Text(vm.metricValueString(metric))
-                            .font(.system(size: 32, weight: .ultraLight))
-                            .foregroundColor(isActive ? theme.accent : theme.text)
-                            .monospacedDigit()
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.7)
-                        Text(vm.metricUnit(metric))
-                            .font(.system(size: 11, weight: isActive ? .semibold : .regular))
-                            .foregroundColor(isActive ? theme.accent : theme.text)
-                            .lineLimit(1)
+                    ViewThatFits(in: .horizontal) {
+                        HStack(alignment: .lastTextBaseline, spacing: 2) {
+                            metricValue
+                                .fixedSize(horizontal: true, vertical: false)
+                            metricUnit
+                                .fixedSize(horizontal: true, vertical: false)
+                        }
+
+                        // The label below already identifies the metric. On narrow
+                        // cards, keep the full value instead of truncating it just
+                        // to repeat the unit beside it.
+                        metricValue
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
 
@@ -400,6 +403,23 @@ struct MetricCard: View {
         }
         .buttonStyle(.plain)
     }
+
+    private var metricValue: some View {
+        Text(vm.metricValueString(metric))
+            .font(.system(size: 32, weight: .ultraLight))
+            .foregroundColor(isActive ? theme.accent : theme.text)
+            .monospacedDigit()
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .allowsTightening(true)
+    }
+
+    private var metricUnit: some View {
+        Text(vm.metricUnit(metric))
+            .font(.system(size: 11, weight: isActive ? .semibold : .regular))
+            .foregroundColor(isActive ? theme.accent : theme.text)
+            .lineLimit(1)
+    }
 }
 
 // MARK: - LogRow
@@ -408,7 +428,7 @@ struct LogRow: View {
     static let dateFmt: DateFormatter = {
         let f = DateFormatter()
         f.locale = Locale(identifier: LanguageBundle.languageCode)
-        f.setLocalizedDateFormatFromTemplate("MMMMd")
+        f.setLocalizedDateFormatFromTemplate("MMMd")
         return f
     }()
     static let timeFmt: DateFormatter = {
@@ -432,6 +452,8 @@ struct LogRow: View {
             Text(formattedDate)
                 .font(.system(size: 16))
                 .foregroundColor(theme.text)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
 
             Circle()
                 .fill(theme.textDim)
@@ -440,6 +462,8 @@ struct LogRow: View {
             Text(timeRange)
                 .font(.system(size: 16))
                 .foregroundColor(theme.text)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
 
             Circle()
                 .fill(theme.textDim)
@@ -448,6 +472,8 @@ struct LogRow: View {
             Text("\(Int(session.duration / 60)) \(lm.L("session.unit.min"))")
                 .font(.system(size: 16))
                 .foregroundColor(theme.text)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
 
             Spacer()
 
@@ -724,7 +750,8 @@ struct SessionDetailSheet: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(dateLabel).font(.system(size: 16)).foregroundColor(theme.text)
@@ -771,7 +798,11 @@ struct SessionDetailSheet: View {
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 32)
+            }
+            .frame(maxWidth: 700)
+            .frame(maxWidth: .infinity)
         }
+        .scrollBounceBehavior(.basedOnSize)
         .background(theme.bg)
     }
 

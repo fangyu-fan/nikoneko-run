@@ -55,6 +55,8 @@ struct CharacterPickerView: View {
                         }
                     }
                 }
+                .frame(maxWidth: 700)
+                .frame(maxWidth: .infinity)
                 .background(theme.surface)
                 .cornerRadius(14)
                 .padding(.horizontal, 18)

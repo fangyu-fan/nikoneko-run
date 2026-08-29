@@ -50,6 +50,8 @@ struct ContentView: View {
                                     .frame(width: 44, height: 44)
                             }
                         }
+                        .frame(maxWidth: 700)
+                        .frame(maxWidth: .infinity)
                         .padding(.horizontal, 12)
                         .padding(.top, 56)
                         Spacer()

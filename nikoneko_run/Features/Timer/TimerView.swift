@@ -26,7 +26,41 @@ struct TimerView: View {
     @Environment(\.modelContext) private var ctx
 
     private var theme: ThemeTokens { themeManager.current }
-    private let numeralHeight: CGFloat = 360
+    private struct Layout {
+        let isCompactHeight: Bool
+        let isNarrow: Bool
+        let contentMaxWidth: CGFloat
+        let characterTopPadding: CGFloat
+        let numeralHeight: CGFloat
+        let pickerRowHeight: CGFloat
+        let timeFontSize: CGFloat
+        let ghostFontSize: CGFloat
+        let secondaryTimeOffset: CGFloat
+        let hhmmSlotWidth: CGFloat
+        let colonPadding: CGFloat
+        let middleSpacing: CGFloat
+        let metricsBottomPadding: CGFloat
+        let controlsBottomPadding: CGFloat
+        let actionBottomPadding: CGFloat
+
+        init(size: CGSize) {
+            isCompactHeight = size.height < 780
+            isNarrow = size.width < 430
+            contentMaxWidth = min(size.width, 600)
+            characterTopPadding = isCompactHeight ? 40 : (size.width >= 700 ? 80 : 116)
+            numeralHeight = isCompactHeight ? 236 : 360
+            pickerRowHeight = isCompactHeight ? 72 : 90
+            timeFontSize = isCompactHeight ? 92 : 108
+            ghostFontSize = isCompactHeight ? 40 : 48
+            secondaryTimeOffset = isCompactHeight ? 72 : 90
+            hhmmSlotWidth = isNarrow ? 82 : 100
+            colonPadding = isNarrow ? 2 : 8
+            middleSpacing = isCompactHeight ? 4 : 32
+            metricsBottomPadding = isCompactHeight ? 12 : 20
+            controlsBottomPadding = isCompactHeight ? 12 : 24
+            actionBottomPadding = isCompactHeight ? 8 : 24
+        }
+    }
 
     // MARK: - Display helpers
 
@@ -65,8 +99,11 @@ struct TimerView: View {
     }
 
     var body: some View {
-        ZStack {
-            theme.bg.ignoresSafeArea()
+        GeometryReader { geometry in
+            let layout = Layout(size: geometry.size)
+
+            ZStack {
+                theme.bg.ignoresSafeArea()
 
             // Centred run-complete popup
             if let session = savedSession {
@@ -79,10 +116,9 @@ struct TimerView: View {
 
                 // Card — absorbs taps so they don't fall through to background
                 SessionDetailSheet(session: session, onDismiss: {
-                    withAnimation(.easeOut(duration: 0.2)) { savedSession = nil }
-                })
-                .frame(maxWidth: 340)
-                .fixedSize(horizontal: false, vertical: true)
+                        withAnimation(.easeOut(duration: 0.2)) { savedSession = nil }
+                    })
+                .frame(maxWidth: 340, maxHeight: min(520, geometry.size.height - 40))
                 .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                 .shadow(color: .black.opacity(0.18), radius: 24, y: 8)
                 .padding(.horizontal, 20)
@@ -92,7 +128,7 @@ struct TimerView: View {
                 .zIndex(2)
             }
 
-            VStack(spacing: 0) {
+                VStack(spacing: 0) {
                 // Character strip
                 LottieCharacterView(
                     characterId: profile?.activeCharacterId ?? "loader_cat",
@@ -105,7 +141,7 @@ struct TimerView: View {
                 )
                 .frame(width: 72, height: 52)
                 .frame(maxWidth: .infinity)
-                .padding(.top, 116)
+                .padding(.top, layout.characterTopPadding)
                 .onTapGesture {
                     guard vm.state == .idle else { return }
                     showCharacterPicker = true
@@ -124,13 +160,17 @@ struct TimerView: View {
                             // Countdown: scrollable minutes picker
                             DrumPickerView(value: $vm.selectedMinutes,
                                           range: 1...999,
-                                          hapticEnabled: profile?.hapticEnabled ?? true)
+                                          hapticEnabled: profile?.hapticEnabled ?? true,
+                                          centerFontSize: layout.timeFontSize,
+                                          ghostFontSize: layout.ghostFontSize,
+                                          rowHeight: layout.pickerRowHeight,
+                                          stepDistance: layout.isCompactHeight ? 28 : 32)
                                 .opacity(vm.state == .idle ? 1 : 0)
                                 .allowsHitTesting(vm.state == .idle)
                         } else {
                             // Stopwatch: static 0 — no picker
                             Text("0")
-                                .font(.system(size: 108, weight: .ultraLight))
+                                .font(.system(size: layout.timeFontSize, weight: .ultraLight))
                                 .foregroundColor(theme.text)
                                 .monospacedDigit()
                                 .kerning(-5)
@@ -142,7 +182,7 @@ struct TimerView: View {
                         // Plain running numeral — ZStack so offset is from center, matching DrumPickerView ghost
                         ZStack {
                             Text(primaryTimeText)
-                                .font(.system(size: 108, weight: .ultraLight))
+                                .font(.system(size: layout.timeFontSize, weight: .ultraLight))
                                 .foregroundColor(theme.text)
                                 .monospacedDigit()
                                 .kerning(-5)
@@ -150,11 +190,11 @@ struct TimerView: View {
 
                             if vm.state != .idle {
                                 Text(secondaryTimeText)
-                                    .font(.system(size: 48, weight: .thin))
+                                    .font(.system(size: layout.ghostFontSize, weight: .thin))
                                     .foregroundColor(theme.text)
                                     .monospacedDigit()
                                     .fixedSize()
-                                    .offset(y: 90)
+                                    .offset(y: layout.secondaryTimeOffset)
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .center)
@@ -172,28 +212,43 @@ struct TimerView: View {
                                 // HH
                                 hhmmSlot(
                                     countdown: DrumPickerView(value: $selectedHours, range: 0...9,
-                                                              hapticEnabled: profile?.hapticEnabled ?? true),
+                                                              hapticEnabled: profile?.hapticEnabled ?? true,
+                                                              centerFontSize: layout.isNarrow ? 72 : layout.timeFontSize,
+                                                              ghostFontSize: layout.isNarrow ? 34 : layout.ghostFontSize,
+                                                              rowHeight: layout.pickerRowHeight,
+                                                              stepDistance: layout.isCompactHeight ? 28 : 32),
                                     stopwatchText: "0",
                                     runningText: Text(hhText),
-                                    width: 72
+                                    width: layout.hhmmSlotWidth,
+                                    fontSize: layout.isNarrow ? 72 : layout.timeFontSize
                                 )
 
-                                colon
+                                colon(fontSize: layout.isNarrow ? 72 : layout.timeFontSize,
+                                      horizontalPadding: layout.colonPadding)
 
                                 // MM
                                 hhmmSlot(
                                     countdown: DrumPickerView(value: $vm.selectedMinutes, range: 0...59,
                                                               hapticEnabled: profile?.hapticEnabled ?? true,
-                                                              zeroPadded: true),
+                                                              zeroPadded: true,
+                                                              centerFontSize: layout.isNarrow ? 72 : layout.timeFontSize,
+                                                              ghostFontSize: layout.isNarrow ? 34 : layout.ghostFontSize,
+                                                              rowHeight: layout.pickerRowHeight,
+                                                              stepDistance: layout.isCompactHeight ? 28 : 32),
                                     stopwatchText: "00",
                                     runningText: Text(mmText),
-                                    width: 100
+                                    width: layout.hhmmSlotWidth,
+                                    fontSize: layout.isNarrow ? 72 : layout.timeFontSize
                                 )
 
-                                colon
+                                colon(fontSize: layout.isNarrow ? 72 : layout.timeFontSize,
+                                      horizontalPadding: layout.colonPadding)
 
                                 // SS — stopwatch: static 00; countdown: locked at 0
-                                ssSlot(running: Text(ssText))
+                                ssSlot(running: Text(ssText),
+                                       width: layout.hhmmSlotWidth,
+                                       fontSize: layout.isNarrow ? 72 : layout.timeFontSize,
+                                       layout: layout)
                                 Spacer(minLength: 0)
                             }
                         }
@@ -201,24 +256,27 @@ struct TimerView: View {
                         .allowsHitTesting(true)
                     }
                 }
-                .frame(height: numeralHeight)
+                .frame(height: layout.numeralHeight)
 
-                Spacer(minLength: 32)
+                Spacer(minLength: layout.middleSpacing)
 
                 // Live metrics — fixed height so it never shifts
                 metricsBlock
                     .frame(height: 28)
-                    .padding(.bottom, 20)
+                    .padding(.bottom, layout.metricsBottomPadding)
 
                 // BPM + volume ctrl row
                 ctrlRow
                     .padding(.horizontal, 16)
-                    .padding(.bottom, 24)
+                    .padding(.bottom, layout.controlsBottomPadding)
 
                 // Action button — disabled while popup is showing to prevent accidental re-start
-                actionButtonArea
-                    .padding(.bottom, 24)
+                actionButtonArea(compact: layout.isCompactHeight)
+                    .padding(.bottom, layout.actionBottomPadding)
                     .allowsHitTesting(savedSession == nil)
+                }
+                .frame(maxWidth: layout.contentMaxWidth)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .onChange(of: vm.completedSession) { _, session in
@@ -407,23 +465,23 @@ struct TimerView: View {
 
     // MARK: - HH:MM slot helpers
 
-    private var colon: some View {
+    private func colon(fontSize: CGFloat, horizontalPadding: CGFloat) -> some View {
         Text(":")
-            .font(.system(size: 108, weight: .ultraLight))
+            .font(.system(size: fontSize, weight: .ultraLight))
             .foregroundColor(theme.text)
-            .padding(.bottom, 18)
-            .padding(.horizontal, 8)
+            .padding(.bottom, fontSize * 0.167)
+            .padding(.horizontal, horizontalPadding)
     }
 
     @ViewBuilder
-    private func hhmmSlot<I: View>(countdown: I, stopwatchText: String, runningText: Text, width: CGFloat) -> some View {
+    private func hhmmSlot<I: View>(countdown: I, stopwatchText: String, runningText: Text, width: CGFloat, fontSize: CGFloat) -> some View {
         Group {
             if vm.state == .idle {
                 if vm.isCountdown {
                     countdown
                 } else {
                     Text(stopwatchText)
-                        .font(.system(size: 108, weight: .ultraLight))
+                        .font(.system(size: fontSize, weight: .ultraLight))
                         .foregroundColor(theme.text)
                         .monospacedDigit()
                         .kerning(-5)
@@ -431,7 +489,7 @@ struct TimerView: View {
                 }
             } else {
                 runningText
-                    .font(.system(size: 108, weight: .ultraLight))
+                    .font(.system(size: fontSize, weight: .ultraLight))
                     .foregroundColor(theme.text)
                     .monospacedDigit()
                     .kerning(-5)
@@ -442,18 +500,22 @@ struct TimerView: View {
     }
 
     @ViewBuilder
-    private func ssSlot(running: Text) -> some View {
+    private func ssSlot(running: Text, width: CGFloat, fontSize: CGFloat, layout: Layout) -> some View {
         Group {
             if vm.state == .idle {
                 if vm.isCountdown {
                     // Countdown: picker locked at 0 (range 0...0, no interaction)
                     DrumPickerView(value: $selectedSeconds, range: 0...0,
-                                   hapticEnabled: false, zeroPadded: true)
+                                   hapticEnabled: false, zeroPadded: true,
+                                   centerFontSize: fontSize,
+                                   ghostFontSize: layout.isNarrow ? 34 : layout.ghostFontSize,
+                                   rowHeight: layout.pickerRowHeight,
+                                   stepDistance: layout.isCompactHeight ? 28 : 32)
                         .allowsHitTesting(false)
                 } else {
                     // Stopwatch: pure static text, no gesture layer
                     Text("00")
-                        .font(.system(size: 108, weight: .ultraLight))
+                        .font(.system(size: fontSize, weight: .ultraLight))
                         .foregroundColor(theme.text)
                         .monospacedDigit()
                         .kerning(-5)
@@ -461,14 +523,14 @@ struct TimerView: View {
                 }
             } else {
                 running
-                    .font(.system(size: 108, weight: .ultraLight))
+                    .font(.system(size: fontSize, weight: .ultraLight))
                     .foregroundColor(theme.text)
                     .monospacedDigit()
                     .kerning(-5)
                     .fixedSize()
             }
         }
-        .frame(width: 100)
+        .frame(width: width)
     }
 
     // MARK: - Ctrl row (BPM + volume)
@@ -553,19 +615,21 @@ struct TimerView: View {
 
     // MARK: - Action button
 
-    private var actionButtonArea: some View {
-        VStack(spacing: 12) {
+    private func actionButtonArea(compact: Bool) -> some View {
+        let buttonSize: CGFloat = compact ? 108 : 128
+        let progressSize: CGFloat = compact ? 120 : 140
+        return VStack(spacing: 12) {
             ZStack {
                 Circle()
                     .strokeBorder(theme.surface, lineWidth: 2)
-                    .frame(width: 128, height: 128)
+                    .frame(width: buttonSize, height: buttonSize)
 
                 if vm.state != .idle {
                     Circle()
                         .trim(from: 0, to: longPressProgress)
                         .stroke(theme.accentMid,
                                 style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
-                        .frame(width: 140, height: 140)
+                        .frame(width: progressSize, height: progressSize)
                         .rotationEffect(.degrees(-90))
                 }
 
@@ -575,7 +639,7 @@ struct TimerView: View {
                       : isLongPressing
                         ? "stop.fill"
                         : vm.state == .running ? "pause.fill" : "play.fill")
-                    .font(.system(size: 32, weight: .medium))
+                    .font(.system(size: compact ? 28 : 32, weight: .medium))
                     .foregroundColor(theme.accentMid)
                     .animation(.none, value: isLongPressing)
             }
@@ -632,7 +696,7 @@ struct TimerView: View {
                 .font(.system(size: 11))
                 .foregroundColor(theme.textDim)
         }
-        .frame(height: 169)
+        .frame(height: compact ? 145 : 169)
     }
 }
 

@@ -119,6 +119,8 @@ struct DataSyncView: View {
                 .cornerRadius(14)
                 .padding(.bottom, 4)
             }
+            .frame(maxWidth: 700)
+            .frame(maxWidth: .infinity)
             .padding(.horizontal, 18)
             .padding(.top, 8)
         }

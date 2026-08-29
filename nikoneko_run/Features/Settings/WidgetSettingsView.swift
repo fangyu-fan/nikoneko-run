@@ -84,6 +84,8 @@ struct WidgetSettingsView: View {
             }
             .background(theme.bg)
         }
+        .frame(maxWidth: 700)
+        .frame(maxWidth: .infinity)
         .background(theme.bg.ignoresSafeArea())
         .id(lm.version)
         .navigationTitle(lm.L("widget.title"))
@@ -296,7 +298,8 @@ struct WidgetSettingsView: View {
                 .foregroundColor(theme.text)
                 .padding(.bottom, 24)
 
-            VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: 0) {
                 ForEach(Array(steps.enumerated()), id: \.offset) { idx, step in
                     HStack(alignment: .top, spacing: 16) {
                         ZStack {
@@ -328,10 +331,12 @@ struct WidgetSettingsView: View {
                             .padding(.leading, 80)
                     }
                 }
+                }
+                .background(theme.surface)
+                .cornerRadius(14)
+                .padding(.horizontal, 18)
             }
-            .background(theme.surface)
-            .cornerRadius(14)
-            .padding(.horizontal, 18)
+            .scrollBounceBehavior(.basedOnSize)
 
             Button {
                 showAddInstructions = false
@@ -348,10 +353,9 @@ struct WidgetSettingsView: View {
             .padding(.top, 12)
             .padding(.bottom, 8)
 
-            Spacer()
         }
         .background(theme.bg.ignoresSafeArea())
-        .presentationDetents([.fraction(0.65)])
+        .presentationDetents([.medium, .large])
         .presentationDragIndicator(.hidden)
     }
 

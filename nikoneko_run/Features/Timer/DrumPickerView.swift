@@ -5,12 +5,13 @@ struct DrumPickerView: View {
     let range: ClosedRange<Int>
     var hapticEnabled: Bool = true
     var zeroPadded: Bool = false
+    var centerFontSize: CGFloat = 108
+    var ghostFontSize: CGFloat = 48
+    var rowHeight: CGFloat = 90
+    var stepDistance: CGFloat = 32
 
     @Environment(ThemeManager.self) private var themeManager
     private var theme: ThemeTokens { themeManager.current }
-
-    private let rowHeight: CGFloat = 90
-    private let stepDistance: CGFloat = 32
 
     @State private var startValue: Int = 0
     @State private var isDragging: Bool = false
@@ -79,11 +80,11 @@ struct DrumPickerView: View {
 
     private func slot(_ num: Int, isCenter: Bool) -> some View {
         Text(zeroPadded ? String(format: "%02d", num) : "\(num)")
-            .font(.system(size: isCenter ? 108 : 48,
+            .font(.system(size: isCenter ? centerFontSize : ghostFontSize,
                           weight: isCenter ? .ultraLight : .thin))
             .foregroundColor(theme.text.opacity(isCenter ? 1.0 : 0.20))
             .monospacedDigit()
-            .kerning(isCenter ? -5 : -2)
+            .kerning(isCenter ? -centerFontSize * 0.046 : -ghostFontSize * 0.042)
             .fixedSize()
             .frame(maxWidth: .infinity, minHeight: rowHeight, maxHeight: rowHeight, alignment: .center)
             .contentTransition(.numericText(countsDown: countsDown))

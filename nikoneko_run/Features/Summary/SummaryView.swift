@@ -115,6 +115,8 @@ struct SummaryView: View {
 
             Spacer()
         }
+        .frame(maxWidth: 700)
+        .frame(maxWidth: .infinity)
         .background(theme.bg.ignoresSafeArea())
         .onAppear {
             let summaries = AppGroupDefaults.loadSummaries()

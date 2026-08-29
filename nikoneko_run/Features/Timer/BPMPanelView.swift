@@ -19,47 +19,51 @@ struct BPMPanelView: View {
                 .foregroundColor(theme.textDim)
                 .padding(.top, 4)
 
-            HStack(spacing: 8) {
-                // Left: -5, -
-                HStack(spacing: 6) {
-                    bpmButton(label: "−5", delta: -5)
-                    bpmButton(label: "−",  delta: -1)
-                }
+            GeometryReader { geometry in
+                let buttonWidth = min(52, max(40, (geometry.size.width - 128) / 4))
+                HStack(spacing: 8) {
+                    // Left: -5, -
+                    HStack(spacing: 6) {
+                        bpmButton(label: "−5", delta: -5, width: buttonWidth)
+                        bpmButton(label: "−",  delta: -1, width: buttonWidth)
+                    }
 
-                // Center: number
-                ZStack {
-                    if isEditing {
-                        TextField("", text: $inputText)
-                            .font(.system(size: 48, weight: .ultraLight))
-                            .foregroundColor(theme.text)
-                            .multilineTextAlignment(.center)
-                            .monospacedDigit()
-                            .keyboardType(.numberPad)
-                            .focused($isEditing)
-                            .frame(width: 100, height: 56)
-                            .onSubmit { commitInput() }
-                            .onChange(of: inputText) { _, v in
-                                inputText = v.filter(\.isNumber)
-                            }
-                    } else {
-                        Text("\(bpm)")
-                            .font(.system(size: 48, weight: .ultraLight))
-                            .foregroundColor(theme.text)
-                            .monospacedDigit()
-                            .frame(width: 100, height: 56)
-                            .onTapGesture {
-                                inputText = "\(bpm)"
-                                isEditing = true
-                            }
+                    // Center: number
+                    ZStack {
+                        if isEditing {
+                            TextField("", text: $inputText)
+                                .font(.system(size: 48, weight: .ultraLight))
+                                .foregroundColor(theme.text)
+                                .multilineTextAlignment(.center)
+                                .monospacedDigit()
+                                .keyboardType(.numberPad)
+                                .focused($isEditing)
+                                .frame(width: 100, height: 56)
+                                .onSubmit { commitInput() }
+                                .onChange(of: inputText) { _, v in
+                                    inputText = v.filter(\.isNumber)
+                                }
+                        } else {
+                            Text("\(bpm)")
+                                .font(.system(size: 48, weight: .ultraLight))
+                                .foregroundColor(theme.text)
+                                .monospacedDigit()
+                                .frame(width: 100, height: 56)
+                                .onTapGesture {
+                                    inputText = "\(bpm)"
+                                    isEditing = true
+                                }
+                        }
+                    }
+
+                    // Right: +, +5
+                    HStack(spacing: 6) {
+                        bpmButton(label: "+",  delta: +1, width: buttonWidth)
+                        bpmButton(label: "+5", delta: +5, width: buttonWidth)
                     }
                 }
-
-                // Right: +, +5
-                HStack(spacing: 6) {
-                    bpmButton(label: "+",  delta: +1)
-                    bpmButton(label: "+5", delta: +5)
-                }
             }
+            .frame(height: 56)
 
             if isEditing {
                 Button(lm.L("timer.done")) { commitInput() }
@@ -82,14 +86,14 @@ struct BPMPanelView: View {
         isEditing = false
     }
 
-    private func bpmButton(label: String, delta: Int) -> some View {
+    private func bpmButton(label: String, delta: Int, width: CGFloat) -> some View {
         Button {
             bpm = min(maxBPM, max(minBPM, bpm + delta))
         } label: {
             Text(label)
                 .font(.system(size: 15))
                 .foregroundColor(theme.text)
-                .frame(width: 52, height: 52)
+                .frame(width: width, height: 52)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

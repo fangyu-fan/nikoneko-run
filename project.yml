@@ -13,6 +13,11 @@ settings:
     SWIFT_VERSION: 6.0
     IPHONEOS_DEPLOYMENT_TARGET: 17.0
     DEVELOPMENT_TEAM: 5A5TMU9JP3
+    SUPPORTED_PLATFORMS: iphoneos iphonesimulator
+    SUPPORTS_MACCATALYST: NO
+    SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
+    SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
+    TARGETED_DEVICE_FAMILY: "1,2"
 
 packages:
   Lottie:
@@ -65,6 +70,8 @@ targets:
         UILaunchScreen:
           UIColorName: "LaunchBackground"
         UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        "UISupportedInterfaceOrientations~ipad":
           - UIInterfaceOrientationPortrait
           - UIInterfaceOrientationPortraitUpsideDown
           - UIInterfaceOrientationLandscapeLeft

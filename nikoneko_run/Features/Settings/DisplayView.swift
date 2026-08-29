@@ -42,6 +42,8 @@ struct DisplayView: View {
                     ("shoeprints.fill",     lm.L("display.metric.steps"),     bindBool(\.showSteps)),
                 ])
             }
+            .frame(maxWidth: 700)
+            .frame(maxWidth: .infinity)
             .padding(.horizontal, 18)
             .padding(.top, 8)
         }

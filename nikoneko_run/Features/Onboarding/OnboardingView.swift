@@ -113,6 +113,8 @@ struct OnboardingView: View {
                 .padding(.horizontal, 32)
                 .padding(.bottom, 52)
         }
+        .frame(maxWidth: 700)
+        .frame(maxWidth: .infinity)
     }
 
     private func langOption(label: String, lang: AppLanguage) -> some View {
@@ -194,6 +196,8 @@ struct OnboardingView: View {
                 .padding(.horizontal, 32)
                 .padding(.bottom, 52)
         }
+        .frame(maxWidth: 700)
+        .frame(maxWidth: .infinity)
     }
 
     private var themeCarousel: some View {
@@ -441,6 +445,8 @@ struct OnboardingView: View {
             .padding(.horizontal, 32)
             .padding(.bottom, 52)
         }
+        .frame(maxWidth: 700)
+        .frame(maxWidth: .infinity)
         .onAppear {
             bpm = profile?.defaultBPM ?? 180
             goalMinutes = profile?.dailyGoalMinutes ?? 20
@@ -647,6 +653,8 @@ struct OnboardingView: View {
                     .padding(.horizontal, 32)
                     .padding(.bottom, 52)
             }
+            .frame(maxWidth: 700)
+            .frame(maxWidth: .infinity)
         }
     }
 
