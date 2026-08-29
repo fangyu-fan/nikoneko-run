@@ -18,6 +18,7 @@ struct HeatmapEntry: TimelineEntry {
     let summaries: [DaySessionSummary]
     let metric: StatMetric   // not .streak
     let theme: ThemeTokens
+    let reportSettings: WidgetReportSettings
 }
 
 // MARK: - HeatmapProvider
@@ -27,7 +28,13 @@ struct HeatmapProvider: AppIntentTimelineProvider {
     typealias Intent = HeatmapWidgetIntent
 
     func placeholder(in context: Context) -> HeatmapEntry {
-        HeatmapEntry(date: Date(), summaries: [], metric: .duration, theme: ThemeLibrary.moss)
+        HeatmapEntry(
+            date: Date(),
+            summaries: [],
+            metric: .duration,
+            theme: ThemeLibrary.moss,
+            reportSettings: .defaults
+        )
     }
 
     func snapshot(for configuration: HeatmapWidgetIntent, in context: Context) async -> HeatmapEntry {
@@ -46,7 +53,8 @@ struct HeatmapProvider: AppIntentTimelineProvider {
             date: Date(),
             summaries: AppGroupDefaults.loadSummaries(),
             metric: configuration.metric,
-            theme: theme
+            theme: theme,
+            reportSettings: AppGroupDefaults.loadReportSettings()
         )
     }
 }
@@ -69,12 +77,7 @@ struct HeatmapWidgetView: View {
 
     var body: some View {
         let (columns, monthHeaders) = buildColumns()
-        let dailyValues = buildDailyValues()
-        let maxValue = columns
-            .flatMap { $0 }
-            .compactMap { $0 }
-            .map { dailyValues[$0] ?? 0.0 }
-            .max() ?? 1.0
+        let dailyCompletionRatios = buildDailyCompletionRatios()
 
         VStack(alignment: .leading, spacing: 3) {
             // Header
@@ -113,10 +116,15 @@ struct HeatmapWidgetView: View {
 
                         ForEach(0..<numCols, id: \.self) { col in
                             let dateKey = columns[col][row]
-                            let value = dateKey.flatMap { dailyValues[$0] } ?? 0.0
-                            let ratio = maxValue > 0 ? value / maxValue : 0.0
+                            let ratio = dateKey.flatMap { dailyCompletionRatios[$0] } ?? 0.0
                             Rectangle()
-                                .fill(cellColor(ratio: ratio))
+                                .fill(WidgetSharedData.barColor(
+                                    ratio: ratio,
+                                    theme: entry.theme,
+                                    t1: entry.reportSettings.threshold1,
+                                    t2: entry.reportSettings.threshold2,
+                                    t3: entry.reportSettings.threshold3
+                                ))
                                 .frame(maxWidth: .infinity)
                                 .aspectRatio(1, contentMode: .fit)
                                 .cornerRadius(2)
@@ -212,13 +220,20 @@ struct HeatmapWidgetView: View {
         return result
     }
 
-    // Maps a ratio (0–1 relative to daily max) to the bar color ramp.
-    private func cellColor(ratio: Double) -> Color {
-        if ratio == 0           { return entry.theme.bar[0] }
-        else if ratio <= 0.25   { return entry.theme.bar[1] }
-        else if ratio <= 0.50   { return entry.theme.bar[2] }
-        else if ratio <= 0.75   { return entry.theme.bar[3] }
-        else                    { return entry.theme.bar[4] }
+    private func buildDailyCompletionRatios() -> [String: Double] {
+        let cal = Calendar.current
+        let grouped = Dictionary(grouping: entry.summaries) { summary in
+            let components = cal.dateComponents([.year, .month, .day], from: summary.date)
+            return String(
+                format: "%04d-%02d-%02d",
+                components.year ?? 0,
+                components.month ?? 0,
+                components.day ?? 0
+            )
+        }
+        return grouped.mapValues {
+            WidgetSharedData.completionRatio(for: $0, settings: entry.reportSettings)
+        }
     }
 
 }
@@ -247,7 +262,8 @@ struct HeatmapWidget: Widget {
         date: Date(),
         summaries: HeatmapPreviewData.summaries,
         metric: .duration,
-        theme: ThemeLibrary.moss
+        theme: ThemeLibrary.moss,
+        reportSettings: .defaults
     )
 }
 

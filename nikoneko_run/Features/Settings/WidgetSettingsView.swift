@@ -8,14 +8,6 @@ struct WidgetSettingsView: View {
 
     @State private var selectedIndex: Int = 0
 
-    @State private var statMetric: StatMetric = {
-        AppGroupDefaults.shared.string(forKey: "widget.stat.metric")
-            .flatMap { StatMetric(rawValue: $0) } ?? .streak
-    }()
-    @State private var statPeriod: TimePeriod = {
-        AppGroupDefaults.shared.string(forKey: "widget.stat.period")
-            .flatMap { TimePeriod(rawValue: $0) } ?? .week
-    }()
     @State private var calendarMetric: StatMetric = {
         AppGroupDefaults.shared.string(forKey: "widget.calendar.metric")
             .flatMap { StatMetric(rawValue: $0) } ?? .duration
@@ -90,6 +82,7 @@ struct WidgetSettingsView: View {
         .id(lm.version)
         .navigationTitle(lm.L("widget.title"))
         .navigationBarTitleDisplayMode(.inline)
+        .themedNavigationBar(theme)
         .sheet(isPresented: $showAddInstructions) {
             addInstructionsSheet
         }
@@ -153,28 +146,9 @@ struct WidgetSettingsView: View {
     private var parameterSection: some View {
         switch selectedIndex {
         case 0: // StatWidget
-            VStack(alignment: .leading, spacing: 10) {
-                pickerRow(
-                    label: lm.language == .traditionalChinese ? "指標" : "Metric",
-                    options: StatMetric.allCases,
-                    selected: $statMetric,
-                    display: { metricLabel($0) }
-                ) { value in
-                    AppGroupDefaults.shared.set(value.rawValue, forKey: "widget.stat.metric")
-                    WidgetCenter.shared.reloadAllTimelines()
-                }
-                if statMetric != .streak {
-                    pickerRow(
-                        label: lm.language == .traditionalChinese ? "時間範圍" : "Period",
-                        options: TimePeriod.allCases,
-                        selected: $statPeriod,
-                        display: { periodLabel($0) }
-                    ) { value in
-                        AppGroupDefaults.shared.set(value.rawValue, forKey: "widget.stat.period")
-                        WidgetCenter.shared.reloadAllTimelines()
-                    }
-                }
-            }
+            infoText(lm.language == .traditionalChinese
+                ? "加入小工具後，長按小工具並選擇「編輯小工具」來更換指標與時間範圍"
+                : "After adding the widget, long-press it and choose Edit Widget to change its metric and period")
         case 1: // HeatmapWidget
             infoText(lm.language == .traditionalChinese
                 ? "顯示近 18 週每日活動熱力圖"
@@ -407,21 +381,25 @@ struct WidgetSettingsView: View {
                 case "HeatmapWidget":
                     HeatmapWidgetView(entry: HeatmapEntry(
                         date: .now, summaries: previewSummaries,
-                        metric: .duration, theme: widgetTheme
+                        metric: .duration, theme: widgetTheme,
+                        reportSettings: .defaults
                     ))
                 case "BarChartWidget":
                     BarChartWidgetView(entry: BarChartEntry(
                         date: .now,
                         bars: [23, 2, 35, 21, 46, 2, 28],
+                        completionRatios: [0.5, 0.05, 0.8, 0.45, 1.0, 0.1, 0.65],
                         todayIndex: 6, maxValue: 46,
                         yTop: "46", yMid: "23",
                         weekLabel: "JUN 1 – 7",
-                        metric: .duration, theme: widgetTheme
+                        metric: .duration, theme: widgetTheme,
+                        reportSettings: .defaults
                     ))
                 case "CalendarWidget":
                     CalendarWidgetView(entry: CalendarEntry(
                         date: .now, summaries: previewSummaries,
-                        metric: calendarMetric, theme: widgetTheme
+                        metric: calendarMetric, theme: widgetTheme,
+                        reportSettings: .defaults
                     ))
                 default: // AllStatsWidget
                     AllStatsWidgetView(entry: allStatsPreviewEntry(theme: widgetTheme))
@@ -452,41 +430,13 @@ struct WidgetSettingsView: View {
         }
     }
 
-    // StatWidget preview entry — reflects current metric/period selection
+    // StatWidget preview entry. Each installed small widget is configured via Edit Widget.
     private func statPreviewEntry(theme: ThemeTokens) -> StatEntry {
-        let (value, unit): (String, String) = {
-            switch statMetric {
-            case .streak:   return ("12", "days")
-            case .duration: return ("3.5", "hrs")
-            case .distance: return ("4.2", "km")
-            case .calories: return ("168", "cal")
-            case .steps:    return ("8.2k", "steps")
-            case .runs:     return ("5", "runs")
-            }
-        }()
-        let metricLabel: String = {
-            switch statMetric {
-            case .streak:   return "Streak"
-            case .duration: return "Duration"
-            case .distance: return "Distance"
-            case .calories: return "Calories"
-            case .steps:    return "Steps"
-            case .runs:     return "Runs"
-            }
-        }()
-        let periodLabel: String? = statMetric == .streak ? nil : {
-            switch statPeriod {
-            case .today: return "today"
-            case .week:  return "per week"
-            case .month: return "per month"
-            case .year:  return "per year"
-            }
-        }()
         return StatEntry(
-            date: .now, metric: statMetric, period: statPeriod,
-            formattedValue: value, unit: unit,
-            metricLabel: metricLabel, periodLabel: periodLabel,
-            fontSize: 80, theme: theme
+            date: .now, metric: .steps, period: .year,
+            formattedValue: "6083", unit: "steps",
+            metricLabel: "Steps", periodLabel: "per year",
+            fontSize: 42, theme: theme
         )
     }
 

@@ -12,6 +12,20 @@ struct DaySessionSummary: Codable {
     var distance: Double = 0
 }
 
+struct WidgetReportSettings: Equatable, Sendable {
+    let dailyGoalMinutes: Int
+    let threshold1: Int
+    let threshold2: Int
+    let threshold3: Int
+
+    static let defaults = WidgetReportSettings(
+        dailyGoalMinutes: 20,
+        threshold1: 25,
+        threshold2: 60,
+        threshold3: 90
+    )
+}
+
 enum AppGroupDefaults {
     static let suiteName = "group.com.fangyu.nikoneko-run-v1.0"
 
@@ -28,6 +42,36 @@ enum AppGroupDefaults {
               let summaries = try? JSONDecoder().decode([DaySessionSummary].self, from: data)
         else { return [] }
         return summaries
+    }
+
+    static func writeReportSettings(
+        dailyGoalMinutes: Int,
+        threshold1: Int,
+        threshold2: Int,
+        threshold3: Int
+    ) {
+        shared.set(max(dailyGoalMinutes, 1), forKey: "dailyGoalMinutes")
+        shared.set(threshold1, forKey: "reportThreshold1")
+        shared.set(threshold2, forKey: "reportThreshold2")
+        shared.set(threshold3, forKey: "reportThreshold3")
+    }
+
+    static func loadReportSettings() -> WidgetReportSettings {
+        let defaults = WidgetReportSettings.defaults
+        return WidgetReportSettings(
+            dailyGoalMinutes: shared.object(forKey: "dailyGoalMinutes") == nil
+                ? defaults.dailyGoalMinutes
+                : max(shared.integer(forKey: "dailyGoalMinutes"), 1),
+            threshold1: shared.object(forKey: "reportThreshold1") == nil
+                ? defaults.threshold1
+                : shared.integer(forKey: "reportThreshold1"),
+            threshold2: shared.object(forKey: "reportThreshold2") == nil
+                ? defaults.threshold2
+                : shared.integer(forKey: "reportThreshold2"),
+            threshold3: shared.object(forKey: "reportThreshold3") == nil
+                ? defaults.threshold3
+                : shared.integer(forKey: "reportThreshold3")
+        )
     }
 
 }

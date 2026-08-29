@@ -83,17 +83,14 @@ final class TimerViewModel {
     }
 
     func forceStop() {
-        print("[VM] forceStop — elapsed=\(elapsed) countdownFinished will become true")
         timer?.cancel()
         countdownFinished = true
         state = .idle
-        print("[VM] forceStop done — state=\(state) countdownFinished=\(countdownFinished)")
     }
 
     func stopAndSave(bpm: Int, characterId: String, themeId: String,
                      distance: Double, calories: Double, steps: Int,
                      avgHR: Int, maxHR: Int, avgCadence: Int) {
-        print("[VM] stopAndSave — elapsed=\(elapsed)")
         countdownFinished = false
         timer?.cancel()
         let session = RunSession(
@@ -113,7 +110,6 @@ final class TimerViewModel {
         Task { await HealthKitService.shared.writeSession(session) }
         completedSession = session
         state = .idle
-        print("[VM] stopAndSave done — completedSession set")
     }
 
     private func startTick() {

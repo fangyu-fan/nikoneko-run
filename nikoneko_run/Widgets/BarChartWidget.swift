@@ -16,6 +16,7 @@ struct BarChartWidgetIntent: AppIntent, WidgetConfigurationIntent {
 struct BarChartEntry: TimelineEntry {
     let date: Date
     let bars: [Double]      // 7 values Mon–Sun, 0 = no data
+    let completionRatios: [Double]
     let todayIndex: Int     // which bar is today (0=Mon, 6=Sun)
     let maxValue: Double
     let yTop: String        // formatted top y-label
@@ -23,6 +24,7 @@ struct BarChartEntry: TimelineEntry {
     let weekLabel: String   // e.g. "6/1 – 6/7"
     let metric: StatMetric
     let theme: ThemeTokens
+    let reportSettings: WidgetReportSettings
 }
 
 // MARK: - Provider
@@ -49,19 +51,22 @@ struct BarChartProvider: AppIntentTimelineProvider {
         BarChartEntry(
             date: Date(),
             bars: [12, 0, 25, 18, 30, 0, 20],
+            completionRatios: [0.4, 0, 0.8, 0.6, 1.0, 0, 0.7],
             todayIndex: 6,
             maxValue: 30,
             yTop: "30",
             yMid: "15",
             weekLabel: weekLabel(from: Date()),
             metric: .duration,
-            theme: ThemeLibrary.moss
+            theme: ThemeLibrary.moss,
+            reportSettings: .defaults
         )
     }
 
     private func build(metric: StatMetric) -> BarChartEntry {
         let theme = WidgetSharedData.loadTheme()
         let summaries = AppGroupDefaults.loadSummaries()
+        let reportSettings = AppGroupDefaults.loadReportSettings()
 
         let cal = Calendar.current
         let today = Date()
@@ -69,17 +74,33 @@ struct BarChartProvider: AppIntentTimelineProvider {
         let todayIndex = AppGroupDefaults.weekdayOffset(for: today)
 
         var dailyValues: [Double] = Array(repeating: 0, count: 7)
+        var completionRatios: [Double] = Array(repeating: 0, count: 7)
 
         let daysFromStart = todayIndex
         guard let monday = cal.date(byAdding: .day, value: -daysFromStart, to: cal.startOfDay(for: today)) else {
-            return BarChartEntry(date: today, bars: dailyValues, todayIndex: todayIndex,
-                                 maxValue: 1, yTop: "1", yMid: "0", weekLabel: "", metric: metric, theme: theme)
+            return BarChartEntry(
+                date: today,
+                bars: dailyValues,
+                completionRatios: completionRatios,
+                todayIndex: todayIndex,
+                maxValue: 1,
+                yTop: "1",
+                yMid: "0",
+                weekLabel: "",
+                metric: metric,
+                theme: theme,
+                reportSettings: reportSettings
+            )
         }
 
         for dayOffset in 0..<7 {
             guard let dayStart = cal.date(byAdding: .day, value: dayOffset, to: monday) else { continue }
             let daySessions = summaries.filter { cal.isDate($0.date, inSameDayAs: dayStart) }
             dailyValues[dayOffset] = metricValue(for: metric, sessions: daySessions)
+            completionRatios[dayOffset] = WidgetSharedData.completionRatio(
+                for: daySessions,
+                settings: reportSettings
+            )
         }
 
         let maxValue = max(dailyValues.max() ?? 0, 1)
@@ -89,13 +110,15 @@ struct BarChartProvider: AppIntentTimelineProvider {
         return BarChartEntry(
             date: today,
             bars: dailyValues,
+            completionRatios: completionRatios,
             todayIndex: todayIndex,
             maxValue: maxValue,
             yTop: yTop,
             yMid: yMid,
             weekLabel: weekLabel(from: monday),
             metric: metric,
-            theme: theme
+            theme: theme,
+            reportSettings: reportSettings
         )
     }
 
@@ -259,16 +282,17 @@ struct BarChartWidgetView: View {
     @ViewBuilder
     private func barView(index: Int) -> some View {
         let value = entry.bars[index]
-        let isToday = index == entry.todayIndex
         let barH: CGFloat = {
             if value <= 0 { return 2 }
             return max(CGFloat(value / entry.maxValue) * chartHeight, 2)
         }()
-        let barColor: Color = {
-            if value <= 0 { return entry.theme.bar[0] }
-            if isToday { return entry.theme.bar[4] }
-            return entry.theme.bar[2]
-        }()
+        let barColor = WidgetSharedData.barColor(
+            ratio: entry.completionRatios[index],
+            theme: entry.theme,
+            t1: entry.reportSettings.threshold1,
+            t2: entry.reportSettings.threshold2,
+            t3: entry.reportSettings.threshold3
+        )
 
         VStack(spacing: 0) {
             Spacer(minLength: 0)
@@ -310,13 +334,15 @@ struct BarChartWidget: Widget {
     BarChartEntry(
         date: Date(),
         bars: [20, 0, 35, 18, 40, 0, 25],
+        completionRatios: [0.5, 0, 0.9, 0.45, 1.0, 0, 0.65],
         todayIndex: 6,
         maxValue: 40,
         yTop: "40",
         yMid: "20",
         weekLabel: "Jun 1 – 7",
         metric: .duration,
-        theme: ThemeLibrary.moss
+        theme: ThemeLibrary.moss,
+        reportSettings: .defaults
     )
 }
 #endif

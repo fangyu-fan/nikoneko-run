@@ -73,7 +73,11 @@ final class HealthKitService {
             csv += "\(s.bpm)\n"
         }
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("niko_export.csv")
-        try? csv.write(to: url, atomically: true, encoding: .utf8)
-        return url
+        do {
+            try csv.write(to: url, atomically: true, encoding: .utf8)
+            return url
+        } catch {
+            return nil
+        }
     }
 }

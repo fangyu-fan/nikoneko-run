@@ -123,6 +123,7 @@ struct NotificationsView: View {
         .id(lm.version)
         .navigationTitle(lm.L("notif.title.screen"))
         .navigationBarTitleDisplayMode(.inline)
+        .themedNavigationBar(theme)
     }
 
     private func sectionLabel(_ text: String) -> some View {

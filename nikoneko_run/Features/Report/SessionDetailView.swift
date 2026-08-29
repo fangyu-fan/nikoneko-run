@@ -34,6 +34,7 @@ struct SessionDetailView: View {
         .background(theme.bg)
         .navigationTitle("Session")
         .navigationBarTitleDisplayMode(.inline)
+        .themedNavigationBar(theme)
     }
 
     private func metricCell(_ label: String, value: String) -> some View {

@@ -41,10 +41,10 @@ struct LaunchScreenView: View {
         }
         .task {
             if !reduceMotion {
-                try? await Task.sleep(for: .milliseconds(50))
+                try? await Task.sleep(for: .milliseconds(40))
                 isAnimating = true
             }
-            try? await Task.sleep(for: .milliseconds(1000))
+            try? await Task.sleep(for: .milliseconds(310))
             onComplete()
         }
     }

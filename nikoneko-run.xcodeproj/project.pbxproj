@@ -282,12 +282,12 @@
 		EF6BB0A991786AD0E16AE83A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F1936976F9D978D5DEC9845C /* Loader.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Loader.json; sourceTree = "<group>"; };
 		F567944097222D55D480FC97 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		F5ACA898D10E63F11A54F135 /* nikonekoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = nikonekoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5ACA898D10E63F11A54F135 /* nikonekoTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = nikonekoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F633C120D513D7C5C509695A /* Coffee.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Coffee.json; sourceTree = "<group>"; };
 		F6C01E2FED6A6B3BE96A2614 /* HeartRateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateService.swift; sourceTree = "<group>"; };
 		F76793C665ED6574CFC0E818 /* Avocado.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Avocado.json; sourceTree = "<group>"; };
 		FA81960393AABD848F96B250 /* ReportViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewModelTests.swift; sourceTree = "<group>"; };
-		FBCAFB33A48D239106A8391D /* NikoNekoWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NikoNekoWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		FBCAFB33A48D239106A8391D /* NikoNekoWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = NikoNekoWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCFB792DB6970C8D2D3CD216 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -713,8 +713,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1B16E05F2284765C9C4D3B33 /* nikoneko */,
 				F921734759AD1F9E6466177E /* NikoNekoWidgets */,
+				1B16E05F2284765C9C4D3B33 /* nikoneko */,
 				65A79B967CF501C538F52FDB /* nikonekoTests */,
 			);
 		};
@@ -941,10 +941,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run-v1.0.tests";
 				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/nikoneko.app/nikoneko";
@@ -955,6 +951,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = nikoneko_run/NikoNekoWidgets.entitlements;
+				CURRENT_PROJECT_VERSION = 8;
 				INFOPLIST_FILE = nikoneko_run/Widgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -962,13 +959,10 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.0;
 				NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run-v1.0.widgets";
 				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -978,6 +972,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = nikoneko_run/NikoNekoWidgets.entitlements;
+				CURRENT_PROJECT_VERSION = 8;
 				INFOPLIST_FILE = nikoneko_run/Widgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -985,13 +980,10 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.0;
 				NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run-v1.0.widgets";
 				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1003,10 +995,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = nikoneko_run/nikoneko.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 5A5TMU9JP3;
 				INFOPLIST_FILE = nikoneko_run/App/Info.plist;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1015,10 +1007,6 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run-v1.0";
 				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1099,10 +1087,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = nikoneko_run/nikoneko.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 5A5TMU9JP3;
 				INFOPLIST_FILE = nikoneko_run/App/Info.plist;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1111,10 +1099,6 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run-v1.0";
 				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1133,10 +1117,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.fangyu.nikoneko-run-v1.0.tests";
 				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/nikoneko.app/nikoneko";

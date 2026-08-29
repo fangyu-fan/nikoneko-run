@@ -5,6 +5,11 @@ import UniformTypeIdentifiers
 import HealthKit
 
 struct DataSyncView: View {
+    private struct CSVExportItem: Identifiable {
+        let id = UUID()
+        let url: URL
+    }
+
     @Environment(ThemeManager.self) private var themeManager
     @Environment(LanguageManager.self) private var lm
     @Query private var profiles: [UserProfile]
@@ -23,10 +28,13 @@ struct DataSyncView: View {
     }
 
     @State private var showDeleteConfirm = false
-    @State private var exportURL: URL? = nil
-    @State private var showShareSheet = false
+    @State private var exportItem: CSVExportItem? = nil
     @State private var showImportPicker = false
     @State private var showImportError = false
+    @State private var showExportError = false
+    @State private var showClearError = false
+    @State private var toastMessage: String?
+    @State private var toastID = UUID()
 
     var body: some View {
         ScrollView {
@@ -102,8 +110,9 @@ struct DataSyncView: View {
                 VStack(spacing: 0) {
                     actionRow(icon: "arrow.up.doc", label: lm.L("dataSync.row.exportCSV"), color: theme.text) {
                         if let url = HealthKitService.shared.exportCSV(sessions: sessions) {
-                            exportURL = url
-                            showShareSheet = true
+                            exportItem = CSVExportItem(url: url)
+                        } else {
+                            showExportError = true
                         }
                     }
                     Rectangle().fill(theme.accentDim).frame(height: 0.5)
@@ -129,10 +138,9 @@ struct DataSyncView: View {
         .onAppear { syncHealthKitStatus() }
         .navigationTitle(lm.L("dataSync.title"))
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showShareSheet) {
-            if let url = exportURL {
-                ShareSheet(url: url)
-            }
+        .themedNavigationBar(theme)
+        .sheet(item: $exportItem) { item in
+            ShareSheet(url: item.url)
         }
         .fileImporter(
             isPresented: $showImportPicker,
@@ -150,13 +158,32 @@ struct DataSyncView: View {
         .alert(lm.L("dataSync.import.error"), isPresented: $showImportError) {
             Button("OK", role: .cancel) {}
         }
+        .alert(lm.L("dataSync.export.error"), isPresented: $showExportError) {
+            Button("OK", role: .cancel) {}
+        }
+        .alert(lm.L("dataSync.clear.error"), isPresented: $showClearError) {
+            Button("OK", role: .cancel) {}
+        }
         .alert(lm.L("dataSync.confirm.title"), isPresented: $showDeleteConfirm) {
             Button(lm.L("dataSync.confirm.delete"), role: .destructive) {
                 for session in sessions { ctx.delete(session) }
-                try? ctx.save()
-                WidgetCenter.shared.reloadAllTimelines()
+                do {
+                    try ctx.save()
+                    WidgetCenter.shared.reloadAllTimelines()
+                    showSuccessToast(lm.L("dataSync.clear.success"))
+                } catch {
+                    ctx.rollback()
+                    showClearError = true
+                }
             }
             Button(lm.L("dataSync.confirm.cancel"), role: .cancel) {}
+        }
+        .overlay(alignment: .top) {
+            if let toastMessage {
+                successToast(toastMessage)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .zIndex(10)
+            }
         }
     }
 
@@ -228,10 +255,56 @@ struct DataSyncView: View {
         }
 
         if imported > 0 {
-            try? ctx.save()
-            WidgetCenter.shared.reloadAllTimelines()
+            do {
+                try ctx.save()
+                WidgetCenter.shared.reloadAllTimelines()
+                showSuccessToast(lm.L("dataSync.import.success"))
+            } catch {
+                ctx.rollback()
+                showImportError = true
+            }
         } else {
             showImportError = true
+        }
+    }
+
+    // MARK: - Success Toast
+
+    private func successToast(_ message: String) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundColor(theme.accent)
+            Text(message)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(theme.text)
+        }
+        .padding(.horizontal, 18)
+        .padding(.vertical, 13)
+        .background(theme.surface)
+        .clipShape(Capsule())
+        .shadow(color: .black.opacity(0.12), radius: 12, y: 4)
+        .padding(.horizontal, 24)
+        .padding(.top, 8)
+        .onTapGesture {
+            withAnimation(.easeOut(duration: 0.2)) { toastMessage = nil }
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    private func showSuccessToast(_ message: String) {
+        let id = UUID()
+        toastID = id
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
+            toastMessage = message
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.8) {
+            MainActor.assumeIsolated {
+                guard toastID == id else { return }
+                withAnimation(.easeOut(duration: 0.25)) {
+                    toastMessage = nil
+                }
+            }
         }
     }
 

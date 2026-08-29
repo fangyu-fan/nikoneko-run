@@ -8,9 +8,13 @@ struct ContentView: View {
     @Environment(\.modelContext) private var ctx
     @Query private var profiles: [UserProfile]
     @Query(sort: \RunSession.startDate, order: .reverse) private var sessions: [RunSession]
+    @Query private var thresholdConfigs: [ThresholdConfig]
     @State private var timerVM = TimerViewModel()
     @State private var showOnboarding: Bool = !UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
     private var theme: ThemeTokens { themeManager.current }
+    private var reportSettings: ThresholdConfig? {
+        ThresholdConfig.goalSettings(in: thresholdConfigs)
+    }
 
     var body: some View {
         if showOnboarding {
@@ -64,6 +68,10 @@ struct ContentView: View {
         }
         .onAppear {
             ensureProfile()
+        }
+        .task {
+            try? await Task.sleep(for: .milliseconds(700))
+            guard !Task.isCancelled else { return }
             syncWidgetData()
         }
         .onChange(of: sessions) { _, _ in
@@ -72,14 +80,15 @@ struct ContentView: View {
         .onChange(of: profiles.first?.dailyGoalMinutes) { _, _ in
             syncWidgetData()
         }
+        .onChange(of: reportSettings?.threshold1) { _, _ in syncWidgetData() }
+        .onChange(of: reportSettings?.threshold2) { _, _ in syncWidgetData() }
+        .onChange(of: reportSettings?.threshold3) { _, _ in syncWidgetData() }
     }
 
     private func ensureProfile() {
         guard profiles.isEmpty else {
             if let p = profiles.first {
-                print("[Lang] profile.language=\(p.language.code) LanguageBundle=\(LanguageBundle.languageCode)")
                 languageManager.apply(p.language)
-                print("[Lang] after apply: LanguageBundle=\(LanguageBundle.languageCode)")
                 var dirty = false
                 if LottieCharacterView.fileNameMap[p.activeCharacterId] == nil {
                     p.activeCharacterId = "loader_cat"
@@ -102,6 +111,13 @@ struct ContentView: View {
     }
 
     private func syncWidgetData() {
+        let settings = reportSettings
+        AppGroupDefaults.writeReportSettings(
+            dailyGoalMinutes: profiles.first?.dailyGoalMinutes ?? 20,
+            threshold1: settings?.threshold1 ?? 25,
+            threshold2: settings?.threshold2 ?? 60,
+            threshold3: settings?.threshold3 ?? 90
+        )
         AppGroupDefaults.writeSessionSummaries(
             from: sessions,
             dailyGoalMinutes: profiles.first?.dailyGoalMinutes ?? 20

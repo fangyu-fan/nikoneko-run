@@ -6,12 +6,16 @@ final class MetronomeService {
     private(set) var bpm: Int = 180
     var soundType: SoundType = .wood
     var volume: Float = 0.7 {
-        didSet { engine.mainMixerNode.outputVolume = volume }
+        didSet {
+            guard isPrepared else { return }
+            engine.mainMixerNode.outputVolume = volume
+        }
     }
     private(set) var isPlaying: Bool = false
 
-    private let engine = AVAudioEngine()
-    private let player = AVAudioPlayerNode()
+    @ObservationIgnored private lazy var engine = AVAudioEngine()
+    @ObservationIgnored private lazy var player = AVAudioPlayerNode()
+    private var isPrepared = false
     private var strongBuffer: AVAudioPCMBuffer?  // beat 1 — accent
     private var weakBuffer: AVAudioPCMBuffer?    // beat 2 — soft
     private var nextBeatTime: AVAudioTime?
@@ -24,7 +28,11 @@ final class MetronomeService {
     private var playbackRequested = false
     private var wasPlayingBeforeInterruption = false
 
-    init() {
+    init() {}
+
+    private func prepareIfNeeded() {
+        guard !isPrepared else { return }
+        isPrepared = true
         setupEngine()
         loadBuffers()
         setupInterruptionHandler()
@@ -81,7 +89,6 @@ final class MetronomeService {
                 guard let self, self.isPlaying else { return }
                 self.player.stop()
                 self.nextBeatTime = nil
-                self.setupEngine()
                 self.configureAudioSession()
                 do {
                     try self.engine.start()
@@ -184,6 +191,7 @@ final class MetronomeService {
     // MARK: - Playback
 
     func start() {
+        prepareIfNeeded()
         playbackRequested = true
         configureAudioSession()
         isPlaying = true
@@ -237,12 +245,21 @@ final class MetronomeService {
     func stop() {
         playbackRequested = false
         wasPlayingBeforeInterruption = false
+        guard isPrepared else {
+            isPlaying = false
+            beatCount = 0
+            return
+        }
         haltPlayback(resetBeatCount: true)
     }
 
     func pause() {
         playbackRequested = false
         wasPlayingBeforeInterruption = false
+        guard isPrepared else {
+            isPlaying = false
+            return
+        }
         haltPlayback(resetBeatCount: false)
     }
 
@@ -258,6 +275,7 @@ final class MetronomeService {
     }
 
     func resume() {
+        prepareIfNeeded()
         playbackRequested = true
         configureAudioSession()
         isPlaying = true
@@ -283,6 +301,7 @@ final class MetronomeService {
 
     func updateSoundType(_ type: SoundType) {
         soundType = type
+        guard isPrepared else { return }
         let wasPlaying = isPlaying
         if wasPlaying { stop() }
         if engine.isRunning { reloadBuffersFromEngine() } else { loadBuffers() }

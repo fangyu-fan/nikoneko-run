@@ -16,13 +16,20 @@ struct CalendarEntry: TimelineEntry {
     let summaries: [DaySessionSummary]
     let metric: StatMetric
     let theme: ThemeTokens
+    let reportSettings: WidgetReportSettings
 }
 
 // MARK: - Provider
 
 struct CalendarProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> CalendarEntry {
-        CalendarEntry(date: Date(), summaries: [], metric: .duration, theme: ThemeLibrary.moss)
+        CalendarEntry(
+            date: Date(),
+            summaries: [],
+            metric: .duration,
+            theme: ThemeLibrary.moss,
+            reportSettings: .defaults
+        )
     }
     func snapshot(for configuration: CalendarWidgetIntent, in context: Context) async -> CalendarEntry {
         entry(for: configuration)
@@ -36,7 +43,8 @@ struct CalendarProvider: AppIntentTimelineProvider {
         let metric = AppGroupDefaults.shared.string(forKey: "widget.calendar.metric")
             .flatMap { StatMetric(rawValue: $0) } ?? config.metric
         return CalendarEntry(date: Date(), summaries: AppGroupDefaults.loadSummaries(),
-                             metric: metric, theme: theme)
+                             metric: metric, theme: theme,
+                             reportSettings: AppGroupDefaults.loadReportSettings())
     }
 }
 
@@ -59,7 +67,6 @@ struct CalendarWidgetView: View {
             : rawWeekday - 1          // Sun=0
         let daysInMonth = cal.range(of: .day, in: .month, for: entry.date)!.count
         let today = cal.startOfDay(for: entry.date)
-        let dailyMax = maxDailyValue()
 
         GeometryReader { geometry in
             let horizontalPadding: CGFloat = 12
@@ -113,8 +120,20 @@ struct CalendarWidgetView: View {
                                 day: day))!
                             let isFuture = date > today
                             let value = isFuture ? 0.0 : dayValue(for: date)
-                            let level = colorLevel(value: value, max: dailyMax, isFuture: isFuture, hasData: value > 0)
-                            let cellColor = entry.theme.cal[level]
+                            let daySummaries = summaries(for: date)
+                            let completionRatio = isFuture ? 0 : WidgetSharedData.completionRatio(
+                                for: daySummaries,
+                                settings: entry.reportSettings
+                            )
+                            let level = WidgetSharedData.colorLevel(
+                                ratio: completionRatio,
+                                settings: entry.reportSettings
+                            )
+                            let cellColor = WidgetSharedData.calendarColor(
+                                ratio: completionRatio,
+                                theme: entry.theme,
+                                settings: entry.reportSettings
+                            )
                             let dateColor: Color = isFuture ? entry.theme.textDim : entry.theme.onCal[level].opacity(0.65)
                             let valColor: Color = entry.theme.onCal[level]
 
@@ -255,10 +274,11 @@ private func currentStreak() -> Int {
         var streak = 0
         var cursor = today
         while true {
-            let dayTotal = entry.summaries
-                .filter { cal.isDate($0.date, inSameDayAs: cursor) }
-                .reduce(0.0) { $0 + $1.completionRatio }
-            if dayTotal >= 1.0 {
+            let ratio = WidgetSharedData.completionRatio(
+                for: summaries(for: cursor),
+                settings: entry.reportSettings
+            )
+            if ratio >= 1.0 {
                 streak += 1
                 cursor = cal.date(byAdding: .day, value: -1, to: cursor)!
             } else if cal.isDateInToday(cursor) {
@@ -271,7 +291,7 @@ private func currentStreak() -> Int {
     }
 
     private func dayValue(for date: Date) -> Double {
-        let daySummaries = entry.summaries.filter { cal.isDate($0.date, inSameDayAs: date) }
+        let daySummaries = summaries(for: date)
         switch entry.metric {
         case .duration:   return daySummaries.reduce(0) { $0 + $1.duration } / 60  // minutes
         case .steps:      return Double(daySummaries.reduce(0) { $0 + $1.steps })
@@ -282,28 +302,8 @@ private func currentStreak() -> Int {
         }
     }
 
-    private func maxDailyValue() -> Double {
-        let calendar = Calendar.current
-        let year = calendar.component(.year, from: entry.date)
-        let month = calendar.component(.month, from: entry.date)
-        let days = calendar.range(of: .day, in: .month, for: entry.date)!.count
-        var max = 1.0
-        for day in 1...days {
-            if let date = calendar.date(from: DateComponents(year: year, month: month, day: day)) {
-                let v = dayValue(for: date)
-                if v > max { max = v }
-            }
-        }
-        return max
-    }
-
-    private func colorLevel(value: Double, max: Double, isFuture: Bool, hasData: Bool) -> Int {
-        if isFuture || !hasData { return 0 }
-        let ratio = value / max
-        if ratio <= 0.25 { return 1 }
-        if ratio <= 0.50 { return 2 }
-        if ratio <= 0.75 { return 3 }
-        return 4
+    private func summaries(for date: Date) -> [DaySessionSummary] {
+        entry.summaries.filter { cal.isDate($0.date, inSameDayAs: date) }
     }
 
     private func formattedCellValue(_ value: Double) -> String {
@@ -348,7 +348,8 @@ struct CalendarWidget: Widget {
         date: Date(),
         summaries: CalendarPreviewData.summaries,
         metric: .duration,
-        theme: ThemeLibrary.moss
+        theme: ThemeLibrary.moss,
+        reportSettings: .defaults
     )
 }
 

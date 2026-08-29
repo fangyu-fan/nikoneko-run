@@ -90,6 +90,7 @@
 "settings.section.defaults"   = "預設值";
 "settings.section.widget"     = "小工具";
 "settings.section.system"     = "系統";
+"settings.section.about"      = "關於";
 "settings.row.theme"          = "主題";
 "settings.row.language"       = "語言";
 "settings.row.display"        = "顯示";
@@ -97,6 +98,16 @@
 "settings.row.widget"         = "小工具";
 "settings.row.notifications"  = "通知";
 "settings.row.dataSync"       = "資料與同步";
+"settings.row.aboutMe"        = "作者說明";
+
+/* About me */
+"about.title"                 = "作者說明";
+"about.heading"               = "Hi，我是 Yvonne。";
+"about.body"                  = "我是一名獨立開發者，很感謝你使用我的作品。以下是我的社群媒體帳號，歡迎追蹤支持。";
+"about.contact"               = "如果使用上有任何問題，也歡迎私訊我。";
+"about.section.social"        = "社群";
+"about.instagram"             = "Instagram";
+"about.threads"               = "Threads";
 
 /* Display settings */
 "display.title"               = "顯示";
@@ -145,7 +156,6 @@
 "dataSync.section.integrations" = "整合";
 "dataSync.section.data"       = "資料";
 "dataSync.row.appleHealth"    = "Apple 健康";
-"dataSync.row.iCloud"         = "iCloud 同步";
 "dataSync.row.exportCSV"      = "匯出 CSV";
 "dataSync.row.clearAll"       = "清除所有資料";
 "dataSync.confirm.title"      = "刪除所有跑步記錄？";
@@ -192,8 +202,11 @@
 
 /* Data & Sync additions */
 "dataSync.row.importCSV"      = "匯入 CSV";
-"dataSync.icloud.note"        = "iCloud 設定變更後需重啟 app 才生效。";
 "dataSync.import.error"       = "匯入失敗，請確認檔案格式。";
+"dataSync.export.error"       = "無法建立 CSV 檔案，請再試一次。";
+"dataSync.import.success"     = "資料匯入完成。";
+"dataSync.clear.success"      = "所有資料已清除。";
+"dataSync.clear.error"        = "無法清除資料，請再試一次。";
 "defaults.row.volume" = "音量";
 "timer.tip.longPress" = "長按結束";
 "timer.alert.tooShort" = "不足 1 分鐘的訓練不會納入記錄。";

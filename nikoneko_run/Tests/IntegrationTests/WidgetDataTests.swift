@@ -5,11 +5,42 @@ final class WidgetDataTests: XCTestCase {
 
     func test_barColorBoundaries() {
         let theme = ThemeLibrary.obsidian
-        XCTAssertEqual(WidgetSharedData.barColor(ratio: 0.0,  theme: theme, t1: 10, t2: 50, t3: 90), theme.cal[0])
-        XCTAssertEqual(WidgetSharedData.barColor(ratio: 0.05, theme: theme, t1: 10, t2: 50, t3: 90), theme.cal[1])
-        XCTAssertEqual(WidgetSharedData.barColor(ratio: 0.30, theme: theme, t1: 10, t2: 50, t3: 90), theme.cal[2])
-        XCTAssertEqual(WidgetSharedData.barColor(ratio: 0.70, theme: theme, t1: 10, t2: 50, t3: 90), theme.cal[3])
-        XCTAssertEqual(WidgetSharedData.barColor(ratio: 1.0,  theme: theme, t1: 10, t2: 50, t3: 90), theme.cal[4])
+        XCTAssertEqual(WidgetSharedData.barColor(ratio: 0.0,  theme: theme, t1: 10, t2: 50, t3: 90), theme.bar[0])
+        XCTAssertEqual(WidgetSharedData.barColor(ratio: 0.05, theme: theme, t1: 10, t2: 50, t3: 90), theme.bar[1])
+        XCTAssertEqual(WidgetSharedData.barColor(ratio: 0.30, theme: theme, t1: 10, t2: 50, t3: 90), theme.bar[2])
+        XCTAssertEqual(WidgetSharedData.barColor(ratio: 0.70, theme: theme, t1: 10, t2: 50, t3: 90), theme.bar[3])
+        XCTAssertEqual(WidgetSharedData.barColor(ratio: 1.0,  theme: theme, t1: 10, t2: 50, t3: 90), theme.bar[4])
+    }
+
+    func test_completionRatioUsesDailyGoal() {
+        let settings = WidgetReportSettings(
+            dailyGoalMinutes: 20,
+            threshold1: 25,
+            threshold2: 60,
+            threshold3: 90
+        )
+        let summaries = [
+            DaySessionSummary(
+                date: Date(),
+                duration: 6 * 60,
+                completionRatio: 0,
+                hrAvg: 0,
+                steps: 0
+            ),
+            DaySessionSummary(
+                date: Date(),
+                duration: 4 * 60,
+                completionRatio: 0,
+                hrAvg: 0,
+                steps: 0
+            )
+        ]
+
+        XCTAssertEqual(
+            WidgetSharedData.completionRatio(for: summaries, settings: settings),
+            0.5,
+            accuracy: 0.001
+        )
     }
 
     func test_streakCalculation() {

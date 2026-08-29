@@ -51,6 +51,7 @@ struct DisplayView: View {
         .id(lm.version)
         .navigationTitle(lm.L("display.title"))
         .navigationBarTitleDisplayMode(.inline)
+        .themedNavigationBar(theme)
     }
 
     private func sectionLabel(_ text: String) -> some View {

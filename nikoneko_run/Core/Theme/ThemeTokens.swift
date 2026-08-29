@@ -17,3 +17,18 @@ struct ThemeTokens {
     let onCal: [Color]  // exactly 5: text color to use ON cal[i] background
     let isDark: Bool
 }
+
+extension View {
+    func themedNavigationBar(_ theme: ThemeTokens) -> some View {
+        tint(theme.accent)
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbarColorScheme(theme.isDark ? .dark : .light, for: .navigationBar)
+            .toolbarRole(.editor)
+            .overlay(alignment: .top) {
+                theme.bg
+                    .frame(height: 120)
+                    .offset(y: -120)
+                    .allowsHitTesting(false)
+            }
+    }
+}

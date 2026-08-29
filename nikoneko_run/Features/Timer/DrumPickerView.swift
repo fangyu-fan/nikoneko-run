@@ -88,7 +88,7 @@ struct DrumPickerView: View {
             .fixedSize()
             .frame(maxWidth: .infinity, minHeight: rowHeight, maxHeight: rowHeight, alignment: .center)
             .contentTransition(.numericText(countsDown: countsDown))
-            .animation(.smooth(duration: 0.15), value: value)
+            .animation(isDragging ? .smooth(duration: 0.15) : nil, value: value)
     }
 
     static func clamped(_ v: Int, to range: ClosedRange<Int>) -> Int {

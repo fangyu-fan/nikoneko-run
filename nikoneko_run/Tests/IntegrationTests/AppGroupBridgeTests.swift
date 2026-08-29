@@ -37,4 +37,30 @@ final class AppGroupBridgeTests: XCTestCase {
         XCTAssertEqual(summaries[0].completionRatio, 0.5, accuracy: 0.001)
         XCTAssertEqual(AppGroupDefaults.shared.integer(forKey: "dailyGoalMinutes"), 30)
     }
+
+    func test_reportSettingsRoundTrip() {
+        defer {
+            AppGroupDefaults.shared.removeObject(forKey: "dailyGoalMinutes")
+            AppGroupDefaults.shared.removeObject(forKey: "reportThreshold1")
+            AppGroupDefaults.shared.removeObject(forKey: "reportThreshold2")
+            AppGroupDefaults.shared.removeObject(forKey: "reportThreshold3")
+        }
+
+        AppGroupDefaults.writeReportSettings(
+            dailyGoalMinutes: 35,
+            threshold1: 20,
+            threshold2: 55,
+            threshold3: 85
+        )
+
+        XCTAssertEqual(
+            AppGroupDefaults.loadReportSettings(),
+            WidgetReportSettings(
+                dailyGoalMinutes: 35,
+                threshold1: 20,
+                threshold2: 55,
+                threshold3: 85
+            )
+        )
+    }
 }

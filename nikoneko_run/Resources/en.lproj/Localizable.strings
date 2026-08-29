@@ -90,6 +90,7 @@
 "settings.section.defaults"   = "DEFAULTS";
 "settings.section.widget"     = "WIDGET";
 "settings.section.system"     = "SYSTEM";
+"settings.section.about"      = "ABOUT";
 "settings.row.theme"          = "Theme";
 "settings.row.language"       = "Language";
 "settings.row.display"        = "Display";
@@ -97,6 +98,16 @@
 "settings.row.widget"         = "Widget";
 "settings.row.notifications"  = "Notifications";
 "settings.row.dataSync"       = "Data & Sync";
+"settings.row.aboutMe"        = "About Me";
+
+/* About me */
+"about.title"                 = "About Me";
+"about.heading"               = "Hi, I'm Yvonne.";
+"about.body"                  = "I'm an independent developer. Thank you for using my work. Follow my social accounts if you'd like to support me.";
+"about.contact"               = "If you have any questions, feel free to send me a message.";
+"about.section.social"        = "SOCIAL";
+"about.instagram"             = "Instagram";
+"about.threads"               = "Threads";
 
 /* Display settings */
 "display.title"               = "Display";
@@ -145,7 +156,6 @@
 "dataSync.section.integrations" = "INTEGRATIONS";
 "dataSync.section.data"       = "DATA";
 "dataSync.row.appleHealth"    = "Apple Health";
-"dataSync.row.iCloud"         = "iCloud Sync";
 "dataSync.row.exportCSV"      = "Export CSV";
 "dataSync.row.clearAll"       = "Clear All Data";
 "dataSync.confirm.title"      = "Delete all run data?";
@@ -192,8 +202,11 @@
 
 /* Data & Sync additions */
 "dataSync.row.importCSV"      = "Import CSV";
-"dataSync.icloud.note"        = "Restart app to apply iCloud changes.";
 "dataSync.import.error"       = "Couldn't import. Check the file format.";
+"dataSync.export.error"       = "Couldn't create the CSV file. Please try again.";
+"dataSync.import.success"     = "Data imported successfully.";
+"dataSync.clear.success"      = "All data has been cleared.";
+"dataSync.clear.error"        = "Couldn't clear the data. Please try again.";
 "defaults.row.volume" = "Volume";
 "timer.tip.longPress" = "hold to finish";
 "timer.alert.tooShort" = "Sessions under 1 minute are not recorded.";

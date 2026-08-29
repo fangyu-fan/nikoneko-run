@@ -12,7 +12,7 @@ struct StatEntry: TimelineEntry {
     let unit: String            // "hrs", "min", "steps", "days", "km", "cal", "runs"
     let metricLabel: String     // "Streak", "Duration", etc.
     let periodLabel: String?    // "per week", "today", nil for streak
-    let fontSize: CGFloat       // 72, 66, or 54 based on char count
+    let fontSize: CGFloat       // Preferred size, reduced as the value gets longer
     let theme: ThemeTokens
 }
 
@@ -28,24 +28,14 @@ struct StatProvider: AppIntentTimelineProvider {
 
     func snapshot(for configuration: StatWidgetIntent, in context: Context) async -> StatEntry {
         let theme = WidgetSharedData.loadTheme()
-        let (metric, period) = resolvedConfig(configuration)
-        return makeEntry(metric: metric, period: period, theme: theme)
+        return makeEntry(metric: configuration.metric, period: configuration.period, theme: theme)
     }
 
     func timeline(for configuration: StatWidgetIntent, in context: Context) async -> Timeline<StatEntry> {
         let theme = WidgetSharedData.loadTheme()
-        let (metric, period) = resolvedConfig(configuration)
-        let entry = makeEntry(metric: metric, period: period, theme: theme)
+        let entry = makeEntry(metric: configuration.metric, period: configuration.period, theme: theme)
         let nextRefresh = Calendar.current.date(byAdding: .hour, value: 1, to: Date())!
         return Timeline(entries: [entry], policy: .after(nextRefresh))
-    }
-
-    private func resolvedConfig(_ configuration: StatWidgetIntent) -> (metric: StatMetric, period: TimePeriod) {
-        let metric = AppGroupDefaults.shared.string(forKey: "widget.stat.metric")
-            .flatMap { StatMetric(rawValue: $0) } ?? configuration.metric
-        let period = AppGroupDefaults.shared.string(forKey: "widget.stat.period")
-            .flatMap { TimePeriod(rawValue: $0) } ?? configuration.period
-        return (metric, period)
     }
 
     // MARK: Data computation
@@ -157,9 +147,10 @@ struct StatProvider: AppIntentTimelineProvider {
 
     private func fontSizeFor(_ value: String) -> CGFloat {
         switch value.count {
-        case ...3: return 80
-        case 4:    return 72
-        default:   return 72
+        case ...2: return 52
+        case 3:    return 48
+        case 4:    return 42
+        default:   return 36
         }
     }
 }
@@ -185,29 +176,44 @@ struct StatWidgetView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Header: app name left, metric icon right
-            HStack {
-                Text("NIKONEKO RUN")
-                    .font(.system(size: 10)).tracking(0.8)
-                    .foregroundColor(entry.theme.textMid)
-                Spacer()
+            HStack(alignment: .top, spacing: 4) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("NIKONEKO")
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .allowsTightening(true)
+                    Text("RUN")
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .allowsTightening(true)
+                }
+                .font(.system(size: 9))
+                .tracking(0.4)
+                .foregroundColor(entry.theme.textMid)
+                .frame(width: 64, height: 22, alignment: .topLeading)
+                .layoutPriority(1)
+
+                Spacer(minLength: 0)
+
                 Image(systemName: iconName(for: entry.metric))
                     .font(.system(size: 18, weight: .light))
                     .foregroundColor(entry.theme.textMid)
+                    .fixedSize()
             }
+            .frame(height: 22, alignment: .top)
 
             Spacer()
 
-            // Value + unit baseline-aligned
-            HStack(alignment: .lastTextBaseline, spacing: 5) {
-                Text(entry.formattedValue)
-                    .font(.system(size: entry.fontSize, weight: .ultraLight))
-                    .foregroundColor(entry.theme.text)
-                    .monospacedDigit()
-                    .minimumScaleFactor(0.4)
-                    .lineLimit(1)
-                Text(entry.unit)
-                    .font(.system(size: 14, weight: .light))
-                    .foregroundColor(entry.theme.textMid)
+            // Try progressively smaller intrinsic rows. Unlike a compressible HStack,
+            // this never replaces part of the number with an ellipsis.
+            ViewThatFits(in: .horizontal) {
+                valueRow(fontSize: entry.fontSize)
+                valueRow(fontSize: min(entry.fontSize, 44))
+                valueRow(fontSize: min(entry.fontSize, 36))
+                valueRow(fontSize: min(entry.fontSize, 28))
+                valueRow(fontSize: 24)
+                valueRow(fontSize: 18)
+                valueRow(fontSize: 12)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -222,6 +228,23 @@ struct StatWidgetView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(10)
         .containerBackground(entry.theme.bg, for: .widget)
+    }
+
+    private func valueRow(fontSize: CGFloat) -> some View {
+        HStack(alignment: .lastTextBaseline, spacing: 5) {
+            Text(entry.formattedValue)
+                .font(.system(size: fontSize, weight: .ultraLight))
+                .foregroundColor(entry.theme.text)
+                .monospacedDigit()
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
+            Text(entry.unit)
+                .font(.system(size: 14, weight: .light))
+                .foregroundColor(entry.theme.textMid)
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
+        }
+        .fixedSize(horizontal: true, vertical: false)
     }
 }
 
@@ -254,7 +277,7 @@ struct StatWidget: Widget {
         unit: "days",
         metricLabel: "Streak",
         periodLabel: nil,
-        fontSize: 80,
+        fontSize: 52,
         theme: ThemeLibrary.moss
     )
     StatEntry(
@@ -265,7 +288,7 @@ struct StatWidget: Widget {
         unit: "hrs",
         metricLabel: "Duration",
         periodLabel: "per week",
-        fontSize: 80,
+        fontSize: 48,
         theme: ThemeLibrary.moss
     )
     StatEntry(
@@ -276,7 +299,7 @@ struct StatWidget: Widget {
         unit: "steps",
         metricLabel: "Steps",
         periodLabel: "today",
-        fontSize: 72,
+        fontSize: 42,
         theme: ThemeLibrary.moss
     )
     StatEntry(
@@ -287,7 +310,7 @@ struct StatWidget: Widget {
         unit: "runs",
         metricLabel: "Runs",
         periodLabel: "per month",
-        fontSize: 80,
+        fontSize: 52,
         theme: ThemeLibrary.moss
     )
 }

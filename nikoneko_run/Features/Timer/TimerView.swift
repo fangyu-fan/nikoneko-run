@@ -23,6 +23,7 @@ struct TimerView: View {
     @State private var savedSession: RunSession? = nil
     @State private var bpm: Int = 180
     @State private var volume: Double = 0.6
+    @State private var hasCompletedInitialLayout = false
     @Environment(\.modelContext) private var ctx
 
     private var theme: ThemeTokens { themeManager.current }
@@ -47,7 +48,7 @@ struct TimerView: View {
             isCompactHeight = size.height < 780
             isNarrow = size.width < 430
             contentMaxWidth = min(size.width, 600)
-            characterTopPadding = isCompactHeight ? 40 : (size.width >= 700 ? 80 : 116)
+            characterTopPadding = min(max(size.height * 0.15, 72), 116)
             numeralHeight = isCompactHeight ? 236 : 360
             pickerRowHeight = isCompactHeight ? 72 : 90
             timeFontSize = isCompactHeight ? 92 : 108
@@ -279,6 +280,11 @@ struct TimerView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
+        .transaction { transaction in
+            if !hasCompletedInitialLayout {
+                transaction.disablesAnimations = true
+            }
+        }
         .onChange(of: vm.completedSession) { _, session in
             guard let session else { return }
             ctx.insert(session)
@@ -309,14 +315,12 @@ struct TimerView: View {
                 selectedHours = 0
                 vm.selectedMinutes = defMins
             }
-            metronome.soundType = profile?.soundType ?? .tap
-            Task {
-                await HealthKitService.shared.requestPermissions()
-                await MotionService.requestAuthorization()
+            DispatchQueue.main.async {
+                hasCompletedInitialLayout = true
             }
+            metronome.soundType = profile?.soundType ?? .tap
         }
         .onChange(of: vm.state) { oldState, newState in
-            print("[TV] state changed \(oldState) → \(newState)")
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
             switch newState {
             case .running:
@@ -339,9 +343,7 @@ struct TimerView: View {
             }
         }
         .onChange(of: vm.countdownFinished) { _, finished in
-            print("[TV] countdownFinished changed → \(finished)")
             guard finished else { return }
-            print("[TV] calling stopAndSave from countdownFinished handler")
             vm.stopAndSave(
                 bpm: bpm,
                 characterId: profile?.activeCharacterId ?? "loader_cat",
@@ -595,7 +597,6 @@ struct TimerView: View {
     // MARK: - Stop helper
 
     private func doStop() {
-        print("[TV] doStop called")
         isLongPressing = false
         isLongPressingPending = false
         didCompleteStop = true

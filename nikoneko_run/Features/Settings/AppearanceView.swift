@@ -37,6 +37,7 @@ struct AppearanceView: View {
         .id(lm.version)
         .navigationTitle(lm.L("theme.title"))
         .navigationBarTitleDisplayMode(.inline)
+        .themedNavigationBar(theme)
     }
 
     private func themeRow(_ t: ThemeTokens) -> some View {
@@ -136,6 +137,7 @@ struct LanguageView: View {
         .id(languageManager.version)
         .navigationTitle(languageManager.L("language.title"))
         .navigationBarTitleDisplayMode(.inline)
+        .themedNavigationBar(theme)
     }
 
     private func langRow(_ lang: AppLanguage, label: String) -> some View {

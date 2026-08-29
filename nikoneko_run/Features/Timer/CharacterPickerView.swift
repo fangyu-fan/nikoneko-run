@@ -65,6 +65,7 @@ struct CharacterPickerView: View {
             .background(theme.bg.ignoresSafeArea())
             .navigationTitle(lm.L("character.title"))
             .navigationBarTitleDisplayMode(.inline)
+            .themedNavigationBar(theme)
         }
     }
 

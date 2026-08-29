@@ -17,6 +17,7 @@ struct ReportView: View {
 
     private static let bestStreakKey = "nikoneko.bestStreak"
     private static let streakShownDateKey = "nikoneko.streakShownDate"
+    private static let contentMaxWidth: CGFloat = 430
 
     private var theme: ThemeTokens { themeManager.current }
 
@@ -78,13 +79,12 @@ struct ReportView: View {
                         }
                     }
                 }
-
                 // SESSIONS
                 if vm.period != .month && vm.period != .year {
                     logList
                 }
             }
-            .frame(maxWidth: 700)
+            .frame(maxWidth: Self.contentMaxWidth)
             .frame(maxWidth: .infinity)
             .padding(.bottom, 20)
         }
@@ -92,6 +92,7 @@ struct ReportView: View {
         .id(lm.version)
         .navigationTitle(lm.L("report.title"))
         .navigationBarTitleDisplayMode(.inline)
+        .themedNavigationBar(theme)
         .sheet(item: $selectedSession) { session in
             SessionDetailSheet(session: session)
                 .presentationDetents([.medium, .large])
@@ -725,6 +726,8 @@ struct HeatmapView: View {
 // MARK: - SessionDetailSheet
 
 struct SessionDetailSheet: View {
+    private static let contentMaxWidth: CGFloat = 430
+
     let session: RunSession
     var onDismiss: (() -> Void)? = nil   // used when presented as overlay (not sheet)
     @Environment(ThemeManager.self) private var themeManager
@@ -799,7 +802,7 @@ struct SessionDetailSheet: View {
             .padding(.horizontal, 20)
             .padding(.bottom, 32)
             }
-            .frame(maxWidth: 700)
+            .frame(maxWidth: Self.contentMaxWidth)
             .frame(maxWidth: .infinity)
         }
         .scrollBounceBehavior(.basedOnSize)

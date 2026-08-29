@@ -9,6 +9,15 @@ struct NikoNekoApp: App {
     private let container: ModelContainer
 
     init() {
+        let navigationAppearance = UINavigationBarAppearance()
+        navigationAppearance.configureWithTransparentBackground()
+        navigationAppearance.shadowColor = .clear
+        let navigationBar = UINavigationBar.appearance()
+        navigationBar.standardAppearance = navigationAppearance
+        navigationBar.scrollEdgeAppearance = navigationAppearance
+        navigationBar.compactAppearance = navigationAppearance
+        navigationBar.shadowImage = UIImage()
+
         let savedCode = UserDefaults.standard.string(forKey: "activeLanguageCode") ?? "en"
         LanguageBundle.languageCode = savedCode
         object_setClass(Bundle.main, LanguageBundle.self)

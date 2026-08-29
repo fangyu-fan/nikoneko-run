@@ -74,6 +74,7 @@ struct DefaultsView: View {
         .id(lm.version)
         .navigationTitle(lm.L("defaults.title"))
         .navigationBarTitleDisplayMode(.inline)
+        .themedNavigationBar(theme)
         .onAppear {
             ensureConfig()
             t1 = Double(config?.threshold1 ?? 25)
