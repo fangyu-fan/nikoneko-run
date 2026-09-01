@@ -4,6 +4,7 @@ import SwiftData
 struct ReportView: View {
     @Environment(ThemeManager.self) private var themeManager
     @Environment(LanguageManager.self) private var lm
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Query(sort: \RunSession.startDate, order: .reverse) private var sessions: [RunSession]
     @Query private var profiles: [UserProfile]
     @State private var vm = ReportViewModel()
@@ -17,7 +18,9 @@ struct ReportView: View {
 
     private static let bestStreakKey = "nikoneko.bestStreak"
     private static let streakShownDateKey = "nikoneko.streakShownDate"
-    private static let contentMaxWidth: CGFloat = 430
+    private var contentMaxWidth: CGFloat {
+        horizontalSizeClass == .regular ? 600 : 430
+    }
 
     private var theme: ThemeTokens { themeManager.current }
 
@@ -84,7 +87,7 @@ struct ReportView: View {
                     logList
                 }
             }
-            .frame(maxWidth: Self.contentMaxWidth)
+            .frame(maxWidth: contentMaxWidth)
             .frame(maxWidth: .infinity)
             .padding(.bottom, 20)
         }
@@ -586,16 +589,24 @@ struct HeatmapView: View {
 
                 VStack(alignment: .leading, spacing: 0) {
                     // Month labels
-                    HStack(spacing: 0) {
-                        Color.clear.frame(width: dayLabelWidth + cellSpacing)
+                    ZStack(alignment: .topLeading) {
                         ForEach(0..<4, id: \.self) { mi in
                             Text(monthNames[startMonth + mi])
                                 .font(.system(size: 9))
                                 .foregroundColor(theme.textDim)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .fixedSize()
+                                .offset(
+                                    x: dayLabelWidth + cellSpacing
+                                        + CGFloat(rowBars.monthStartColumns[mi]) * (cellSize + cellSpacing)
+                                )
                         }
                     }
-                    .frame(height: 14)
+                    .frame(
+                        width: dayLabelWidth + cellSpacing
+                            + CGFloat(totalCols) * (cellSize + cellSpacing) - cellSpacing,
+                        height: 14,
+                        alignment: .leading
+                    )
 
                     HStack(alignment: .top, spacing: cellSpacing) {
                         // Day labels
@@ -629,25 +640,42 @@ struct HeatmapView: View {
         }
     }
 
-    private struct RowBars { let bars: [ChartBar]; let firstWeekday: Int }
+    private struct RowBars {
+        let bars: [ChartBar]
+        let firstWeekday: Int
+        let monthStartColumns: [Int]
+    }
 
     private func barsForMonths(startMonth: Int, endMonth: Int, cal: Calendar) -> RowBars {
         var comps = DateComponents()
         comps.year = displayYear
         comps.month = startMonth + 1; comps.day = 1
-        guard let firstDay = cal.date(from: comps) else { return RowBars(bars: [], firstWeekday: 0) }
+        guard let firstDay = cal.date(from: comps) else {
+            return RowBars(bars: [], firstWeekday: 0, monthStartColumns: [0, 0, 0, 0])
+        }
 
         comps.month = endMonth + 1
         guard let lastMonthStart = cal.date(from: comps),
               let lastMonthRange = cal.range(of: .day, in: .month, for: lastMonthStart),
               let lastDay = cal.date(byAdding: .day, value: lastMonthRange.count - 1, to: lastMonthStart)
-        else { return RowBars(bars: [], firstWeekday: 0) }
+        else { return RowBars(bars: [], firstWeekday: 0, monthStartColumns: [0, 0, 0, 0]) }
 
         // Weekday of first day, offset from week start (Mon=0 or Sun=0)
         let wd = cal.component(.weekday, from: firstDay)  // 1=Sun..7=Sat
         let firstWeekday = AppGroupDefaults.weekStartsOnMonday
             ? (wd + 5) % 7   // Mon=0..Sun=6
             : wd - 1          // Sun=0..Sat=6
+
+        // Anchor each month label to the week column containing that month's first day.
+        let monthStartColumns = (startMonth...endMonth).map { month in
+            var monthComponents = DateComponents()
+            monthComponents.year = displayYear
+            monthComponents.month = month + 1
+            monthComponents.day = 1
+            guard let monthStart = cal.date(from: monthComponents) else { return 0 }
+            let dayOffset = cal.dateComponents([.day], from: firstDay, to: monthStart).day ?? 0
+            return (firstWeekday + dayOffset) / 7
+        }
 
         var result: [ChartBar] = []
         var current = firstDay
@@ -661,7 +689,11 @@ struct HeatmapView: View {
             guard let next = cal.date(byAdding: .day, value: 1, to: current) else { break }
             current = next
         }
-        return RowBars(bars: result, firstWeekday: firstWeekday)
+        return RowBars(
+            bars: result,
+            firstWeekday: firstWeekday,
+            monthStartColumns: monthStartColumns
+        )
     }
 
     private func yearCell(bar: ChartBar, size: CGFloat) -> some View {
@@ -726,14 +758,16 @@ struct HeatmapView: View {
 // MARK: - SessionDetailSheet
 
 struct SessionDetailSheet: View {
-    private static let contentMaxWidth: CGFloat = 430
-
     let session: RunSession
     var onDismiss: (() -> Void)? = nil   // used when presented as overlay (not sheet)
     @Environment(ThemeManager.self) private var themeManager
     @Environment(LanguageManager.self) private var lm
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.dismiss) private var dismiss
     private var theme: ThemeTokens { themeManager.current }
+    private var contentMaxWidth: CGFloat {
+        horizontalSizeClass == .regular ? 600 : 430
+    }
 
     private func doClose() {
         if let onDismiss { onDismiss() } else { dismiss() }
@@ -768,7 +802,7 @@ struct SessionDetailSheet: View {
                 }
             }
             .padding(.horizontal, 20)
-            .padding(.top, 40)
+            .padding(.top, 20)
             .padding(.bottom, 12)
 
             HStack(alignment: .firstTextBaseline, spacing: 0) {
@@ -802,7 +836,7 @@ struct SessionDetailSheet: View {
             .padding(.horizontal, 20)
             .padding(.bottom, 32)
             }
-            .frame(maxWidth: Self.contentMaxWidth)
+            .frame(maxWidth: contentMaxWidth)
             .frame(maxWidth: .infinity)
         }
         .scrollBounceBehavior(.basedOnSize)

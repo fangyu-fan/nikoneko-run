@@ -4,6 +4,7 @@ import WidgetKit
 struct WidgetSettingsView: View {
     @Environment(ThemeManager.self) private var themeManager
     @Environment(LanguageManager.self) private var lm
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     private var theme: ThemeTokens { themeManager.current }
 
     @State private var selectedIndex: Int = 0
@@ -76,7 +77,7 @@ struct WidgetSettingsView: View {
             }
             .background(theme.bg)
         }
-        .frame(maxWidth: 700)
+        .frame(maxWidth: contentMaxWidth)
         .frame(maxWidth: .infinity)
         .background(theme.bg.ignoresSafeArea())
         .id(lm.version)
@@ -105,29 +106,13 @@ struct WidgetSettingsView: View {
                     .cornerRadius(6)
             }
 
-            // Preview
-            Group {
-                switch w.size {
-                case "Small":
-                    GeometryReader { geo in
-                        let mediumH = geo.size.width / (338.0 / 158.0)
-                        widgetPreview(kind: w.kind, widgetTheme: theme)
-                            .frame(width: mediumH, height: mediumH)
-                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                            .frame(width: geo.size.width, height: mediumH, alignment: .center)
-                    }
-                    .frame(height: 145)
-                case "Medium":
-                    widgetPreview(kind: w.kind, widgetTheme: theme)
-                        .aspectRatio(338.0 / 158.0, contentMode: .fit)
-                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                default: // Large
-                    widgetPreview(kind: w.kind, widgetTheme: theme)
-                        .aspectRatio(338.0 / 354.0, contentMode: .fit)
-                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                }
+            GeometryReader { geo in
+                let previewSize = fittedPreviewSize(for: w.kind, available: geo.size)
+                widgetPreview(kind: w.kind, widgetTheme: theme)
+                    .frame(width: previewSize.width, height: previewSize.height)
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         }
         .padding(14)
         .frame(maxHeight: .infinity)
@@ -135,10 +120,25 @@ struct WidgetSettingsView: View {
         .cornerRadius(14)
     }
 
-    // Gallery height = Large widget full-width preview + label row + card padding + page dots
-    // card width ≈ 375 - 36 (outer padding) - 28 (card padding) = 311pt
-    // Large preview height = 311 × (354/338) ≈ 325pt
-    private var galleryFrameHeight: CGFloat { 325 + 36 + 28 + 28 }
+    private var isRegularWidth: Bool { horizontalSizeClass == .regular }
+    private var contentMaxWidth: CGFloat { isRegularWidth ? 560 : 430 }
+    private var galleryFrameHeight: CGFloat { isRegularWidth ? 580 : 417 }
+
+    private func fittedPreviewSize(for kind: String, available: CGSize) -> CGSize {
+        let native = Self.nativeSize[kind] ?? CGSize(width: 158, height: 158)
+        let maximumWidth: CGFloat
+        if isRegularWidth {
+            maximumWidth = kind == "StatWidget" ? 240 : (native.height > native.width ? 460 : 500)
+        } else {
+            maximumWidth = native.width
+        }
+        let scale = min(
+            maximumWidth / native.width,
+            available.width / native.width,
+            available.height / native.height
+        )
+        return CGSize(width: native.width * scale, height: native.height * scale)
+    }
 
     // MARK: - Parameter Section
 

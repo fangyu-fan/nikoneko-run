@@ -88,7 +88,6 @@
 		9829B00C5AD9BE798FF045D5 /* Running Man.json in Resources */ = {isa = PBXBuildFile; fileRef = D845399F7CAAE67A88081EA1 /* Running Man.json */; };
 		99F1969F7FB6D94D2FF18C46 /* CalendarWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2CE45F7F70AAF25A84794A /* CalendarWidget.swift */; };
 		9C198317D741685FE404E120 /* StatWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4593F302764A66A3C1FA2B66 /* StatWidget.swift */; };
-		9E382006389F82C5721D44C7 /* SummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A29EB4BAACB55EA0E26E858E /* SummaryViewModel.swift */; };
 		9E8CEFC9892253A7A888A759 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 551D664DE14BA5794E10C5C3 /* Assets.xcassets */; };
 		A021C80266EA5FCD5D6F6ADB /* Donut.json in Resources */ = {isa = PBXBuildFile; fileRef = C2B809FB64BC8364FB4765E1 /* Donut.json */; };
 		A19DD70B3554A0EAFE636637 /* Space Buddy.json in Resources */ = {isa = PBXBuildFile; fileRef = 326304FF2B2D98BB1EC60A36 /* Space Buddy.json */; };
@@ -108,7 +107,6 @@
 		B466F6E665408FB63662DF6D /* Jogger.json in Resources */ = {isa = PBXBuildFile; fileRef = D7EA500CE63F6E0D4E6FE95A /* Jogger.json */; };
 		B4F685B2BF54763A3EE53037 /* ReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD874CD72EFA48DB5C1D0D1 /* ReportView.swift */; };
 		B522FC011280DFC617D7CBF1 /* Mushrooms.json in Resources */ = {isa = PBXBuildFile; fileRef = 546E812AC5B5B450D31F7537 /* Mushrooms.json */; };
-		B5CC148BBBC4F20AB767DD85 /* SummaryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7CABD957C50D6080EE7E98 /* SummaryViewModelTests.swift */; };
 		B681D2B279A3B456A523322C /* Pothos.json in Resources */ = {isa = PBXBuildFile; fileRef = 60009D037C38378B1E253379 /* Pothos.json */; };
 		B79EDC96B27525B4C53925DE /* WidgetSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA758658B1B7B37F80295A7D /* WidgetSettingsView.swift */; };
 		BA10484D5701FC1978DD7950 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE88681615BBD0A9F257019 /* ContentView.swift */; };
@@ -118,7 +116,6 @@
 		BEEB47D692384E56453D3165 /* HeartRateServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F128697330A9DCBE0111098 /* HeartRateServiceTests.swift */; };
 		BFDBADF2F7AE939EF6FF2795 /* DrumPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B6343558BD9688E80FDA8B /* DrumPickerView.swift */; };
 		C19BC91334445C78AB7BB839 /* Potato.json in Resources */ = {isa = PBXBuildFile; fileRef = 14567D1CA8CAB7A13D3F3290 /* Potato.json */; };
-		C62D9E9444E788B300DF843B /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13EDCF2C13175A90D6AA2D0 /* SummaryView.swift */; };
 		CB2AA69B4EA1968F3941939A /* Runner.json in Resources */ = {isa = PBXBuildFile; fileRef = 1AE9D6396BFDF0EC11762ACE /* Runner.json */; };
 		CB6D16100030855B3165A77A /* StreakWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CFEA813C5061B04BC312971 /* StreakWidget.swift */; };
 		CDD9C89C461C8B39C39F8C2B /* HeatmapWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C42A970F271028A75659A3A /* HeatmapWidget.swift */; };
@@ -252,7 +249,6 @@
 		961CB9E3CB2ADE59EA7511F6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9693CA87FCD75C153692784B /* Happy Dog.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Happy Dog.json"; sourceTree = "<group>"; };
 		9A60E9F3704F3567458738D1 /* LottieCharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieCharacterView.swift; sourceTree = "<group>"; };
-		A29EB4BAACB55EA0E26E858E /* SummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryViewModel.swift; sourceTree = "<group>"; };
 		AC57F16ADC389ACC84ECD4A6 /* DrumPickerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrumPickerTests.swift; sourceTree = "<group>"; };
 		AEC5F2B078FFD6B12A66DF98 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		B0CE252302CB6A8E28C8EFF1 /* Running Dog.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Running Dog.json"; sourceTree = "<group>"; };
@@ -267,12 +263,10 @@
 		C3B240D6D780A0A815DFE848 /* Trophy.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Trophy.json; sourceTree = "<group>"; };
 		C463B544EC31AD3292C76642 /* Squirrel.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Squirrel.json; sourceTree = "<group>"; };
 		CB512E1E4632A6F46886BC03 /* MetronomeServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeServiceTests.swift; sourceTree = "<group>"; };
-		D13EDCF2C13175A90D6AA2D0 /* SummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryView.swift; sourceTree = "<group>"; };
 		D580D84D39F85E90E561B307 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		D6F1ADE8F5500415AA9BC836 /* ThemeLibraryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeLibraryTests.swift; sourceTree = "<group>"; };
 		D7EA500CE63F6E0D4E6FE95A /* Jogger.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Jogger.json; sourceTree = "<group>"; };
 		D845399F7CAAE67A88081EA1 /* Running Man.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Running Man.json"; sourceTree = "<group>"; };
-		DD7CABD957C50D6080EE7E98 /* SummaryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryViewModelTests.swift; sourceTree = "<group>"; };
 		DE56B4A442C67A3F92C2DDEC /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		DF33898E11A84E53579BAFE5 /* Fries.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Fries.json; sourceTree = "<group>"; };
 		E65DA448B85C7C62A6046B2F /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
@@ -334,7 +328,6 @@
 				CB512E1E4632A6F46886BC03 /* MetronomeServiceTests.swift */,
 				0D87DF6AC9A47E748CE8990F /* MotionServiceTests.swift */,
 				FA81960393AABD848F96B250 /* ReportViewModelTests.swift */,
-				DD7CABD957C50D6080EE7E98 /* SummaryViewModelTests.swift */,
 				D6F1ADE8F5500415AA9BC836 /* ThemeLibraryTests.swift */,
 				03D83A14C11E48C458465529 /* TimerViewModelTests.swift */,
 			);
@@ -569,8 +562,6 @@
 			isa = PBXGroup;
 			children = (
 				825E9C61C670A6E83FA35AB3 /* ShareCardView.swift */,
-				D13EDCF2C13175A90D6AA2D0 /* SummaryView.swift */,
-				A29EB4BAACB55EA0E26E858E /* SummaryViewModel.swift */,
 			);
 			path = Summary;
 			sourceTree = "<group>";
@@ -863,8 +854,6 @@
 				7F3368AF6B0E5337011224C8 /* StatWidget.swift in Sources */,
 				E9D244A7BEA86CB5760F5AE3 /* StatWidgetIntent.swift in Sources */,
 				CB6D16100030855B3165A77A /* StreakWidget.swift in Sources */,
-				C62D9E9444E788B300DF843B /* SummaryView.swift in Sources */,
-				9E382006389F82C5721D44C7 /* SummaryViewModel.swift in Sources */,
 				1F00A30CF2B01145DB96B77A /* ThemeLibrary.swift in Sources */,
 				575A6E0A6F74B758F3BBEAB9 /* ThemeManager.swift in Sources */,
 				A2F6C8C2FB9AD4E2919FAF77 /* ThemeTokens.swift in Sources */,
@@ -893,7 +882,6 @@
 				F47CDE88C40A5C3B4814DEFA /* MetronomeServiceTests.swift in Sources */,
 				A8B25B4ED2F6DB28FC47B7E7 /* MotionServiceTests.swift in Sources */,
 				59845CF0ABDAB69E86B65CFC /* ReportViewModelTests.swift in Sources */,
-				B5CC148BBBC4F20AB767DD85 /* SummaryViewModelTests.swift in Sources */,
 				BA7EFAC6D2DE53BA7EC75068 /* ThemeLibraryTests.swift in Sources */,
 				74BA2486A0F744A4D2BC4EDA /* TimerViewModelTests.swift in Sources */,
 				5D34C5A1DB07A483685128D6 /* WidgetDataTests.swift in Sources */,
