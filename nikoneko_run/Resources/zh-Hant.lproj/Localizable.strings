@@ -205,6 +205,7 @@
 "dataSync.import.error"       = "匯入失敗，請確認檔案格式。";
 "dataSync.export.error"       = "無法建立 CSV 檔案，請再試一次。";
 "dataSync.import.success"     = "資料匯入完成。";
+"dataSync.import.noNewData"   = "沒有新的紀錄需要匯入。";
 "dataSync.clear.success"      = "所有資料已清除。";
 "dataSync.clear.error"        = "無法清除資料，請再試一次。";
 "defaults.row.volume" = "音量";

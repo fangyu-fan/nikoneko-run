@@ -203,54 +203,45 @@ struct DataSyncView: View {
     // MARK: - CSV Import
 
     private func importCSV(from url: URL) {
-        guard url.startAccessingSecurityScopedResource() else {
-            showImportError = true
-            return
+        let hasSecurityScope = url.startAccessingSecurityScopedResource()
+        defer {
+            if hasSecurityScope { url.stopAccessingSecurityScopedResource() }
         }
-        defer { url.stopAccessingSecurityScopedResource() }
 
         guard let content = try? String(contentsOf: url, encoding: .utf8) else {
             showImportError = true
             return
         }
 
-        let lines = content.components(separatedBy: .newlines).filter { !$0.isEmpty }
-        guard lines.count > 1 else { showImportError = true; return }
+        guard let records = try? CSVSessionCodec.decode(content) else {
+            showImportError = true
+            return
+        }
 
-        let df = ISO8601DateFormatter()
+        var knownDates = sessions.map(\.startDate)
         var imported = 0
 
-        for line in lines.dropFirst() {  // skip header
-            let cols = line.components(separatedBy: ",")
-            guard cols.count >= 8,
-                  let date = df.date(from: cols[0]),
-                  let durationMin = Double(cols[1]),
-                  let distanceKm = Double(cols[2]),
-                  let calories = Double(cols[3]),
-                  let steps = Int(cols[4]),
-                  let avgHR = Int(cols[5]),
-                  let maxHR = Int(cols[6]),
-                  let bpm = Int(cols[7])
-            else { continue }
-
-            // Skip duplicate (same startDate already exists)
-            let exists = sessions.contains { abs($0.startDate.timeIntervalSince(date)) < 1 }
+        for record in records {
+            let exists = knownDates.contains {
+                abs($0.timeIntervalSince(record.startDate)) < 1
+            }
             if exists { continue }
 
             let session = RunSession(
-                startDate: date,
-                duration: durationMin * 60,
-                distance: distanceKm * 1000,
-                calories: calories,
-                steps: steps,
-                avgHR: avgHR,
-                maxHR: maxHR,
+                startDate: record.startDate,
+                duration: record.durationMinutes * 60,
+                distance: record.distanceKilometers * 1000,
+                calories: record.calories,
+                steps: record.steps,
+                avgHR: record.avgHR,
+                maxHR: record.maxHR,
                 avgCadence: 0,
-                bpm: bpm,
+                bpm: record.bpm,
                 characterId: "loader_cat",
                 themeId: "obsidian"
             )
             ctx.insert(session)
+            knownDates.append(record.startDate)
             imported += 1
         }
 
@@ -264,7 +255,7 @@ struct DataSyncView: View {
                 showImportError = true
             }
         } else {
-            showImportError = true
+            showSuccessToast(lm.L("dataSync.import.noNewData"))
         }
     }
 

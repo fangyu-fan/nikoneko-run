@@ -205,6 +205,7 @@
 "dataSync.import.error"       = "Couldn't import. Check the file format.";
 "dataSync.export.error"       = "Couldn't create the CSV file. Please try again.";
 "dataSync.import.success"     = "Data imported successfully.";
+"dataSync.import.noNewData"   = "No new records to import.";
 "dataSync.clear.success"      = "All data has been cleared.";
 "dataSync.clear.error"        = "Couldn't clear the data. Please try again.";
 "defaults.row.volume" = "Volume";

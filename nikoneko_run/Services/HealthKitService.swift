@@ -1,5 +1,91 @@
 import HealthKit
 
+struct CSVSessionRecord: Equatable {
+    let startDate: Date
+    let durationMinutes: Double
+    let distanceKilometers: Double
+    let calories: Double
+    let steps: Int
+    let avgHR: Int
+    let maxHR: Int
+    let bpm: Int
+}
+
+enum CSVSessionCodec {
+    static let header = "Date,Duration(min),Distance(km),Calories,Steps,AvgHR,MaxHR,BPM"
+
+    enum DecodeError: Error {
+        case invalidHeader
+        case noValidRows
+    }
+
+    static func encode(sessions: [RunSession]) -> String {
+        let dateFormatter = ISO8601DateFormatter()
+        let locale = Locale(identifier: "en_US_POSIX")
+        var rows = [header]
+        rows.reserveCapacity(sessions.count + 1)
+
+        for session in sessions {
+            rows.append([
+                dateFormatter.string(from: session.startDate),
+                "\(Int(session.duration / 60))",
+                String(format: "%.2f", locale: locale, session.distance / 1000),
+                "\(Int(session.calories))",
+                "\(session.steps)",
+                "\(session.avgHR)",
+                "\(session.maxHR)",
+                "\(session.bpm)",
+            ].joined(separator: ","))
+        }
+        return rows.joined(separator: "\n") + "\n"
+    }
+
+    static func decode(_ content: String) throws -> [CSVSessionRecord] {
+        let lines = content
+            .split(whereSeparator: \.isNewline)
+            .map(String.init)
+            .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+
+        guard let firstLine = lines.first else { throw DecodeError.invalidHeader }
+        let normalizedHeader = firstLine
+            .replacingOccurrences(of: "\u{feff}", with: "")
+            .split(separator: ",", omittingEmptySubsequences: false)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .joined(separator: ",")
+        guard normalizedHeader == header else { throw DecodeError.invalidHeader }
+
+        let dateFormatter = ISO8601DateFormatter()
+        let records = lines.dropFirst().compactMap { line -> CSVSessionRecord? in
+            let columns = line
+                .split(separator: ",", omittingEmptySubsequences: false)
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            guard columns.count == 8,
+                  let date = dateFormatter.date(from: columns[0]),
+                  let durationMinutes = Double(columns[1]),
+                  let distanceKilometers = Double(columns[2]),
+                  let calories = Double(columns[3]),
+                  let steps = Int(columns[4]),
+                  let avgHR = Int(columns[5]),
+                  let maxHR = Int(columns[6]),
+                  let bpm = Int(columns[7])
+            else { return nil }
+
+            return CSVSessionRecord(
+                startDate: date,
+                durationMinutes: durationMinutes,
+                distanceKilometers: distanceKilometers,
+                calories: calories,
+                steps: steps,
+                avgHR: avgHR,
+                maxHR: maxHR,
+                bpm: bpm
+            )
+        }
+        guard !records.isEmpty else { throw DecodeError.noValidRows }
+        return records
+    }
+}
+
 @Observable
 @MainActor
 final class HealthKitService {
@@ -60,18 +146,7 @@ final class HealthKitService {
     }
 
     func exportCSV(sessions: [RunSession]) -> URL? {
-        var csv = "Date,Duration(min),Distance(km),Calories,Steps,AvgHR,MaxHR,BPM\n"
-        let df = ISO8601DateFormatter()
-        for s in sessions {
-            csv += "\(df.string(from: s.startDate)),"
-            csv += "\(Int(s.duration / 60)),"
-            csv += String(format: "%.2f", s.distance / 1000) + ","
-            csv += "\(Int(s.calories)),"
-            csv += "\(s.steps),"
-            csv += "\(s.avgHR),"
-            csv += "\(s.maxHR),"
-            csv += "\(s.bpm)\n"
-        }
+        let csv = CSVSessionCodec.encode(sessions: sessions)
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("niko_export.csv")
         do {
             try csv.write(to: url, atomically: true, encoding: .utf8)

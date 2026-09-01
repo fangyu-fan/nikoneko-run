@@ -119,7 +119,7 @@ struct TimerView: View {
                 SessionDetailSheet(session: session, onDismiss: {
                         withAnimation(.easeOut(duration: 0.2)) { savedSession = nil }
                     })
-                .frame(maxWidth: 340, maxHeight: min(520, geometry.size.height - 40))
+                .frame(maxWidth: 340, maxHeight: min(430, geometry.size.height - 40))
                 .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                 .shadow(color: .black.opacity(0.18), radius: 24, y: 8)
                 .padding(.horizontal, 20)

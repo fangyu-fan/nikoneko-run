@@ -58,6 +58,7 @@
 		5D34C5A1DB07A483685128D6 /* WidgetDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E939ADC1B0268AC8E50377A5 /* WidgetDataTests.swift */; };
 		5D75FE18CF036FB49A4732F8 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = F1B2B3A0A6AAC2F8136C5D95 /* Lottie */; };
 		608A538B277628246DC82BE8 /* BarColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70890FC411099E4B4D869D9D /* BarColorTests.swift */; };
+		B1C2D3E4F5061728394A5B6C /* CSVSessionCodecTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5C /* CSVSessionCodecTests.swift */; };
 		63B67B8C288576CA0190835E /* Coffee.json in Resources */ = {isa = PBXBuildFile; fileRef = F633C120D513D7C5C509695A /* Coffee.json */; };
 		66DFB63BA79545ACF85C50DF /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFB792DB6970C8D2D3CD216 /* NotificationService.swift */; };
 		68AF989AAD50ECEC12D8276E /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C5078E8D550E5658204098 /* NotificationsView.swift */; };
@@ -232,6 +233,7 @@
 		6C13ED6BC9690B8BAD1C293D /* MotionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionService.swift; sourceTree = "<group>"; };
 		6DA000BDF804808817A188E3 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		70890FC411099E4B4D869D9D /* BarColorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarColorTests.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B5C /* CSVSessionCodecTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVSessionCodecTests.swift; sourceTree = "<group>"; };
 		71D2FA86F770B4C318865C59 /* nikoneko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nikoneko.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75079154B4C2BBAEDF7B69B2 /* Heartbeat.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Heartbeat.json; sourceTree = "<group>"; };
 		78B6343558BD9688E80FDA8B /* DrumPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrumPickerView.swift; sourceTree = "<group>"; };
@@ -323,6 +325,7 @@
 			children = (
 				073EC42D997CC22D7EDD7CD3 /* AppGroupDefaultsTests.swift */,
 				70890FC411099E4B4D869D9D /* BarColorTests.swift */,
+				A1B2C3D4E5F60718293A4B5C /* CSVSessionCodecTests.swift */,
 				AC57F16ADC389ACC84ECD4A6 /* DrumPickerTests.swift */,
 				3F128697330A9DCBE0111098 /* HeartRateServiceTests.swift */,
 				CB512E1E4632A6F46886BC03 /* MetronomeServiceTests.swift */,
@@ -877,6 +880,7 @@
 				CFFFC8DF6172A2C0E7F643C7 /* AppGroupBridgeTests.swift in Sources */,
 				06F86A6404C8E50B3D9B5B09 /* AppGroupDefaultsTests.swift in Sources */,
 				608A538B277628246DC82BE8 /* BarColorTests.swift in Sources */,
+				B1C2D3E4F5061728394A5B6C /* CSVSessionCodecTests.swift in Sources */,
 				80F44D5119B01D5001A79B6E /* DrumPickerTests.swift in Sources */,
 				BEEB47D692384E56453D3165 /* HeartRateServiceTests.swift in Sources */,
 				F47CDE88C40A5C3B4814DEFA /* MetronomeServiceTests.swift in Sources */,
