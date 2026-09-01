@@ -13,21 +13,28 @@
 
 ## Must complete before pressing Submit for Review
 
-- [ ] Create and publish the privacy policy URL; replace `<your-domain>` in App Store Connect.
-- [ ] Create and publish the support URL; replace `<your-domain>` in App Store Connect.
-- [ ] Confirm bundle ID, Team, signing, version 1.0, and build number 1 in the archive.
+- [x] Publish the privacy policy URL and enter it for English (U.S.) and Chinese (Traditional) in App Store Connect.
+- [x] Publish the support URL and enter it in App Store Connect.
+- [x] Confirm bundle ID, Team, signing, version 1.0, and build number 7 in the archive; uploaded to App Store Connect on 2026-08-20.
+- [x] Select processed Build 7 for App Store version 1.0.
+- [x] Disable untested Apple Silicon Mac and Apple Vision Pro availability.
 - [ ] Decide whether the on-device display name should be localized (`Nikoneko Run` is currently in `Info.plist`); add localized `InfoPlist.strings` if the Chinese name should appear under the icon.
 - [ ] Run the final archive on a clean iPhone: onboarding, permission denied, timer, stop, report, settings, export, widgets, and Live Activity.
 - [ ] Replace screenshot candidates with final-binary captures if any UI or copy differs.
 - [ ] Confirm App Store icon has no transparency and is the intended final artwork.
-- [ ] Verify all Lottie character animation licenses/attributions before distribution.
-- [ ] Complete age rating, content rights, pricing/availability, and export-compliance questions.
-- [ ] Re-check App Privacy answers against the final archive and enabled capabilities.
-- [ ] If iCloud remains local-only, remove iCloud Sync marketing copy and consider removing unused CloudKit capability before upload.
+- [x] Confirm all Lottie character animations and other bundled media are developer-owned.
+- [x] Complete the age-rating questionnaire (calculated rating: 9+; regional equivalents apply).
+- [x] Complete Content Rights: No third-party content; all bundled media is developer-owned.
+- [x] Complete EU Digital Services Act declaration as Non-Trader (active for 27 EU countries/regions on 2026-08-21).
+- [ ] Complete the export-compliance question. Pricing/availability is currently Free in 175 regions.
+- [ ] Have the Account Holder review and accept the updated Apple Developer Program License Agreement.
+- [x] Publish App Privacy as Data Not Collected; re-check against the final archive and enabled capabilities before submission.
+- [x] Declare that the app is not a regulated medical device in any country or region.
+- [x] Keep iCloud Sync out of 1.0 marketing and remove the unused CloudKit and remote-notification capabilities.
 
 ## Recommended App Store Connect settings
 
 - Availability: all intended territories
 - Price: Free (confirm the business decision)
-- Age rating: complete the questionnaire; no gambling, violence, sexual content, or user-generated content is expected
+- Age rating: 9+; Health or Wellness Topics is Yes, all other questionnaire answers are No/None
 - App Review contact: add the owner’s current name, phone, and email

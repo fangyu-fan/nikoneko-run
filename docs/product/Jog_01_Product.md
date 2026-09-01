@@ -294,7 +294,7 @@ Six sub-pages, each accessed via a push transition with `‹` back button.
 
 ### Data & Sync
 - Apple Health: On / Off (writes workout, calories, heart rate)
-- iCloud sync: On / Off
+- iCloud sync: Deferred — not included in version 1.0
 - Export CSV
 - Clear all data (destructive, confirmation required)
 

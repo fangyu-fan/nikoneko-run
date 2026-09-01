@@ -1,17 +1,17 @@
 # Niko Neko Run — App Store Connect metadata
 
-Prepared for iOS 17+, version **1.0 (build 1)**. Character counts are approximate; paste into App Store Connect and confirm its counter after localization.
+Prepared for iOS 17+, version **1.0 (build 7)**. Character counts are approximate; paste into App Store Connect and confirm its counter after localization.
 
 ## 繁體中文（zh-Hant）
 
 | 欄位 | 內容 |
 |---|---|
-| App 名稱 | 慢跑貓貓 |
-| 副標題 | slow jog · smile pace |
+| App 名稱 | Nikoneko Run |
+| 副標題 | 超慢跑節拍器 |
 | 宣傳文字 | 打開 App，按下開始。用舒服的節拍完成今天的慢跑，讓每一次出現都累積成習慣。 |
-| 關鍵字 | 慢跑,超慢跑,跑步,計時器,節拍器,心率,步數,Apple健康,小工具,習慣,運動,跑步紀錄 |
+| 關鍵字 | 慢跑,跑步,計時器,心率,步數,小工具,習慣,跑步紀錄,步頻,燃脂,健走,訓練,跑者,配速,間歇,卡路里 |
 | 主要類別 | 健康與健身 |
-| 次要類別 | 生活風格 |
+| 次要類別 | 運動 |
 
 ### 描述
 
@@ -48,12 +48,12 @@ Apple 健康與動作權限都是選用的。拒絕權限仍可使用計時器�
 
 | Field | Copy |
 |---|---|
-| App Name | Niko Neko Run |
-| Subtitle | slow jog · smile pace |
+| App Name | Nikoneko Run |
+| Subtitle | Slow Jogging Metronome |
 | Promotional Text | Open the app. Tap start. Find a comfortable beat for today’s slow jog, and let every small appearance become a habit. |
-| Keywords | slow jog,run,timer,metronome,heart rate,steps,Apple Health,widget,habit,streak,fitness,run log |
+| Keywords | run,timer,pace,cadence,heart rate,steps,workout,streak,widgets,habit,tracker,interval,distance,bpm |
 | Primary Category | Health & Fitness |
-| Secondary Category | Lifestyle |
+| Secondary Category | Sports |
 
 ### Description
 
@@ -96,10 +96,10 @@ Niko Neko Run 初次上線：專為超慢跑設計的簡潔計時器、節拍器
 
 The first release of Niko Neko Run: a focused slow-jog timer with metronome, reports, widgets, Live Activity, 14 themes, English, and Traditional Chinese.
 
-## URLs to replace before submission
+## Published URLs
 
-- Privacy Policy URL: `https://<your-domain>/niko-neko/privacy`
-- Support URL: `https://<your-domain>/niko-neko/support`
-- Marketing URL (optional): `https://<your-domain>/niko-neko`
+- Privacy Policy URL: `https://fangyu-fan.github.io/nikoneko-run/submission/privacy-policy.html`
+- Support URL: `https://fangyu-fan.github.io/nikoneko-run/submission/support.html`
+- Marketing URL: optional; currently blank
 
 The deployable drafts are in `submission/privacy-policy.html` and `submission/support.html`.

@@ -16,7 +16,7 @@ The app does one thing: help users slow jog every day. Nothing is added for the 
 - **Platform:** iOS, Swift / SwiftUI / SwiftData
 - **Architecture:** MVVM + Service Layer
 - **Animation:** Lottie (character silhouettes)
-- **Persistence:** SwiftData (CloudKit optional), App Group UserDefaults for widget data sharing
+- **Persistence:** Local SwiftData, App Group UserDefaults for widget data sharing
 - **Audio:** AVAudioEngine (metronome, sub-millisecond scheduling)
 - **Health:** HealthKit (HR read from Watch, workout write), CoreBluetooth (BLE HR fallback), CoreMotion (steps/distance)
 - **Extensions:** WidgetKit (4 widget types), ActivityKit (Dynamic Island + Lock Screen Live Activity)
@@ -69,7 +69,7 @@ Main app writes `[DaySessionSummary]` (last ~400 sessions) to App Group UserDefa
 `AVAudioEngine` + `AVAudioPlayerNode` with `mach_absolute_time` scheduling. BPM range: 140–220. Character animation speed = `BPM / 180.0` (Lottie `animationSpeed`, normalized to 180 BPM baseline). Sound options: tap / bell / drum / wood (WAV files).
 
 ### Local Persistence
-SwiftData currently uses a local `ModelConfiguration` only. The iCloud/CloudKit capability uses `iCloud.com.fangyu.nikoneko-run-v1.0` and is reserved for future sync support.
+SwiftData uses a local `ModelConfiguration` only. CloudKit is not enabled in version 1.0; any future sync feature must reintroduce and verify its capability, migration, privacy disclosure, and multi-device behavior.
 
 ---
 

@@ -1151,6 +1151,8 @@ func writeSession(_ session: RunSession) {
 
 ## iCloud Sync
 
+> Deferred from version 1.0. The shipping configuration is local-only (`cloudKitDatabase: .none`) and does not include CloudKit entitlements. The following is retained as a future implementation reference.
+
 SwiftData with CloudKit is enabled by passing a `ModelConfiguration` with `cloudKitDatabase`:
 
 ```swift
