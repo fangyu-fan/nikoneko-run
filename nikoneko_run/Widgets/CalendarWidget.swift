@@ -66,6 +66,7 @@ struct CalendarWidgetView: View {
             ? (rawWeekday + 5) % 7   // Mon=0
             : rawWeekday - 1          // Sun=0
         let daysInMonth = cal.range(of: .day, in: .month, for: entry.date)!.count
+        let weekCount = CalendarWidgetLayout.weekCount(firstOffset: firstOffset, daysInMonth: daysInMonth)
         let today = cal.startOfDay(for: entry.date)
 
         GeometryReader { geometry in
@@ -73,9 +74,18 @@ struct CalendarWidgetView: View {
             let topPadding: CGFloat = 4
             let bottomPadding: CGFloat = 1
             let gridSpacing: CGFloat = 4
-            let contentWidth = max(0, geometry.size.width - horizontalPadding * 2)
-            // Width is authoritative: the calendar always fills the available width.
-            let fittedCellSide = max(0, (contentWidth - gridSpacing * 6) / 7)
+            // Keep every month inside the widget. Months can occupy either five or
+            // six rows, so the cell side must be constrained by height as well as width.
+            let fittedCellSide = CalendarWidgetLayout.cellSide(
+                containerSize: geometry.size,
+                horizontalPadding: horizontalPadding,
+                topPadding: topPadding,
+                bottomPadding: bottomPadding,
+                headerHeight: 26,
+                statsHeight: 37,
+                weekCount: weekCount,
+                gridSpacing: gridSpacing
+            )
             let fittedGridWidth = fittedCellSide * 7 + gridSpacing * 6
 
             VStack(alignment: .leading, spacing: 0) {
@@ -93,6 +103,10 @@ struct CalendarWidgetView: View {
                 }
                 .padding(.bottom, 5)
 
+                // Center the weekday row together with the calendar, keeping it
+                // close to the first date row instead of adding a gap between them.
+                Spacer(minLength: 0)
+
                 HStack(spacing: gridSpacing) {
                     ForEach(Array(dayHeaders.enumerated()), id: \.offset) { _, day in
                         Text(day)
@@ -101,7 +115,7 @@ struct CalendarWidgetView: View {
                             .frame(maxWidth: .infinity)
                     }
                 }
-                .padding(.bottom, 2)
+                .padding(.bottom, 4)
 
                 LazyVGrid(
                     columns: Array(repeating: GridItem(.fixed(fittedCellSide), spacing: gridSpacing), count: 7),
@@ -154,7 +168,10 @@ struct CalendarWidgetView: View {
                         }
                     }
                 }
-                .frame(width: fittedGridWidth)
+                .frame(
+                    width: fittedGridWidth,
+                    height: fittedCellSide * CGFloat(weekCount) + gridSpacing * CGFloat(max(0, weekCount - 1))
+                )
                 .frame(maxWidth: .infinity, alignment: .center)
 
                 Spacer(minLength: 0)
@@ -321,6 +338,35 @@ private func currentStreak() -> Int {
         case .streak:
             return ""
         }
+    }
+}
+
+// Kept independent from the view so all calendar months can be checked in tests.
+enum CalendarWidgetLayout {
+    static func weekCount(firstOffset: Int, daysInMonth: Int) -> Int {
+        (firstOffset + daysInMonth + 6) / 7
+    }
+
+    static func cellSide(
+        containerSize: CGSize,
+        horizontalPadding: CGFloat,
+        topPadding: CGFloat,
+        bottomPadding: CGFloat,
+        headerHeight: CGFloat,
+        statsHeight: CGFloat,
+        weekCount: Int,
+        gridSpacing: CGFloat
+    ) -> CGFloat {
+        guard weekCount > 0 else { return 0 }
+        let contentWidth = max(0, containerSize.width - horizontalPadding * 2)
+        let widthLimited = max(0, (contentWidth - gridSpacing * 6) / 7)
+        let fixedContentHeight = topPadding + bottomPadding + headerHeight + statsHeight
+        let availableGridHeight = max(0, containerSize.height - fixedContentHeight)
+        let heightLimited = max(
+            0,
+            (availableGridHeight - gridSpacing * CGFloat(weekCount - 1)) / CGFloat(weekCount)
+        )
+        return min(widthLimited, heightLimited)
     }
 }
 

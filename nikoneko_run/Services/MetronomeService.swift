@@ -12,19 +12,17 @@ final class MetronomeService {
         }
     }
     private(set) var isPlaying: Bool = false
+    private(set) var lastPlaybackError: String?
 
     @ObservationIgnored private lazy var engine = AVAudioEngine()
     @ObservationIgnored private lazy var player = AVAudioPlayerNode()
+    private var loopBuffer: AVAudioPCMBuffer?
     private var isPrepared = false
-    private var strongBuffer: AVAudioPCMBuffer?  // beat 1 — accent
-    private var weakBuffer: AVAudioPCMBuffer?    // beat 2 — soft
-    private var nextBeatTime: AVAudioTime?
-    private var beatCount: Int = 0               // alternates 0/1
+    private var isStartingPlayback = false
     private var interruptionObserver: NSObjectProtocol?
     private var configChangeObserver: NSObjectProtocol?
-    private var beatContinuation: AsyncStream<Void>.Continuation?
-    private var beatTask: Task<Void, Never>?
-    /// User/session intent, kept separate from transient audio interruptions.
+
+    /// User intent is kept separately so an interruption or route change can recover playback.
     private var playbackRequested = false
     private var wasPlayingBeforeInterruption = false
 
@@ -33,21 +31,36 @@ final class MetronomeService {
     private func prepareIfNeeded() {
         guard !isPrepared else { return }
         isPrepared = true
-        setupEngine()
-        loadBuffers()
+        engine.attach(player)
+        engine.connect(player, to: engine.mainMixerNode, format: nil)
+        engine.mainMixerNode.outputVolume = volume
         setupInterruptionHandler()
         setupConfigChangeHandler()
     }
 
-    nonisolated private func configureAudioSession() {
-        try? AVAudioSession.sharedInstance().setCategory(
+    private func activateAudioSession() throws {
+        let session = AVAudioSession.sharedInstance()
+        try session.setCategory(
             .playback,
+            mode: .default,
             options: [.mixWithOthers, .allowAirPlay, .allowBluetoothA2DP]
         )
+        try session.setActive(true)
+    }
+
+    private func deactivateAudioSession() {
+        do {
+            try AVAudioSession.sharedInstance().setActive(
+                false,
+                options: .notifyOthersOnDeactivation
+            )
+        } catch {
+            // Deactivation failure is non-fatal; playback is already stopped locally.
+            print("⚠️ [Metronome] Could not deactivate audio session: \(error)")
+        }
     }
 
     private func setupInterruptionHandler() {
-        // Single observer — extract all values before entering async context to avoid data races
         interruptionObserver = NotificationCenter.default.addObserver(
             forName: AVAudioSession.interruptionNotification,
             object: nil,
@@ -55,24 +68,22 @@ final class MetronomeService {
         ) { [weak self] notification in
             let typeRaw = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt ?? 0
             let optionsRaw = notification.userInfo?[AVAudioSessionInterruptionOptionKey] as? UInt ?? 0
-            let isBegan = AVAudioSession.InterruptionType(rawValue: typeRaw) == .began
-            let shouldResume = AVAudioSession.InterruptionOptions(rawValue: optionsRaw).contains(.shouldResume)
+            let type = AVAudioSession.InterruptionType(rawValue: typeRaw)
+            let shouldResume = AVAudioSession.InterruptionOptions(rawValue: optionsRaw)
+                .contains(.shouldResume)
+
             MainActor.assumeIsolated {
                 guard let self else { return }
-                if isBegan {
-                    if self.isPlaying {
-                        self.wasPlayingBeforeInterruption = self.playbackRequested
-                        self.haltPlayback(resetBeatCount: false)
-                    } else if !self.playbackRequested {
-                        self.wasPlayingBeforeInterruption = false
-                    }
-                } else {
+                if type == .began {
+                    self.wasPlayingBeforeInterruption = self.playbackRequested && self.isPlaying
+                    self.haltPlayback(deactivateSession: false)
+                } else if type == .ended {
                     let shouldRestart = shouldResume
                         && self.playbackRequested
                         && self.wasPlayingBeforeInterruption
                     self.wasPlayingBeforeInterruption = false
-                    if shouldRestart && !self.isPlaying {
-                        self.resume()
+                    if shouldRestart {
+                        self.beginPlayback()
                     }
                 }
             }
@@ -86,72 +97,72 @@ final class MetronomeService {
             queue: .main
         ) { [weak self] _ in
             MainActor.assumeIsolated {
-                guard let self, self.isPlaying else { return }
-                self.player.stop()
-                self.nextBeatTime = nil
-                self.configureAudioSession()
-                do {
-                    try self.engine.start()
-                    self.reloadBuffersFromEngine()
-                    self.nextBeatTime = AVAudioTime(hostTime: mach_absolute_time())
-                    self.scheduleBeat()
-                } catch {
-                    self.isPlaying = false
-                }
+                guard let self,
+                      self.playbackRequested,
+                      !self.isStartingPlayback else { return }
+                self.restartAfterConfigurationChange()
             }
         }
     }
 
-    static func beatInterval(bpm: Int) -> Double { 60.0 / Double(bpm) }
-
-    private func setupEngine() {
-        engine.attach(player)
-        engine.connect(player, to: engine.mainMixerNode, format: nil)
-        engine.mainMixerNode.outputVolume = volume
+    private func restartAfterConfigurationChange() {
+        player.stop()
+        engine.stop()
+        engine.reset()
+        isPlaying = false
+        beginPlayback()
     }
 
-
-    private func loadBuffers() {
-        // Use a fixed 44100 Hz fallback since engine isn't running yet at init.
-        // Buffers are regenerated with the real hardware rate on first start().
-        let rate: Double = 44100
-        strongBuffer = synthesize(sampleRate: rate, high: true)
-        weakBuffer   = synthesize(sampleRate: rate, high: false)
-    }
-
-    private func reloadBuffersFromEngine() {
-        let outputFormat = engine.mainMixerNode.outputFormat(forBus: 0)
-        let rate = outputFormat.sampleRate > 0 ? outputFormat.sampleRate : 44100
-        strongBuffer = synthesize(sampleRate: rate, high: true)
-        weakBuffer   = synthesize(sampleRate: rate, high: false)
+    static func beatInterval(bpm: Int) -> Double {
+        60.0 / Double(max(1, bpm))
     }
 
     // MARK: - Synthesis
 
-    private func synthesize(sampleRate: Double, high: Bool) -> AVAudioPCMBuffer? {
+    /// Builds one continuous two-beat measure (accent + soft beat + silence).
+    /// Looping this buffer keeps rendering independent of main-thread scheduling in the background.
+    private func makeLoopBuffer() -> AVAudioPCMBuffer? {
         let outputFormat = engine.mainMixerNode.outputFormat(forBus: 0)
-        let channels = outputFormat.channelCount > 0 ? outputFormat.channelCount : 1
-        let rate = outputFormat.sampleRate > 0 ? outputFormat.sampleRate : sampleRate
-        guard let format = AVAudioFormat(standardFormatWithSampleRate: rate, channels: channels) else { return nil }
+        let rate = outputFormat.sampleRate > 0 ? outputFormat.sampleRate : 44_100
+        let channels = outputFormat.channelCount > 0 ? outputFormat.channelCount : 2
+        guard let format = AVAudioFormat(
+            standardFormatWithSampleRate: rate,
+            channels: channels
+        ) else { return nil }
 
-        let durationMs: Double = (soundType == .bell || soundType == .woodLo) ? 80 : 40
-        let frameCount = AVAudioFrameCount(rate * durationMs / 1000)
-        guard let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount) else { return nil }
-        buf.frameLength = frameCount
+        let beatDuration = Self.beatInterval(bpm: bpm)
+        let measureDuration = beatDuration * 2
+        let frameCount = AVAudioFrameCount(ceil(rate * measureDuration))
+        guard frameCount > 0,
+              let buffer = AVAudioPCMBuffer(
+                pcmFormat: format,
+                frameCapacity: frameCount
+              ),
+              let channelData = buffer.floatChannelData else { return nil }
 
-        for ch in 0..<Int(channels) {
-            let ptr = buf.floatChannelData![ch]
-            for i in 0..<Int(frameCount) {
-                let t = Double(i) / rate
-                ptr[i] = Float(sample(t: t, rate: rate, high: high))
+        buffer.frameLength = frameCount
+        let clickDuration = (soundType == .bell || soundType == .woodLo) ? 0.080 : 0.040
+
+        for channel in 0..<Int(channels) {
+            let samples = channelData[channel]
+            for frame in 0..<Int(frameCount) {
+                let measureTime = Double(frame) / rate
+                if measureTime < clickDuration {
+                    samples[frame] = Float(sample(t: measureTime, high: true))
+                } else {
+                    let secondBeatTime = measureTime - beatDuration
+                    samples[frame] = secondBeatTime >= 0 && secondBeatTime < clickDuration
+                        ? Float(sample(t: secondBeatTime, high: false))
+                        : 0
+                }
             }
         }
-        return buf
+        return buffer
     }
 
     // high = beat 1 (higher pitch), low = beat 2 (lower pitch)
-    private func sample(t: Double, rate: Double, high: Bool) -> Double {
-        let pitchMult: Double = high ? 1.0 : 0.6  // beat 2 is ~a fifth lower
+    private func sample(t: Double, high: Bool) -> Double {
+        let pitchMult: Double = high ? 1.0 : 0.6
 
         switch soundType {
         case .tap:
@@ -193,118 +204,97 @@ final class MetronomeService {
     func start() {
         prepareIfNeeded()
         playbackRequested = true
-        configureAudioSession()
-        isPlaying = true
-        beatCount = 0
-        if !engine.isRunning {
-            do {
-                try engine.start()
-                reloadBuffersFromEngine()
-            } catch {
-                isPlaying = false
-                return
-            }
-        }
-
-        let (stream, continuation) = AsyncStream.makeStream(of: Void.self)
-        beatContinuation = continuation
-        beatTask = Task { [weak self] in
-            for await _ in stream {
-                guard let self, self.isPlaying else { return }
-                self.beatCount += 1
-                self.scheduleBeat()
-            }
-        }
-
-        nextBeatTime = AVAudioTime(hostTime: mach_absolute_time())
-        scheduleBeat()
+        beginPlayback()
     }
 
-    private func scheduleBeat() {
-        guard isPlaying,
-              let beatTime = nextBeatTime,
-              engine.isRunning else { return }
+    private func beginPlayback() {
+        guard playbackRequested, !isStartingPlayback else { return }
+        isStartingPlayback = true
+        defer { isStartingPlayback = false }
 
-        let buf = (beatCount % 2 == 0) ? strongBuffer : weakBuffer
-        guard let buf, buf.frameLength > 0 else { return }
+        do {
+            try activateAudioSession()
+            if !engine.isRunning {
+                engine.prepare()
+                try engine.start()
+            }
 
-        let continuation = beatContinuation
-        player.scheduleBuffer(buf, at: beatTime, options: []) { @Sendable in
-            continuation?.yield()
+            // The mixer output format is reliable only after the engine has
+            // started. Building the buffer earlier can result in silent playback
+            // on routes whose sample rate/channels are negotiated lazily.
+            guard let buffer = makeLoopBuffer() else {
+                throw MetronomeError.couldNotCreateLoopBuffer
+            }
+
+            player.stop()
+            loopBuffer = buffer
+            player.scheduleBuffer(buffer, at: nil, options: .loops)
+            player.play()
+            isPlaying = true
+            lastPlaybackError = nil
+        } catch {
+            player.stop()
+            engine.stop()
+            isPlaying = false
+            lastPlaybackError = error.localizedDescription
+            print("⚠️ [Metronome] Could not start playback: \(error)")
         }
-        if !player.isPlaying { player.play() }
-
-        var timebaseInfo = mach_timebase_info_data_t()
-        mach_timebase_info(&timebaseInfo)
-        let nsPerTick = Double(timebaseInfo.numer) / Double(timebaseInfo.denom)
-        let nsPerBeat = Self.beatInterval(bpm: bpm) * 1_000_000_000
-        let ticksPerBeat = UInt64(nsPerBeat / nsPerTick)
-        nextBeatTime = AVAudioTime(hostTime: beatTime.hostTime + ticksPerBeat)
     }
 
     func stop() {
         playbackRequested = false
         wasPlayingBeforeInterruption = false
-        guard isPrepared else {
-            isPlaying = false
-            beatCount = 0
-            return
-        }
-        haltPlayback(resetBeatCount: true)
+        haltPlayback(deactivateSession: true)
     }
 
     func pause() {
         playbackRequested = false
         wasPlayingBeforeInterruption = false
-        guard isPrepared else {
-            isPlaying = false
-            return
-        }
-        haltPlayback(resetBeatCount: false)
+        haltPlayback(deactivateSession: true)
     }
 
-    private func haltPlayback(resetBeatCount: Bool) {
+    private func haltPlayback(deactivateSession: Bool) {
         isPlaying = false
-        if resetBeatCount { beatCount = 0 }
+        guard isPrepared else { return }
         player.stop()
-        nextBeatTime = nil
-        beatContinuation?.finish()
-        beatContinuation = nil
-        beatTask?.cancel()
-        beatTask = nil
+        engine.pause()
+        loopBuffer = nil
+        if deactivateSession {
+            deactivateAudioSession()
+        }
     }
 
     func resume() {
         prepareIfNeeded()
         playbackRequested = true
-        configureAudioSession()
-        isPlaying = true
-        if !engine.isRunning {
-            try? engine.start()
-        }
-
-        let (stream, continuation) = AsyncStream.makeStream(of: Void.self)
-        beatContinuation = continuation
-        beatTask = Task { [weak self] in
-            for await _ in stream {
-                guard let self, self.isPlaying else { return }
-                self.beatCount += 1
-                self.scheduleBeat()
-            }
-        }
-
-        nextBeatTime = AVAudioTime(hostTime: mach_absolute_time())
-        scheduleBeat()
+        beginPlayback()
     }
 
-    func updateBPM(_ newBPM: Int) { bpm = newBPM }
+    func updateBPM(_ newBPM: Int) {
+        guard bpm != newBPM else { return }
+        bpm = newBPM
+        rebuildLoopIfPlaying()
+    }
 
     func updateSoundType(_ type: SoundType) {
+        guard soundType != type else { return }
         soundType = type
-        guard isPrepared else { return }
-        let wasPlaying = isPlaying
-        if wasPlaying { stop() }
-        if engine.isRunning { reloadBuffersFromEngine() } else { loadBuffers() }
-        if wasPlaying { start() }
+        rebuildLoopIfPlaying()
+    }
+
+    private func rebuildLoopIfPlaying() {
+        guard playbackRequested else { return }
+        beginPlayback()
+    }
+}
+
+private enum MetronomeError: LocalizedError {
+    case couldNotCreateLoopBuffer
+
+    var errorDescription: String? {
+        switch self {
+        case .couldNotCreateLoopBuffer:
+            "Could not create the metronome audio buffer."
+        }
     }
 }
