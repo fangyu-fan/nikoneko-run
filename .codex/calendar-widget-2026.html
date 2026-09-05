@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Nikoneko Run — 2026 Calendar Widget Review</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px; background: #e9dfd8; color: #5e6874; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; }
+  h1 { margin: 0 0 22px; text-align: center; font-size: 20px; font-weight: 500; letter-spacing: 2px; color: #52647a; }
+  .overview { display: grid; grid-template-columns: repeat(3, 338px); gap: 24px; justify-content: center; }
+  .widget { width: 338px; height: 354px; padding: 18px 12px 12px; border-radius: 27px; background: #f8f8f8; box-shadow: 0 5px 14px #a18f8660; display: flex; flex-direction: column; }
+  .head { display: flex; justify-content: space-between; padding: 0 12px 8px; font-size: 10px; letter-spacing: 1.2px; color: #61738a; }
+  .brand { font-size: 10px; }
+  .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 0 12px 4px; margin-top: auto; text-align: center; font-size: 10px; }
+  .grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-auto-rows: 38px; gap: 4px; padding: 0 12px; flex: none; margin-top: 0; margin-bottom: auto; }
+  .cell { position: relative; min-width: 0; border-radius: 8px; background: #f6c7c9; color: #5f6870; font-size: 10px; padding: 5px; }
+  .cell.empty { background: transparent; }
+  .cell.future { background: #f7dfe0; color: #a3a8ad; }
+  .cell:not(.empty):nth-child(4n+1) { background: #f4bfc2; }
+  .cell:not(.empty):nth-child(4n+2) { background: #f6c7c9; }
+  .cell:not(.empty):nth-child(4n+3) { background: #f2b5b9; }
+  .cell:not(.empty):nth-child(4n+4) { background: #f8d5d6; }
+  .value { position: absolute; left: 0; right: 0; bottom: 4px; text-align: center; font-size: 9px; color: #9f6368; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); padding: 0 12px; }
+  .stat { min-width: 0; }
+  .stat:nth-child(2) { text-align: center; }
+  .stat:nth-child(3) { text-align: right; }
+  .label { font-size: 9px; letter-spacing: 1px; color: #718198; }
+  .number { margin-top: 3px; font-size: 19px; font-weight: 200; color: #586675; }
+  .unit { font-size: 9px; color: #8290a0; }
+  @media (max-width: 1120px) { .overview { grid-template-columns: repeat(2, 338px); } }
+</style>
+<h1>NIKONEKO RUN · 2026 MONTHLY WIDGETS</h1>
+<main class="overview" id="overview"></main>
+<script>
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const shortDays = ["S","M","T","W","T","F","S"];
+  const monthGrid = (year, month) => {
+    const first = new Date(year, month, 1).getDay();
+    const days = new Date(year, month + 1, 0).getDate();
+    const rows = Math.ceil((first + days) / 7);
+    let html = "";
+    for (let i = 0; i < rows * 7; i++) {
+      if (i < first || i >= first + days) { html += '<div class="cell empty"></div>'; continue; }
+      const day = i - first + 1;
+      const value = ((day * 7 + month * 3) % 5 === 0) ? "✓" : (((day + month) % 3 === 0) ? String(20 + ((day * 11 + month) % 70)) : "");
+      html += `<div class="cell"><span>${day}</span>${value ? `<span class="value">${value}</span>` : ""}</div>`;
+    }
+    return { rows, html };
+  };
+  document.querySelector('#overview').innerHTML = months.map((name, month) => {
+    const grid = monthGrid(2026, month);
+    return `<section class="widget" style="--rows:${grid.rows}">
+      <div class="head"><span class="brand">NIKONEKO RUN</span><span>${name.toUpperCase()} 2026</span></div>
+      <div class="days">${shortDays.map(d => `<span>${d}</span>`).join('')}</div>
+      <div class="grid">${grid.html}</div>
+      <div class="stats"><div class="stat"><div class="label">◷ TODAY</div><div class="number">0 <span class="unit">min</span></div></div><div class="stat"><div class="label">▦ MONTH</div><div class="number">0 <span class="unit">min</span></div></div><div class="stat"><div class="label">♨ STREAK</div><div class="number">0 <span class="unit">days</span></div></div></div>
+    </section>`;
+  }).join('');
+</script>
+</html>

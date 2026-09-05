@@ -15,7 +15,8 @@ final class TimerViewModel {
 
     private var timer: AnyCancellable?
     private var startDate: Date?
-    private var backgroundedAt: Date?
+    private var activeSegmentStartedAt: Date?
+    private var elapsedAtSegmentStart: TimeInterval = 0
     private var bgObserver: NSObjectProtocol?
     private var fgObserver: NSObjectProtocol?
 
@@ -41,7 +42,7 @@ final class TimerViewModel {
         ) { [weak self] _ in
             MainActor.assumeIsolated {
                 guard let self, self.state == .running else { return }
-                self.backgroundedAt = Date()
+                self.refreshElapsed(at: Date())
             }
         }
 
@@ -50,40 +51,48 @@ final class TimerViewModel {
             object: nil, queue: .main
         ) { [weak self] _ in
             MainActor.assumeIsolated {
-                guard let self, self.state == .running, let bg = self.backgroundedAt else { return }
-                let backgroundDuration = Date().timeIntervalSince(bg)
-                self.elapsed += backgroundDuration
-                self.backgroundedAt = nil
+                guard let self, self.state == .running else { return }
+                self.refreshElapsed(at: Date())
+                guard self.state == .running else { return }
                 self.startTick()
-                if self.isCountdown && self.elapsed >= self.targetDuration {
-                    self.forceStop()
-                }
             }
         }
     }
 
     func start(bpm: Int, characterId: String, themeId: String) {
+        let now = Date()
         state = .running
-        startDate = Date()
+        startDate = now
         elapsed = 0
-        backgroundedAt = nil
+        elapsedAtSegmentStart = 0
+        activeSegmentStartedAt = now
         startTick()
     }
 
     func pause() {
         guard state == .running else { return }
+        refreshElapsed(at: Date())
+        guard state == .running else { return }
         state = .paused
+        elapsedAtSegmentStart = elapsed
+        activeSegmentStartedAt = nil
         timer?.cancel()
     }
 
     func resume() {
         guard state == .paused else { return }
         state = .running
+        elapsedAtSegmentStart = elapsed
+        activeSegmentStartedAt = Date()
         startTick()
     }
 
     func forceStop() {
+        if state == .running {
+            refreshElapsed(at: Date(), finishCountdown: false)
+        }
         timer?.cancel()
+        activeSegmentStartedAt = nil
         countdownFinished = true
         state = .idle
     }
@@ -92,7 +101,11 @@ final class TimerViewModel {
                      distance: Double, calories: Double, steps: Int,
                      avgHR: Int, maxHR: Int, avgCadence: Int) {
         countdownFinished = false
+        if state == .running {
+            refreshElapsed(at: Date(), finishCountdown: false)
+        }
         timer?.cancel()
+        activeSegmentStartedAt = nil
         let session = RunSession(
             startDate: startDate ?? Date(),
             duration: elapsed,
@@ -114,18 +127,25 @@ final class TimerViewModel {
 
     private func startTick() {
         timer?.cancel()
-        let capturedStart = Date()
-        let capturedElapsed = elapsed
         timer = Timer.publish(every: 0.5, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] now in
                 MainActor.assumeIsolated {
-                    guard let self, self.state == .running, self.backgroundedAt == nil else { return }
-                    self.elapsed = capturedElapsed + now.timeIntervalSince(capturedStart)
-                    if self.isCountdown && self.elapsed >= self.targetDuration {
-                        self.forceStop()
-                    }
+                    self?.refreshElapsed(at: now)
                 }
             }
+    }
+
+    private func refreshElapsed(at now: Date, finishCountdown: Bool = true) {
+        guard state == .running, let segmentStart = activeSegmentStartedAt else { return }
+        elapsed = elapsedAtSegmentStart + max(0, now.timeIntervalSince(segmentStart))
+
+        guard finishCountdown, isCountdown, elapsed >= targetDuration else { return }
+        elapsed = targetDuration
+        elapsedAtSegmentStart = elapsed
+        activeSegmentStartedAt = nil
+        timer?.cancel()
+        countdownFinished = true
+        state = .idle
     }
 }

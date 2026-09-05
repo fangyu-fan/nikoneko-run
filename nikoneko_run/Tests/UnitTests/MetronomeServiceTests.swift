@@ -47,4 +47,9 @@ final class MetronomeServiceTests: XCTestCase {
         let interval = MetronomeService.beatInterval(bpm: 120)
         XCTAssertEqual(interval, 0.5, accuracy: 0.0001)
     }
+
+    func test_beatIntervalProtectsAgainstInvalidBPM() {
+        let interval = MetronomeService.beatInterval(bpm: 0)
+        XCTAssertEqual(interval, 60, accuracy: 0.0001)
+    }
 }
