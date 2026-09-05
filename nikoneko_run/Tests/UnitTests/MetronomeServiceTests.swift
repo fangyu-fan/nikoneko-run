@@ -38,6 +38,32 @@ final class MetronomeServiceTests: XCTestCase {
         XCTAssertFalse(m.isPlaying)
     }
 
+    func test_activeRunResumesWhenInterruptionEndsWithoutResumeHint() throws {
+        let m = MetronomeService()
+        m.start()
+        try XCTSkipIf(!m.isPlaying, "Audio engine is unavailable in this test environment")
+
+        NotificationCenter.default.post(
+            name: AVAudioSession.interruptionNotification,
+            object: AVAudioSession.sharedInstance(),
+            userInfo: [
+                AVAudioSessionInterruptionTypeKey: AVAudioSession.InterruptionType.began.rawValue,
+            ]
+        )
+        XCTAssertFalse(m.isPlaying)
+
+        NotificationCenter.default.post(
+            name: AVAudioSession.interruptionNotification,
+            object: AVAudioSession.sharedInstance(),
+            userInfo: [
+                AVAudioSessionInterruptionTypeKey: AVAudioSession.InterruptionType.ended.rawValue,
+            ]
+        )
+
+        XCTAssertTrue(m.isPlaying)
+        m.stop()
+    }
+
     func test_beatIntervalAt180BPM() {
         let interval = MetronomeService.beatInterval(bpm: 180)
         XCTAssertEqual(interval, 60.0 / 180.0, accuracy: 0.0001)

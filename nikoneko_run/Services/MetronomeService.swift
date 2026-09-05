@@ -67,19 +67,20 @@ final class MetronomeService {
             queue: .main
         ) { [weak self] notification in
             let typeRaw = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt ?? 0
-            let optionsRaw = notification.userInfo?[AVAudioSessionInterruptionOptionKey] as? UInt ?? 0
             let type = AVAudioSession.InterruptionType(rawValue: typeRaw)
-            let shouldResume = AVAudioSession.InterruptionOptions(rawValue: optionsRaw)
-                .contains(.shouldResume)
 
             MainActor.assumeIsolated {
                 guard let self else { return }
                 if type == .began {
-                    self.wasPlayingBeforeInterruption = self.playbackRequested && self.isPlaying
+                    // Keep the run's playback intent even if the engine has
+                    // already been stopped by iOS before this notification.
+                    self.wasPlayingBeforeInterruption = self.playbackRequested
                     self.haltPlayback(deactivateSession: false)
                 } else if type == .ended {
-                    let shouldRestart = shouldResume
-                        && self.playbackRequested
+                    // `shouldResume` is only a system hint and can be absent.
+                    // An active run is authoritative: resume unless the user
+                    // paused or stopped while the interruption was in progress.
+                    let shouldRestart = self.playbackRequested
                         && self.wasPlayingBeforeInterruption
                     self.wasPlayingBeforeInterruption = false
                     if shouldRestart {
@@ -202,7 +203,6 @@ final class MetronomeService {
     // MARK: - Playback
 
     func start() {
-        prepareIfNeeded()
         playbackRequested = true
         beginPlayback()
     }
@@ -214,6 +214,9 @@ final class MetronomeService {
 
         do {
             try activateAudioSession()
+            // Configure the engine only after the session is active so the
+            // player connection uses the real hardware route and format.
+            prepareIfNeeded()
             if !engine.isRunning {
                 engine.prepare()
                 try engine.start()
@@ -265,7 +268,6 @@ final class MetronomeService {
     }
 
     func resume() {
-        prepareIfNeeded()
         playbackRequested = true
         beginPlayback()
     }
