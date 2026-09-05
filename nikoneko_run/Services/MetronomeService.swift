@@ -3,6 +3,13 @@ import AVFoundation
 @Observable
 @MainActor
 final class MetronomeService {
+    /// AirPlay and Bluetooth A2DP are supported automatically by `.playback`.
+    /// Supplying their category options can make `setCategory` fail with
+    /// `kAudio_ParamError` (-50) on some routes and Simulator runtimes.
+    static let audioSessionCategoryOptions: AVAudioSession.CategoryOptions = [
+        .mixWithOthers,
+    ]
+
     private(set) var bpm: Int = 180
     var soundType: SoundType = .wood
     var volume: Float = 0.7 {
@@ -43,7 +50,7 @@ final class MetronomeService {
         try session.setCategory(
             .playback,
             mode: .default,
-            options: [.mixWithOthers, .allowAirPlay, .allowBluetoothA2DP]
+            options: Self.audioSessionCategoryOptions
         )
         try session.setActive(true)
     }

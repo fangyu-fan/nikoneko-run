@@ -136,7 +136,7 @@ struct TimerView: View {
                     color: theme.accentMid,
                     secondaryColor: theme.accent,
                     tertiaryColor: theme.accentDim,
-                    shadowColor: theme.bg,
+                    shadowColor: theme.accentDim,
                     bpm: bpm,
                     isAnimating: vm.state == .running
                 )

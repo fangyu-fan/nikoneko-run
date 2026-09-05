@@ -5,6 +5,13 @@ import AVFoundation
 @MainActor
 final class MetronomeServiceTests: XCTestCase {
 
+    func test_playbackSessionOnlyUsesOptionsValidForPlaybackCategory() {
+        XCTAssertEqual(
+            MetronomeService.audioSessionCategoryOptions,
+            [.mixWithOthers]
+        )
+    }
+
     func test_initialBPMIs180() {
         let m = MetronomeService()
         XCTAssertEqual(m.bpm, 180)

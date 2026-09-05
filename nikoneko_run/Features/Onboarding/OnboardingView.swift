@@ -182,7 +182,7 @@ struct OnboardingView: View {
                 color: theme.accentMid,
                 secondaryColor: theme.accent,
                 tertiaryColor: theme.accentDim,
-                shadowColor: theme.bg,
+                shadowColor: theme.accentDim,
                 bpm: 180,
                 isAnimating: true
             )
@@ -382,7 +382,7 @@ struct OnboardingView: View {
                 color: theme.accentMid,
                 secondaryColor: theme.accent,
                 tertiaryColor: theme.accentDim,
-                shadowColor: theme.bg,
+                shadowColor: theme.accentDim,
                 bpm: bpm,
                 isAnimating: true
             )

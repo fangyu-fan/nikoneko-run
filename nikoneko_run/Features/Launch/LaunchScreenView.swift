@@ -23,7 +23,7 @@ struct LaunchScreenView: View {
                     color: theme.accentMid,
                     secondaryColor: theme.accent,
                     tertiaryColor: theme.accentDim,
-                    shadowColor: theme.bg,
+                    shadowColor: theme.accentDim,
                     bpm: 180,
                     isAnimating: isAnimating
                 )
@@ -41,7 +41,9 @@ struct LaunchScreenView: View {
         }
         .task {
             if !reduceMotion {
-                try? await Task.sleep(for: .milliseconds(40))
+                // Hold the exact frame used by the system launch image long
+                // enough for the handoff to register before the cat moves.
+                try? await Task.sleep(for: .milliseconds(120))
                 isAnimating = true
             }
             try? await Task.sleep(for: .milliseconds(310))

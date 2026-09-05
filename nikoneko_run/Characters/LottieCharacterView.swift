@@ -169,7 +169,7 @@ struct LottieCharacterView: View {
                 let shadowProvider = ColorValueProvider(UIColor(shadowColor ?? secondaryColor ?? color).lottieColorValue)
                 if resolvedCharacterId == "loader_cat" {
                     animation
-                        // Loader stays a one-color silhouette; shadows match the surrounding background.
+                        // Loader stays a one-color silhouette with lighter theme-colored shadows.
                         .valueProvider(primaryProvider, for: AnimationKeypath(keypath: "**.Color"))
                         .valueProvider(primaryProvider, for: AnimationKeypath(keypath: "**.Fill 1.Color"))
                         .valueProvider(primaryProvider, for: AnimationKeypath(keypath: "**.Fill 2.Color"))

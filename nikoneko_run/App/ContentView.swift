@@ -11,6 +11,7 @@ struct ContentView: View {
     @Query private var thresholdConfigs: [ThresholdConfig]
     @State private var timerVM = TimerViewModel()
     @State private var showOnboarding: Bool = !UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
+    private let mainContentVerticalOffset: CGFloat = 12
     private var theme: ThemeTokens { themeManager.current }
     private var reportSettings: ThresholdConfig? {
         ThresholdConfig.goalSettings(in: thresholdConfigs)
@@ -33,6 +34,7 @@ struct ContentView: View {
             ZStack {
                 theme.bg.ignoresSafeArea()
                 TimerView(vm: timerVM)
+                    .offset(y: mainContentVerticalOffset)
                 if timerVM.state == .idle {
                     VStack {
                         HStack {
@@ -61,10 +63,15 @@ struct ContentView: View {
                         Spacer()
                     }
                     .transition(.opacity)
+                    .offset(y: mainContentVerticalOffset)
                 }
             }
             .animation(.easeInOut(duration: 0.3), value: timerVM.state == .idle)
             .navigationBarHidden(true)
+            // Keep the timer's layout in full-screen coordinates. Respecting the
+            // top safe area here shortens GeometryReader enough for tall iPhones
+            // to be misclassified as compact and shifts all content downward.
+            .ignoresSafeArea(.container, edges: .top)
         }
         .onAppear {
             ensureProfile()

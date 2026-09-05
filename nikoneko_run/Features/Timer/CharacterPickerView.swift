@@ -83,7 +83,7 @@ struct CharacterPickerView: View {
                     color: theme.accentMid,
                     secondaryColor: theme.accent,
                     tertiaryColor: theme.accentDim,
-                    shadowColor: theme.surface,
+                    shadowColor: theme.accentDim,
                     bpm: 160,
                     isAnimating: isSelected
                 )
